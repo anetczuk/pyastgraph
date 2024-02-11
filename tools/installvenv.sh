@@ -146,7 +146,7 @@ set -eu
 
 
 ### creating project start script
-create_venv_shortcut "$VENV_DIR/activatevenv.sh \"$SRC_DIR/testastgraph/runtests.py \$@; exit\"" "$VENV_DIR/runtests.py"
+create_venv_shortcut "$VENV_DIR/activatevenv.sh \"set -eu; $SRC_DIR/testastgraph/runtests.py \$@; exit\"" "$VENV_DIR/runtests.py"
 
 
 ### install required packages
