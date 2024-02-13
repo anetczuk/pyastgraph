@@ -19,6 +19,12 @@ FILES="$SCRIPT_DIR/single01.py"
 echo "passing files: ${FILES}"
 python3 -m astgraph -f $FILES --outsvgfile "$OUT_DIR/single01.svg" --outdotfile "$OUT_DIR/single01.dot.txt" $@
 
+
+FILES="$SCRIPT_DIR/chained01.py"
+echo "passing files: ${FILES}"
+python3 -m astgraph -f $FILES --outsvgfile "$OUT_DIR/chained01.svg" --outdotfile "$OUT_DIR/chained01.dot.txt" $@
+
+
 FILES="$SCRIPT_DIR/invalid01.py"
 echo "passing files: ${FILES}"
 python3 -m astgraph -f $FILES --outsvgfile "$OUT_DIR/invalid01.svg" --outdotfile "$OUT_DIR/invalid01.dot.txt" $@

@@ -1,0 +1,49 @@
+digraph G {
+    graph [rankdir=TB, clusterrank="local"];
+    subgraph cluster_G {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        chained01 [label="chained01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
+        subgraph cluster_chained01 {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="chained01"];
+            chained01__Runner [label="Runner", style="filled", fillcolor="#feccccb2", fontcolor="#000000", group="0"];
+            chained01__Worker [label="Worker", style="filled", fillcolor="#feccccb2", fontcolor="#000000", group="0"];
+            chained01__main [label="main", style="filled", fillcolor="#feccccb2", fontcolor="#000000", group="0"];
+            subgraph cluster_chained01__Runner {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="chained01.Runner"];
+                chained01__Runner____init__ [label="__init__", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+                chained01__Runner__execute [label="execute", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+                chained01__Runner__worker [label="worker", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            }
+            subgraph cluster_chained01__Worker {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="chained01.Worker"];
+                chained01__Worker____init__ [label="__init__", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+                chained01__Worker__data_dict [label="data_dict", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+                chained01__Worker__work [label="work", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            }
+        }
+    }
+        chained01 -> chained01__Worker [style="dashed",  color="#838b8b"];
+        chained01 -> chained01__Runner [style="dashed",  color="#838b8b"];
+        chained01 -> chained01__main [style="dashed",  color="#838b8b"];
+        chained01__Worker -> chained01__Worker____init__ [style="dashed",  color="#838b8b"];
+        chained01__Worker -> chained01__Worker__data_dict [style="dashed",  color="#838b8b"];
+        chained01__Worker -> chained01__Worker__work [style="dashed",  color="#838b8b"];
+        chained01__Runner -> chained01__Runner____init__ [style="dashed",  color="#838b8b"];
+        chained01__Runner -> chained01__Runner__worker [style="dashed",  color="#838b8b"];
+        chained01__Runner -> chained01__Runner__execute [style="dashed",  color="#838b8b"];
+        chained01__Worker____init__ -> chained01__Worker__data_dict [style="solid",  color="#000000"];
+        chained01__Worker__work -> chained01__Worker__data_dict [style="solid",  color="#000000"];
+        chained01__Runner____init__ -> chained01__Worker____init__ [style="solid",  color="#000000"];
+        chained01__Runner____init__ -> chained01__Runner__worker [style="solid",  color="#000000"];
+        chained01__Runner__execute -> chained01__Worker__work [style="solid",  color="#000000"];
+        chained01__Runner__execute -> chained01__Runner__worker [style="solid",  color="#000000"];
+        chained01__main -> chained01__Runner____init__ [style="solid",  color="#000000"];
+        chained01__main -> chained01__Runner__execute [style="solid",  color="#000000"];
+        chained01__main -> chained01__Worker__data_dict [style="solid",  color="#000000"];
+        chained01__main -> chained01__Runner__worker [style="solid",  color="#000000"];
+        chained01 -> chained01__main [style="solid",  color="#000000"];
+    }
