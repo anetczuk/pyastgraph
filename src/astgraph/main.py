@@ -48,14 +48,15 @@ def analyze_code(files_list, out_svg_file_path, out_dot_file_path, debug_dump=Fa
 
         analyzer = TreeParser()
         analyzer.analyze(astroid_tree)
+        items = analyzer.items
 
         if debug_dump:
-            graph_dict = obj_to_dict(analyzer, skip_meta_data=False)
+            graph_dict = obj_to_dict(items, skip_meta_data=False)
             dict_path = f"{out_svg_file_path}.analyze_{index}.txt"
             with open(dict_path, "w", encoding="utf-8") as out_file:
                 pprint.pprint(graph_dict, out_file, indent=4, sort_dicts=False)
 
-        draw_graph(analyzer.def_items, analyzer.use_dict, out_svg_file_path, out_dot_file_path)
+        draw_graph(items.def_items, items.use_dict, out_svg_file_path, out_dot_file_path)
 
 
 def main():
@@ -73,7 +74,8 @@ def main():
 
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO)
+    # logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     files_list = args.files
     _LOGGER.info("parsing files: %s", files_list)

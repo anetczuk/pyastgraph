@@ -20,7 +20,7 @@ pyan_logger.setLevel(logging.WARN)
 # pyan_logger.setLevel(logging.DEBUG)
 
 
-def draw_graph(def_items, use_dict, out_svg_file_path, out_dot_file_path):
+def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=None):
     graph_options = {
         "draw_defines": True,
         "draw_uses": True,
@@ -44,7 +44,7 @@ def draw_graph(def_items, use_dict, out_svg_file_path, out_dot_file_path):
             pyan_nodes_dict[full_name] = nodes_list
 
         node = PyanNodeMock()
-        node.namespace = def_item.namespace
+        node.namespace = def_item.get_namespace()
         node.name = def_item.get_name()
         node.filename = def_item.get_filename()
         nodes_list.append(node)
