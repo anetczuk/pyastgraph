@@ -38,6 +38,10 @@ class DefItem:
         self.name = name
         self.items: List[Any] = []
 
+    @property
+    def info(self):
+        return (self.get_full_name(), self.type)
+
     def append(self, item):
         self.items.append(item)
         item.parent = self
@@ -101,12 +105,24 @@ def get_type(type_name: NodeNG) -> str:
 
 
 class ItemContainer:
-    
     def __init__(self):
-        self.def_items: List[DefItem] = []                  # list of all def items
+        self.def_items: List[DefItem] = []  # list of all def items
         self.use_dict: Dict[DefItem, List[DefItem]] = {}
-        self.astroid_item_dict: Dict[int, DefItem] = {}     # map astroid node (id) to def item
+        self.astroid_item_dict: Dict[int, DefItem] = {}  # map astroid node (id) to def item
         self.astroid_node_dict: Dict[int, NodeNG] = {}
+
+    def get_def_list(self):
+        ret_list = []
+        for def_item in self.def_items:
+            ret_list.append(def_item.info)
+        return ret_list
+
+    def get_use_list(self):
+        ret_list = []
+        for def_key, def_list in self.use_dict.items():
+            for def_item in def_list:
+                ret_list.append((def_key.get_full_name(), def_item.get_full_name()))
+        return ret_list
 
     def create_def(self, name: str, def_type: DefItemType, astroid_node: NodeNG):
         if def_type == DefItemType.MODULE:
@@ -160,6 +176,14 @@ class ItemContainer:
             parent_node = parent_node.parent
         return None
 
+    def get_parent_scope(self, astroid_node: NodeNG) -> Optional[DefItem]:
+        parent_node = astroid_node.parent  # scope returns self
+        if parent_node is None:
+            # no parent scope
+            return None
+        scope_node = parent_node.scope()
+        return self.find_def_item(scope_node)
+
     def find_scope_by_id(self, node_id: int) -> Optional[DefItem]:
         item_node: NodeNG = self.astroid_node_dict.get(node_id)
         if not item_node:
@@ -176,26 +200,46 @@ class ItemContainer:
         return None
 
 
-class TreeParser:
+# ============================================
 
-    def __init__(self):
-        self.items = ItemContainer()
-        self.astroid_module = None
 
-    def analyze_code(self, code, module_name=""):
-        astroid_node = astroid.parse(code)
-        astroid_node.name = module_name
-        self.analyze(astroid_node)
+class DefParser:
+    def __init__(self, container: ItemContainer = None):
+        if container is None:
+            container = ItemContainer()
+        self.items = container
+        self.astroid_tree = None
 
     def analyze(self, astroid_node):
-        _LOGGER.info("=== analyzing astroid node ===")
+        _LOGGER.info("=== analyzing astroid node definitions ===")
+        self.astroid_tree = astroid_node
         self._visit(astroid_node)
 
-    # ============================================
+    # ============================================================
+
+    def _visit(self, astroid_node):
+        _LOGGER.debug("visiting item: %s", type(astroid_node))
+
+        if isinstance(astroid_node, astroid_nodes.Module):
+            self.visit_module(astroid_node)
+            return
+        if isinstance(astroid_node, astroid_nodes.ClassDef):
+            self.visit_classdef(astroid_node)
+            return
+        if isinstance(astroid_node, astroid_nodes.FunctionDef):
+            self.visit_functiondef(astroid_node)
+            return
+
+        self._visit_children(astroid_node)
+
+    def _visit_children(self, astroid_node):
+        for child in astroid_node.get_children():
+            self._visit(child)
+
+    # ============================================================
 
     def visit_module(self, astroid_node):
         _LOGGER.debug("visiting Module %s", astroid_node.name)
-        self.astroid_module = astroid_node
         mod_name = astroid_node.name
         mod_name = os.path.basename(mod_name)
         if mod_name.endswith(".py"):
@@ -205,7 +249,7 @@ class TreeParser:
         moduledef.filename = astroid_node.file
         self.items.append_def(moduledef)
 
-        self._visit_body(astroid_node)
+        self._visit_children(astroid_node)
 
     def visit_classdef(self, astroid_node):
         _LOGGER.debug("visiting ClassDef %s", astroid_node.name)
@@ -218,7 +262,7 @@ class TreeParser:
         classdef = self.items.create_def(class_name, DefItemType.CLASS, astroid_node)
         self.items.append_def(classdef)
 
-        self._visit_body(astroid_node)
+        self._visit_children(astroid_node)
 
     def visit_functiondef(self, astroid_node):
         _LOGGER.debug("visiting FunctionDef %s", astroid_node.name)
@@ -231,38 +275,84 @@ class TreeParser:
         functiondef = self.items.create_def(func_name, DefItemType.MEMBER, astroid_node)
         self.items.append_def(functiondef)
 
-        self._visit_body(astroid_node)
+        self._visit_children(astroid_node)
 
-    def visit_assign(self, astroid_node):
-        _LOGGER.debug("visiting Assign")
-        if len(astroid_node.targets) != 1:
-            raise RuntimeError("unsupported number of Assign targets")
 
-        assign_val = astroid_node.value
-        if isinstance(assign_val, node_classes.Call):
-            _LOGGER.debug("unhandled Assign value %s in:\n%s", type(assign_val), astroid_node.repr_tree())
-            if not self._handle_call(assign_val):
-                call_func = assign_val.func
-                _LOGGER.debug("unhandled Assign Call func %s in:\n%s", type(call_func), astroid_node.repr_tree())
+# ============================================
 
-        target = astroid_node.targets[0]
 
-        if isinstance(target, node_classes.AssignAttr):
-            # object attribute assignment
-            return self._handle_attribute(target)
+class TreeParser:
+    def __init__(self):
+        self.items = ItemContainer()
+        self.astroid_tree = None
 
-        if isinstance(target, node_classes.AssignName):
-            # variable assignment
-            curr_scope = self.items.find_scope(target)
-            if curr_scope is None:
-                raise RuntimeError("missing required current scope")
-            if curr_scope.type != DefItemType.CLASS:
-                # assigning local variable
-                return
+    def analyze_code(self, code, module_name=""):
+        astroid_node = astroid.parse(code)
+        astroid_node.name = module_name
+        self.analyze(astroid_node)
 
-            # assigning class variable (static field)
-            assign_name = target.name
-            child = curr_scope.get_child(assign_name)
+    def analyze(self, astroid_node):
+        self.astroid_tree = astroid_node
+        def_parser = DefParser(self.items)
+        def_parser.analyze(astroid_node)
+        _LOGGER.info("=== analyzing astroid node ===")
+        self._visit(astroid_node)
+
+    # ============================================
+
+    def _visit(self, astroid_node):
+        _LOGGER.debug("visiting item: %s", type(astroid_node))
+
+        if isinstance(astroid_node, node_classes.Call):
+            self.visit_call(astroid_node)
+            return
+        if isinstance(astroid_node, node_classes.AssignName):
+            self.visit_assignname(astroid_node)
+            return
+        if isinstance(astroid_node, node_classes.AssignAttr):
+            self.visit_assignattr(astroid_node)
+            return
+        if isinstance(astroid_node, node_classes.Attribute):
+            self.visit_attribute(astroid_node)
+            return
+
+        self._visit_children(astroid_node)
+
+    def _visit_children(self, astroid_node):
+        for child in astroid_node.get_children():
+            self._visit(child)
+
+    # ============================================
+
+    def visit_call(self, astroid_node):
+        _LOGGER.debug("visiting Call")
+
+        # handle function
+        call_func = astroid_node.func
+        if isinstance(call_func, node_classes.Name):
+            # call of free function
+            self._handle_name(call_func, None)
+
+        self._visit_children(astroid_node)
+
+    def visit_assignname(self, astroid_node):
+        # assigning value (expression) to object's attribute
+        _LOGGER.debug("visiting AssignName")
+
+        scope_node = astroid_node.scope()
+        if hasattr(scope_node, "type"):
+            scope_type = scope_node.type
+        else:
+            # module does not have "type" attribute
+            scope_type = "module"
+
+        if scope_type == "class":
+            # class field
+            scope_def: Optional[DefItem] = self.items.find_def_item(scope_node)
+            if scope_def is None:
+                raise RuntimeError("unable to find definition item")
+            assign_name = astroid_node.name
+            child = scope_def.get_child(assign_name)
             if child is None:
                 child = self.items.create_def(assign_name, DefItemType.MEMBER, astroid_node)
                 self.items.append_def(child)
@@ -270,123 +360,53 @@ class TreeParser:
             # self.items.append_use(child)
             return
 
-        raise RuntimeError(f"unknown Assign target: {type(target)}")
+        self._visit_children(astroid_node)
 
-    def visit_expr(self, astroid_node):
-        _LOGGER.debug("visiting Expr")
-        expr_value = astroid_node.value
-        if not isinstance(expr_value, node_classes.Call):
-            raise RuntimeError("missing required Call node")
-        if not self._handle_call(expr_value):
-            call_func = expr_value.func
-            _LOGGER.debug("unhandled Expr Call func %s in:\n%s", type(call_func), astroid_node.repr_tree())
+    def visit_assignattr(self, astroid_node):
+        # assigning value (expression) to object's attribute
+        _LOGGER.debug("visiting AssignAttr")
+
+        attr_expr = astroid_node.expr
+        if isinstance(attr_expr, node_classes.Name):
+            attr_name = astroid_node.attrname
+            self._handle_name(attr_expr, attr_name)
             return
 
-    def visit_if(self, astroid_node):
-        _LOGGER.debug("visiting If")
-        self._visit_body(astroid_node)
+        self._visit_children(astroid_node)
 
-    def visit_return(self, astroid_node):
-        _LOGGER.debug("visiting Return")
-        ret_val = astroid_node.value
-        if not self._handle_call(ret_val):
-            _LOGGER.debug("unhandled Return value in:\n%s", astroid_node.repr_tree())
+    def visit_attribute(self, astroid_node):
+        # read value from object's attribute
+        _LOGGER.debug("visiting Attribute")
 
-    def _visit(self, astroid_node):
-        if isinstance(astroid_node, astroid_nodes.Module):
-            self.visit_module(astroid_node)
-            return
-        if isinstance(astroid_node, astroid_nodes.ClassDef):
-            self.visit_classdef(astroid_node)
-            return
-        if isinstance(astroid_node, astroid_nodes.FunctionDef):
-            self.visit_functiondef(astroid_node)
-            return
-        if isinstance(astroid_node, node_classes.Assign):
-            self.visit_assign(astroid_node)
-            return
-        if isinstance(astroid_node, node_classes.Expr):
-            self.visit_expr(astroid_node)
-            return
-        if isinstance(astroid_node, node_classes.If):
-            self.visit_if(astroid_node)
-            return
-        if isinstance(astroid_node, node_classes.Return):
-            self.visit_return(astroid_node)
-            return
-        if isinstance(astroid_node, node_classes.Pass):
-            # do nothing
+        attr_expr = astroid_node.expr
+        if isinstance(attr_expr, node_classes.Name):
+            attr_name = astroid_node.attrname
+            self._handle_name(attr_expr, attr_name)
             return
 
-        repr_tree = astroid_node.repr_tree()
-        _LOGGER.warning("unahndled node:\n%s", repr_tree)
-        raise RuntimeError(f"unhandled node: {type(astroid_node)}")
-
-    def _visit_body(self, astroid_node):
-        for item_node in astroid_node.body:
-            self._visit(item_node)
-
-    # ============================================
-
-    def _handle_call(self, call_node) -> bool:
-        # handle function arguments
-        for arg_node in call_node.args:
-            if isinstance(arg_node, node_classes.Attribute):
-                # call of object's method (self or variable)
-                self._handle_attribute(arg_node)
-            else:
-                _LOGGER.warning("unhandled Call arg type %s in:\n%s", type(arg_node), call_node.parent.repr_tree())
-
-        # handle function
-        call_func = call_node.func
-
-        if isinstance(call_func, node_classes.Attribute):
-            # call of object's method (self or variable)
-            return self._handle_attribute(call_func)
-
-        if isinstance(call_func, node_classes.Name):
-            # call of free function
-            return self._handle_name(call_func, None)
-
-            # func_name = call_func.name
-            # return self._handle_type_use(func_name)
-
-        return False
-
-    def _handle_attribute(self, arg_node) -> bool:
-        func_expr = arg_node.expr
-
-        if isinstance(func_expr, node_classes.Name):
-            func_attrname = arg_node.attrname
-            return self._handle_name(func_expr, func_attrname)
-
-        if isinstance(func_expr, node_classes.Attribute):
-            # chained call, e.g.: self.value_dict.get("xxx")
-            expr_type = get_type(func_expr)
-            if expr_type is not None:
-                expr_attrname = arg_node.attrname
-
-                item_type: Optional[DefItem] = self._get_type_item(expr_type)
-                if item_type is None:
-                    _LOGGER.warning("unable to find attribute item of type %s", expr_type)
-                    return self._handle_attribute(func_expr)
-                if item_type.type != DefItemType.CLASS:
+        if isinstance(attr_expr, node_classes.Attribute):
+            attr_name = astroid_node.attrname
+            type_def_item: Optional[DefItem] = self._find_type_def(attr_expr, attr_name)
+            if type_def_item:
+                if type_def_item.type != DefItemType.CLASS:
                     _LOGGER.warning("unable to handle Attribute type")
-                    return self._handle_attribute(func_expr)
-    
-                item_member = item_type.get_child(expr_attrname)
-                if item_member is None:
-                    _LOGGER.warning("unable to handle Attribute - missing member %s", expr_attrname)
-                    return self._handle_attribute(func_expr)
+                    return False
 
-                user_def = self.items.find_scope(arg_node)
+                user_def = self.items.get_parent_scope(astroid_node)
                 if not user_def:
                     raise RuntimeError("unable to get user def item")
 
-                self.items.append_use(user_def, item_member)
-                return self._handle_attribute(func_expr)
+                callable_def = type_def_item.get_child(attr_name)
+                if callable_def:
+                    # attribute already added
+                    self.items.append_use(user_def, callable_def)
+                else:
+                    # add new attribute
+                    child = self.items.create_def(attr_name, DefItemType.MEMBER, astroid_node)
+                    self.items.append_def_parent(type_def_item, child)
+                    self.items.append_use(user_def, child)
 
-        raise RuntimeError(f"missing required Name node, got: {type(func_expr)}")
+        self._visit_children(astroid_node)
 
     # if given then 'attribute_name' is name of member of object defined by 'name_node'
     # if 'attribute_name' is empty, then 'name_node' is name of free function
@@ -394,7 +414,7 @@ class TreeParser:
         if attribute_name:
             # name_node - describes object
             # attribute_name - describes object's member
-            type_def_item: Optional[DefItem] = self._find_type_def(name_node)
+            type_def_item: Optional[DefItem] = self._find_type_def(name_node, name_node.name)
             if type_def_item is None:
                 _LOGGER.warning("unable to find name item of type %s", name_node.name)
                 return False
@@ -420,23 +440,22 @@ class TreeParser:
 
         else:
             # name_node - describes free function
-            func_name = name_node.name
-            callable_def = self._get_callable_def(func_name)
+            callable_def = self._get_callable_def(name_node)
             if callable_def is None:
                 return False
-
             user_def = self.items.find_scope(name_node)
             if user_def is None:
                 raise RuntimeError("unable to get user def item")
-
             self.items.append_use(user_def, callable_def)
             return True
 
     # ============================================
 
     # 'func_name' is callable (function name or class name)
-    def _get_callable_def(self, func_name: str) -> Optional[DefItem]:
-        item_type = self._get_type_item(func_name)
+    def _get_callable_def(self, name_node: NodeNG) -> Optional[DefItem]:
+        item_type: Optional[DefItem] = self._find_type_def(name_node, name_node.name)
+        # func_name = name_node.name
+        # item_type: Optional[DefItem] = self._get_type_item(func_name)
         if item_type is None:
             return None
         if item_type.type != DefItemType.CLASS:
@@ -452,29 +471,18 @@ class TreeParser:
         item_type.append(constr_item)
         return constr_item
 
-    def _find_type_def(self, name_node: NodeNG) -> Optional[DefItem]:
-        variable_type = get_type(name_node)
-        if variable_type:
-            return self._get_type_item(variable_type)
-        type_name = name_node.name
-        return self._get_type_item(type_name)
-
-    def _get_type_item(self, type_name: str) -> Optional[DefItem]:
-        if self.astroid_module is None:
-            raise RuntimeError("missing module")
-        found_type_node = self.astroid_module.locals.get(type_name)
-        if found_type_node is None:
-            found_type_node = self.astroid_module.globals.get(type_name)
-
+    def _find_type_def(self, astroid_node: NodeNG, node_name: str) -> Optional[DefItem]:
+        type_name = get_type(astroid_node)
+        if type_name is None:
+            type_name = node_name
+        if type_name is None:
+            return None
+        name_scope = astroid_node.scope()
+        found_type_node = self._find_in_scope(name_scope, type_name)
         if found_type_node is None:
             # happens for build-ins such as "print"
             return None
 
-        if len(found_type_node) != 1:
-            raise RuntimeError("unsupported number of definitions")
-
-        found_type_node = found_type_node[0]
-        
         found_def_item = self.items.find_def_item(found_type_node)
         if found_def_item is not None:
             return found_def_item
@@ -484,3 +492,17 @@ class TreeParser:
         self._visit(found_type_node)
 
         return self.items.find_def_item(found_type_node)
+
+    # name is type name or variable name
+    def _find_in_scope(self, scope_node, name) -> Optional[NodeNG]:
+        while scope_node:
+            found_type_node = scope_node.locals.get(name)
+            if found_type_node:
+                # found node
+                return found_type_node[0]
+            parent_node = scope_node.parent  # scope returns self
+            if parent_node is None:
+                # no parent scope
+                return None
+            scope_node = parent_node.scope()
+        return None

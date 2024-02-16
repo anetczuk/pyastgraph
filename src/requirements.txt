@@ -1,4 +1,5 @@
 pyyaml
+attrdict
 astroid == 2.9.3
 astypes == 0.2.6
 pyan3 == 1.2.0

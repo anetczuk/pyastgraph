@@ -88,7 +88,7 @@ def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=No
         "defines_edges": pyan_def_edges_dict,
         "uses_edges": pyan_use_edges_dict,
     }
-    pyan_def_graph_obj = AttrDict(pyan_def_graph_dict)
+    pyan_def_graph_obj = AttrDict(pyan_def_graph_dict)  # recursively convert dict to obj (keys become attributes)
 
     graph = VisualGraph.from_visitor(pyan_def_graph_obj, options=graph_options, logger=pyan_logger)
 
