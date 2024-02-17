@@ -30,15 +30,15 @@ digraph G {
         chained01 -> chained01__Runner [style="dashed",  color="#838b8b"];
         chained01 -> chained01__main [style="dashed",  color="#838b8b"];
         chained01__Worker -> chained01__Worker____init__ [style="dashed",  color="#838b8b"];
-        chained01__Worker -> chained01__Worker__data_dict [style="dashed",  color="#838b8b"];
         chained01__Worker -> chained01__Worker__work [style="dashed",  color="#838b8b"];
+        chained01__Worker -> chained01__Worker__data_dict [style="dashed",  color="#838b8b"];
         chained01__Runner -> chained01__Runner____init__ [style="dashed",  color="#838b8b"];
-        chained01__Runner -> chained01__Runner__worker [style="dashed",  color="#838b8b"];
         chained01__Runner -> chained01__Runner__execute [style="dashed",  color="#838b8b"];
+        chained01__Runner -> chained01__Runner__worker [style="dashed",  color="#838b8b"];
         chained01__Worker____init__ -> chained01__Worker__data_dict [style="solid",  color="#000000"];
         chained01__Worker__work -> chained01__Worker__data_dict [style="solid",  color="#000000"];
-        chained01__Runner____init__ -> chained01__Worker____init__ [style="solid",  color="#000000"];
         chained01__Runner____init__ -> chained01__Runner__worker [style="solid",  color="#000000"];
+        chained01__Runner____init__ -> chained01__Worker____init__ [style="solid",  color="#000000"];
         chained01__Runner__execute -> chained01__Worker__work [style="solid",  color="#000000"];
         chained01__Runner__execute -> chained01__Runner__worker [style="solid",  color="#000000"];
         chained01__main -> chained01__Runner____init__ [style="solid",  color="#000000"];

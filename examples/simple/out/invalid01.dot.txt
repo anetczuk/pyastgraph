@@ -14,17 +14,15 @@ digraph G {
                 invalid01__Invalid____init__ [label="__init__", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
                 invalid01__Invalid__data_field [label="data_field", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
                 invalid01__Invalid__execute [label="execute", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
-                invalid01__Invalid__execute [label="execute", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
                 invalid01__Invalid__invalid_call [label="invalid_call", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
             }
         }
     }
         invalid01 -> invalid01__Invalid [style="dashed",  color="#838b8b"];
         invalid01__Invalid -> invalid01__Invalid____init__ [style="dashed",  color="#838b8b"];
+        invalid01__Invalid -> invalid01__Invalid__execute [style="dashed",  color="#838b8b"];
         invalid01__Invalid -> invalid01__Invalid__data_field [style="dashed",  color="#838b8b"];
-        invalid01__Invalid -> invalid01__Invalid__execute [style="dashed",  color="#838b8b"];
         invalid01__Invalid -> invalid01__Invalid__invalid_call [style="dashed",  color="#838b8b"];
-        invalid01__Invalid -> invalid01__Invalid__execute [style="dashed",  color="#838b8b"];
         invalid01__Invalid____init__ -> invalid01__Invalid__data_field [style="solid",  color="#000000"];
         invalid01__Invalid____init__ -> invalid01__Invalid__execute [style="solid",  color="#000000"];
         invalid01__Invalid____init__ -> invalid01__Invalid__invalid_call [style="solid",  color="#000000"];

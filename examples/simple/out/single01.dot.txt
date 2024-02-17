@@ -15,18 +15,16 @@ digraph G {
                 single01__Runner__STATIC_FIELD [label="STATIC_FIELD", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
                 single01__Runner____init__ [label="__init__", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
                 single01__Runner__execute [label="execute", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
-                single01__Runner__execute [label="execute", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
                 single01__Runner__instance_field [label="instance_field", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
             }
         }
     }
         single01 -> single01__Runner [style="dashed",  color="#838b8b"];
         single01 -> single01__main [style="dashed",  color="#838b8b"];
-        single01__Runner -> single01__Runner__STATIC_FIELD [style="dashed",  color="#838b8b"];
         single01__Runner -> single01__Runner____init__ [style="dashed",  color="#838b8b"];
+        single01__Runner -> single01__Runner__execute [style="dashed",  color="#838b8b"];
+        single01__Runner -> single01__Runner__STATIC_FIELD [style="dashed",  color="#838b8b"];
         single01__Runner -> single01__Runner__instance_field [style="dashed",  color="#838b8b"];
-        single01__Runner -> single01__Runner__execute [style="dashed",  color="#838b8b"];
-        single01__Runner -> single01__Runner__execute [style="dashed",  color="#838b8b"];
         single01__Runner____init__ -> single01__Runner__instance_field [style="solid",  color="#000000"];
         single01__Runner____init__ -> single01__Runner__execute [style="solid",  color="#000000"];
         single01__Runner__execute -> single01__Runner__instance_field [style="solid",  color="#000000"];
