@@ -1,0 +1,42 @@
+digraph G {
+    graph [rankdir=TB, clusterrank="local"];
+    subgraph cluster_G {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        multifile01__multi01 [label="multifile01.multi01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
+        multifile01__multi02 [label="multifile01.multi02", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="1"];
+        subgraph cluster_multifile01__multi01 {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="multifile01.multi01"];
+            multifile01__multi01__main [label="main", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+        }
+        subgraph cluster_multifile01__multi02 {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="multifile01.multi02"];
+            multifile01__multi02__Runner [label="Runner", style="filled", fillcolor="#99ff99b2", fontcolor="#000000", group="1"];
+            subgraph cluster_multifile01__multi02__Runner {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="multifile01.multi02.Runner"];
+                multifile01__multi02__Runner__STATIC_FIELD [label="STATIC_FIELD", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
+                multifile01__multi02__Runner____init__ [label="__init__", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
+                multifile01__multi02__Runner__execute [label="execute", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
+                multifile01__multi02__Runner__instance_field [label="instance_field", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
+            }
+        }
+    }
+        multifile01__multi01 -> multifile01__multi01__main [style="dashed",  color="#838b8b"];
+        multifile01__multi02 -> multifile01__multi02__Runner [style="dashed",  color="#838b8b"];
+        multifile01__multi02__Runner -> multifile01__multi02__Runner____init__ [style="dashed",  color="#838b8b"];
+        multifile01__multi02__Runner -> multifile01__multi02__Runner__execute [style="dashed",  color="#838b8b"];
+        multifile01__multi02__Runner -> multifile01__multi02__Runner__instance_field [style="dashed",  color="#838b8b"];
+        multifile01__multi02__Runner -> multifile01__multi02__Runner__STATIC_FIELD [style="dashed",  color="#838b8b"];
+        multifile01__multi01__main -> multifile01__multi02__Runner____init__ [style="solid",  color="#000000"];
+        multifile01__multi01__main -> multifile01__multi02__Runner__instance_field [style="solid",  color="#000000"];
+        multifile01__multi01__main -> multifile01__multi02__Runner__execute [style="solid",  color="#000000"];
+        multifile01__multi01__main -> multifile01__multi02__Runner__STATIC_FIELD [style="solid",  color="#000000"];
+        multifile01__multi01 -> multifile01__multi01__main [style="solid",  color="#000000"];
+        multifile01__multi02__Runner____init__ -> multifile01__multi02__Runner__instance_field [style="solid",  color="#000000"];
+        multifile01__multi02__Runner____init__ -> multifile01__multi02__Runner__execute [style="solid",  color="#000000"];
+        multifile01__multi02__Runner__execute -> multifile01__multi02__Runner__instance_field [style="solid",  color="#000000"];
+        multifile01__multi02__Runner__execute -> multifile01__multi02__Runner__STATIC_FIELD [style="solid",  color="#000000"];
+    }
