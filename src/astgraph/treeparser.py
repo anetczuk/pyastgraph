@@ -6,16 +6,19 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import sys
 import os
 import logging
 from enum import Enum
 from typing import Dict, List, Any, Optional
 
+import astypes
+
 import astroid
 import astroid.nodes.scoped_nodes.scoped_nodes as astroid_nodes
 from astroid.nodes import node_classes, NodeNG
-
-import astypes
+from astroid.nodes.scoped_nodes.scoped_nodes import Module
+from astroid.modutils import _has_init
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -106,10 +109,17 @@ def get_type(type_name: NodeNG) -> str:
 
 class ItemContainer:
     def __init__(self):
+        self.mod_dict = {}
         self.def_items: List[DefItem] = []  # list of all def items
         self.use_dict: Dict[DefItem, List[DefItem]] = {}
         self.astroid_item_dict: Dict[int, DefItem] = {}  # map astroid node (id) to def item
         self.astroid_node_dict: Dict[int, NodeNG] = {}
+
+    def add_mod(self, mod: Module):
+        if mod.name in self.mod_dict:
+            return False
+        self.mod_dict[mod.name] = mod
+        return True
 
     def get_def_list(self):
         ret_list = []
@@ -124,7 +134,8 @@ class ItemContainer:
                 ret_list.append((def_key.get_full_name(), def_item.get_full_name()))
         return ret_list
 
-    def create_def(self, name: str, def_type: DefItemType, astroid_node: NodeNG):
+    def create_def(self, name: str, def_type: DefItemType, astroid_node: NodeNG) -> DefItem:
+        item: DefItem = None
         if def_type == DefItemType.MODULE:
             item = ModuleItem(name, astroid_node)
         else:
@@ -135,9 +146,17 @@ class ItemContainer:
             self.astroid_node_dict[node_id] = astroid_node
         return item
 
+    def create_module_def(self, name: str, astroid_node: NodeNG) -> ModuleItem:
+        item = ModuleItem(name, astroid_node)
+        if astroid_node is not None:
+            node_id = id(astroid_node)
+            self.astroid_item_dict[node_id] = item
+            self.astroid_node_dict[node_id] = astroid_node
+        return item
+
     def append_def(self, def_item: DefItem):
-        if not self.def_items:
-            # empty list - first item
+        if def_item.type == DefItemType.MODULE:
+            # add top level item - module (does not have parent scope)
             _LOGGER.debug("append def: %s", def_item.get_full_name())
             self.def_items.append(def_item)
             return
@@ -199,24 +218,80 @@ class ItemContainer:
             parent_node = parent_node.parent
         return None
 
+    # name is type name or variable name
+    def find_in_scope(self, scope_node, name) -> Optional[NodeNG]:
+        if scope_node is None:
+            return None
+        while scope_node:
+            found_type_node = scope_node.locals.get(name)
+            if found_type_node:
+                # found node
+                found_node = found_type_node[0]
+                if isinstance(found_node, node_classes.Import):
+                    mod_name = found_node.modname
+                    mod_node = self.mod_dict.get(mod_name)
+                    return self.find_in_scope(mod_node, name)
+                if isinstance(found_node, node_classes.ImportFrom):
+                    mod_name = found_node.modname
+                    mod_node = self.mod_dict.get(mod_name)
+                    return self.find_in_scope(mod_node, name)
+                return found_node
+            parent_node = scope_node.parent  # scope returns self
+            if parent_node is None:
+                # no parent scope
+                return None
+            scope_node = parent_node.scope()
+        return None
+
 
 # ============================================
 
 
-class DefParser:
+class BaseParser:
     def __init__(self, container: ItemContainer = None):
         if container is None:
             container = ItemContainer()
         self.items = container
-        self.astroid_tree = None
 
-    def analyze(self, astroid_node):
-        _LOGGER.info("=== analyzing astroid node definitions ===")
-        self.astroid_tree = astroid_node
+    def analyze(self, astroid_node: Module):
         self._visit(astroid_node)
+
+    def _visit(self, astroid_node):
+        # implement if needed
+        pass
+
+    def _visit_children(self, astroid_node):
+        for child in astroid_node.get_children():
+            self._visit(child)
+
+
+# ============================================
+
+
+class ImportParser(BaseParser):
+    def _visit(self, astroid_node):
+        _LOGGER.debug("visiting item: %s", type(astroid_node))
+
+        # if isinstance(astroid_node, node_classes.ImportFrom):
+        #     self.visit_importfrom(astroid_node)
+        #     return
+
+        self._visit_children(astroid_node)
 
     # ============================================================
 
+    # def visit_import(self, astroid_node):
+    #     _LOGGER.debug("visiting ImportFrom %s", astroid_node.modname)
+    #     imported = astroid_node.do_import_module()
+    #     print("fffffff:", imported)
+    #
+    # def visit_importfrom(self, astroid_node):
+    #     _LOGGER.debug("visiting ImportFrom %s", astroid_node.modname)
+    #     imported = astroid_node.do_import_module()
+    #     print("fffffff:", imported)
+
+
+class DefParser(BaseParser):
     def _visit(self, astroid_node):
         _LOGGER.debug("visiting item: %s", type(astroid_node))
 
@@ -245,7 +320,7 @@ class DefParser:
         if mod_name.endswith(".py"):
             mod_name = mod_name[:-3]
 
-        moduledef = self.items.create_def(mod_name, DefItemType.MODULE, astroid_node)
+        moduledef: ModuleItem = self.items.create_module_def(mod_name, astroid_node)
         moduledef.filename = astroid_node.file
         self.items.append_def(moduledef)
 
@@ -281,25 +356,7 @@ class DefParser:
 # ============================================
 
 
-class TreeParser:
-    def __init__(self):
-        self.items = ItemContainer()
-        self.astroid_tree = None
-
-    def analyze_code(self, code, module_name=""):
-        astroid_node = astroid.parse(code)
-        astroid_node.name = module_name
-        self.analyze(astroid_node)
-
-    def analyze(self, astroid_node):
-        self.astroid_tree = astroid_node
-        def_parser = DefParser(self.items)
-        def_parser.analyze(astroid_node)
-        _LOGGER.info("=== analyzing astroid node ===")
-        self._visit(astroid_node)
-
-    # ============================================
-
+class UseParser(BaseParser):
     def _visit(self, astroid_node):
         _LOGGER.debug("visiting item: %s", type(astroid_node))
 
@@ -390,7 +447,7 @@ class TreeParser:
             if type_def_item:
                 if type_def_item.type != DefItemType.CLASS:
                     _LOGGER.warning("unable to handle Attribute type")
-                    return False
+                    return
 
                 user_def = self.items.get_parent_scope(astroid_node)
                 if not user_def:
@@ -438,16 +495,15 @@ class TreeParser:
                 self.items.append_use(user_def, child)
             return True
 
-        else:
-            # name_node - describes free function
-            callable_def = self._get_callable_def(name_node)
-            if callable_def is None:
-                return False
-            user_def = self.items.find_scope(name_node)
-            if user_def is None:
-                raise RuntimeError("unable to get user def item")
-            self.items.append_use(user_def, callable_def)
-            return True
+        # name_node - describes free function
+        callable_def = self._get_callable_def(name_node)
+        if callable_def is None:
+            return False
+        user_def = self.items.find_scope(name_node)
+        if user_def is None:
+            raise RuntimeError("unable to get user def item")
+        self.items.append_use(user_def, callable_def)
+        return True
 
     # ============================================
 
@@ -478,7 +534,7 @@ class TreeParser:
         if type_name is None:
             return None
         name_scope = astroid_node.scope()
-        found_type_node = self._find_in_scope(name_scope, type_name)
+        found_type_node = self.items.find_in_scope(name_scope, type_name)
         if found_type_node is None:
             # happens for build-ins such as "print"
             return None
@@ -493,16 +549,91 @@ class TreeParser:
 
         return self.items.find_def_item(found_type_node)
 
-    # name is type name or variable name
-    def _find_in_scope(self, scope_node, name) -> Optional[NodeNG]:
-        while scope_node:
-            found_type_node = scope_node.locals.get(name)
-            if found_type_node:
-                # found node
-                return found_type_node[0]
-            parent_node = scope_node.parent  # scope returns self
-            if parent_node is None:
-                # no parent scope
-                return None
-            scope_node = parent_node.scope()
-        return None
+
+# ============================================
+
+
+class TreeParser:
+    def __init__(self):
+        self.items = ItemContainer()
+
+    def analyze(self, astroid_node: Module):
+        self.items.add_mod(astroid_node)
+
+        # _LOGGER.info("=== analyzing astroid imports ===")
+        # import_parser = ImportParser(self.items)
+        # import_parser.analyze(astroid_node)
+
+        _LOGGER.info("=== analyzing astroid definitions ===")
+        def_parser = DefParser(self.items)
+        def_parser.analyze(astroid_node)
+
+        _LOGGER.info("=== analyzing astroid usage ===")
+        use_parser = UseParser(self.items)
+        use_parser.analyze(astroid_node)
+
+    def analyze_code(self, code, module_name=""):
+        astroid_node = astroid.parse(code)
+        astroid_node.name = module_name
+        self.analyze(astroid_node)
+
+    def analyze_files(self, files_list):
+        root_paths = set()
+        for src_file_path in files_list:
+            pkg_root = get_package_root(src_file_path)
+            root_paths.add(pkg_root)
+        for pkg_root in root_paths:
+            # fixes importing packages from Import and ImportFrom node
+            sys.path.append(pkg_root)
+
+        astroid_tree_list = []
+        for src_file_path in files_list:
+            astroid_tree: Module = astroid.MANAGER.ast_from_file(src_file_path)
+            self.items.add_mod(astroid_tree)
+            astroid_tree_list.append(astroid_tree)
+
+        for astroid_tree in astroid_tree_list:
+            _LOGGER.info("=== analyzing astroid definitions ===")
+            def_parser = DefParser(self.items)
+            def_parser.analyze(astroid_tree)
+
+        for astroid_tree in astroid_tree_list:
+            _LOGGER.info("=== analyzing astroid usage ===")
+            use_parser = UseParser(self.items)
+            use_parser.analyze(astroid_tree)
+
+
+# ============================================
+
+
+def get_modname(file_path):
+    package_root = get_package_root(file_path)
+    file_modname = get_file_modname(file_path)
+    relative_path = os.path.relpath(file_modname, package_root)
+    module_name = relative_path.replace("/", ".")
+    module_name = module_name.replace("\\", ".")
+    return module_name
+
+
+def get_package_root(file_path):
+    abs_path = os.path.abspath(file_path)
+    prev_dirname = abs_path
+    dir_name = prev_dirname
+    while True:
+        dir_name = os.path.dirname(dir_name)
+        if dir_name == prev_dirname:
+            # no __init__.py found in path directories
+            break
+        if not _has_init(dir_name):
+            return dir_name
+        prev_dirname = dir_name
+
+    # no top package found
+    return os.path.dirname(file_path)
+
+
+# return file path without extension
+def get_file_modname(file_path):
+    dir_name = os.path.dirname(file_path)
+    base_name = os.path.splitext(os.path.basename(file_path))[0]
+    return os.path.join(dir_name, base_name)

@@ -17,11 +17,12 @@ def draw(parser, svg_out_path="/tmp/graph.svg"):
 
 
 def print_ast(parser):
-    ast_tree = parser.astroid_tree.repr_tree()
+    astroid_tree = parser.astroid_tree_list[0]
+    ast_tree = astroid_tree.repr_tree()
     print(f"AST tree:\n{ast_tree}")
 
 
-class TreeParserTest(unittest.TestCase):
+class TreeParserSimpleTest(unittest.TestCase):
     def test_analyze_variable(self):
         parser = TreeParser()
         parser.analyze_code(module_name="testmod", code="aaa = 5")
@@ -282,7 +283,7 @@ class ABC:
         self.assertEqual(ctor_item.get_namespace(), "testmod.ABC")
         self.assertEqual(ctor_item.type, DefItemType.MEMBER)
 
-    def test_analyze_field_AssignAttr(self):
+    def test_analyze_field_assignattr(self):
         code = """\
 class ABC:
     def __init__(self):
@@ -453,7 +454,7 @@ def main():
         self.assertEqual(use_list[4], ("testmod.main", "testmod.ABC1.field1"))
         self.assertEqual(use_list[5], ("testmod.main", "testmod.ABC2.field2"))
 
-    def test_analyze_Return_constant(self):
+    def test_analyze_return_constant(self):
         code = """\
 def execute():
     return "xxx"
@@ -473,7 +474,7 @@ def execute():
         self.assertEqual(abc_item.get_namespace(), "testmod")
         self.assertEqual(abc_item.type, DefItemType.MEMBER)
 
-    def test_analyze_Return_variable(self):
+    def test_analyze_return_variable(self):
         code = """\
 def execute():
     value = "xxx"
@@ -494,7 +495,7 @@ def execute():
         self.assertEqual(abc_item.get_namespace(), "testmod")
         self.assertEqual(abc_item.type, DefItemType.MEMBER)
 
-    def test_analyze_Import(self):
+    def test_analyze_import(self):
         code = """\
 import os
 """
@@ -505,7 +506,7 @@ import os
         self.assertEqual(len(items_container.def_items), 1)
         self.assertEqual(len(items_container.use_dict), 0)
 
-    def test_analyze_ImportFrom(self):
+    def test_analyze_importfrom(self):
         code = """\
 from enum import Enum
 """
