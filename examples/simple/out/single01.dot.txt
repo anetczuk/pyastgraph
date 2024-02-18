@@ -3,35 +3,35 @@ digraph G {
     subgraph cluster_G {
 
         graph [style="filled,rounded", fillcolor="#80808018", label=""];
-        single01 [label="single01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
-        subgraph cluster_single01 {
+        simple__single01 [label="simple.single01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
+        subgraph cluster_simple__single01 {
 
-            graph [style="filled,rounded", fillcolor="#80808018", label="single01"];
-            single01__Runner [label="Runner", style="filled", fillcolor="#feccccb2", fontcolor="#000000", group="0"];
-            single01__main [label="main", style="filled", fillcolor="#feccccb2", fontcolor="#000000", group="0"];
-            subgraph cluster_single01__Runner {
+            graph [style="filled,rounded", fillcolor="#80808018", label="simple.single01"];
+            simple__single01__Runner [label="Runner", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            simple__single01__main [label="main", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            subgraph cluster_simple__single01__Runner {
 
-                graph [style="filled,rounded", fillcolor="#80808018", label="single01.Runner"];
-                single01__Runner__STATIC_FIELD [label="STATIC_FIELD", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
-                single01__Runner____init__ [label="__init__", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
-                single01__Runner__execute [label="execute", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
-                single01__Runner__instance_field [label="instance_field", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+                graph [style="filled,rounded", fillcolor="#80808018", label="simple.single01.Runner"];
+                simple__single01__Runner__STATIC_FIELD [label="STATIC_FIELD", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                simple__single01__Runner____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                simple__single01__Runner__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                simple__single01__Runner__instance_field [label="instance_field", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
         }
     }
-        single01 -> single01__Runner [style="dashed",  color="#838b8b"];
-        single01 -> single01__main [style="dashed",  color="#838b8b"];
-        single01__Runner -> single01__Runner____init__ [style="dashed",  color="#838b8b"];
-        single01__Runner -> single01__Runner__execute [style="dashed",  color="#838b8b"];
-        single01__Runner -> single01__Runner__STATIC_FIELD [style="dashed",  color="#838b8b"];
-        single01__Runner -> single01__Runner__instance_field [style="dashed",  color="#838b8b"];
-        single01__Runner____init__ -> single01__Runner__instance_field [style="solid",  color="#000000"];
-        single01__Runner____init__ -> single01__Runner__execute [style="solid",  color="#000000"];
-        single01__Runner__execute -> single01__Runner__instance_field [style="solid",  color="#000000"];
-        single01__Runner__execute -> single01__Runner__STATIC_FIELD [style="solid",  color="#000000"];
-        single01__main -> single01__Runner____init__ [style="solid",  color="#000000"];
-        single01__main -> single01__Runner__instance_field [style="solid",  color="#000000"];
-        single01__main -> single01__Runner__execute [style="solid",  color="#000000"];
-        single01__main -> single01__Runner__STATIC_FIELD [style="solid",  color="#000000"];
-        single01 -> single01__main [style="solid",  color="#000000"];
+        simple__single01 -> simple__single01__Runner [style="dashed",  color="#838b8b"];
+        simple__single01 -> simple__single01__main [style="dashed",  color="#838b8b"];
+        simple__single01__Runner -> simple__single01__Runner____init__ [style="dashed",  color="#838b8b"];
+        simple__single01__Runner -> simple__single01__Runner__execute [style="dashed",  color="#838b8b"];
+        simple__single01__Runner -> simple__single01__Runner__STATIC_FIELD [style="dashed",  color="#838b8b"];
+        simple__single01__Runner -> simple__single01__Runner__instance_field [style="dashed",  color="#838b8b"];
+        simple__single01__Runner____init__ -> simple__single01__Runner__instance_field [style="solid",  color="#000000"];
+        simple__single01__Runner____init__ -> simple__single01__Runner__execute [style="solid",  color="#000000"];
+        simple__single01__Runner__execute -> simple__single01__Runner__instance_field [style="solid",  color="#000000"];
+        simple__single01__Runner__execute -> simple__single01__Runner__STATIC_FIELD [style="solid",  color="#000000"];
+        simple__single01__main -> simple__single01__Runner____init__ [style="solid",  color="#000000"];
+        simple__single01__main -> simple__single01__Runner__instance_field [style="solid",  color="#000000"];
+        simple__single01__main -> simple__single01__Runner__execute [style="solid",  color="#000000"];
+        simple__single01__main -> simple__single01__Runner__STATIC_FIELD [style="solid",  color="#000000"];
+        simple__single01 -> simple__single01__main [style="solid",  color="#000000"];
     }
