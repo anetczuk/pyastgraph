@@ -18,3 +18,4 @@ cd $SRC_DIR
 FILES="$SCRIPT_DIR/multi01.py $SCRIPT_DIR/multi02.py"
 echo "passing files: ${FILES}"
 python3 -m astgraph -f $FILES --outsvgfile "$OUT_DIR/multifile.svg" --outdotfile "$OUT_DIR/multifile.dot.txt" $@
+convert -strip -density 150 "$OUT_DIR/multifile.svg" "$OUT_DIR/multifile.png"

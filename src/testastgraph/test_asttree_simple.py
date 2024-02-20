@@ -17,9 +17,9 @@ def draw(parser, svg_out_path="/tmp/graph.svg"):
 
 
 def print_ast(parser):
-    astroid_tree = parser.astroid_tree_list[0]
-    ast_tree = astroid_tree.repr_tree()
-    print(f"AST tree:\n{ast_tree}")
+    for astroid_mod in parser.items.mod_dict.values():
+        ast_tree = astroid_mod.repr_tree()
+        print(f"AST tree:\n{ast_tree}")
 
 
 class TreeParserSimpleTest(unittest.TestCase):
@@ -451,8 +451,8 @@ def main():
         self.assertEqual(use_list[1], ("testmod.ABC2.__init__", "testmod.ABC2.field2"))
         self.assertEqual(use_list[2], ("testmod.ABC2.__init__", "testmod.ABC1.__init__"))
         self.assertEqual(use_list[3], ("testmod.main", "testmod.ABC2.__init__"))
-        self.assertEqual(use_list[4], ("testmod.main", "testmod.ABC1.field1"))
-        self.assertEqual(use_list[5], ("testmod.main", "testmod.ABC2.field2"))
+        self.assertEqual(use_list[4], ("testmod.main", "testmod.ABC2.field2"))
+        self.assertEqual(use_list[5], ("testmod.main", "testmod.ABC1.field1"))
 
     def test_analyze_return_constant(self):
         code = """\

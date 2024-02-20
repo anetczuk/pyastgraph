@@ -39,11 +39,11 @@ digraph G {
         simple__chained01__Worker__work -> simple__chained01__Worker__data_dict [style="solid",  color="#000000"];
         simple__chained01__Runner____init__ -> simple__chained01__Runner__worker [style="solid",  color="#000000"];
         simple__chained01__Runner____init__ -> simple__chained01__Worker____init__ [style="solid",  color="#000000"];
-        simple__chained01__Runner__execute -> simple__chained01__Worker__work [style="solid",  color="#000000"];
         simple__chained01__Runner__execute -> simple__chained01__Runner__worker [style="solid",  color="#000000"];
+        simple__chained01__Runner__execute -> simple__chained01__Worker__work [style="solid",  color="#000000"];
         simple__chained01__main -> simple__chained01__Runner____init__ [style="solid",  color="#000000"];
         simple__chained01__main -> simple__chained01__Runner__execute [style="solid",  color="#000000"];
-        simple__chained01__main -> simple__chained01__Worker__data_dict [style="solid",  color="#000000"];
         simple__chained01__main -> simple__chained01__Runner__worker [style="solid",  color="#000000"];
+        simple__chained01__main -> simple__chained01__Worker__data_dict [style="solid",  color="#000000"];
         simple__chained01 -> simple__chained01__main [style="solid",  color="#000000"];
     }

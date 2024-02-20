@@ -19,9 +19,46 @@ import astroid.nodes.scoped_nodes.scoped_nodes as astroid_nodes
 from astroid.nodes import node_classes, NodeNG
 from astroid.nodes.scoped_nodes.scoped_nodes import Module
 from astroid.modutils import _has_init
+from astroid.bases import Proxy
 
 
 _LOGGER = logging.getLogger(__name__)
+
+
+# ============================================
+
+
+def get_type(astroid_node: NodeNG) -> str:
+    node_astype = astypes.get_type(astroid_node)
+    if not node_astype:
+        return None
+    return node_astype.annotation
+
+
+def infer_type(astroid_node: NodeNG) -> Optional[NodeNG]:
+    try:
+        inferred = next(astroid_node.infer())
+        if not inferred:
+            return None
+        if isinstance(inferred, Proxy):
+            return unpack_proxy(inferred)
+        if isinstance(inferred, NodeNG):
+            return inferred
+        raise RuntimeError(f"unhandled type: {type(inferred)}")
+    except astroid.exceptions.InferenceError:
+        # no inference succeed
+        return None
+
+
+def unpack_proxy(inferred):
+    while inferred:
+        if isinstance(inferred, Proxy):
+            inferred = inferred._proxied  # pylint: disable=W0212
+            continue
+        if isinstance(inferred, NodeNG):
+            return inferred
+        raise RuntimeError(f"unhandled type: {type(inferred)}")
+    return None
 
 
 # ============================================
@@ -92,16 +129,6 @@ class ModuleItem(DefItem):
 
     def get_filename(self):
         return self.filename
-
-
-# ============================================
-
-
-def get_type(type_name: NodeNG) -> str:
-    node_astype = astypes.get_type(type_name)
-    if not node_astype:
-        return None
-    return node_astype.annotation
 
 
 # ============================================
@@ -228,7 +255,7 @@ class ItemContainer:
                 # found node
                 found_node = found_type_node[0]
                 if isinstance(found_node, node_classes.Import):
-                    mod_name = found_node.modname
+                    mod_name = found_node.names[0][0]
                     mod_node = self.mod_dict.get(mod_name)
                     return self.find_in_scope(mod_node, name)
                 if isinstance(found_node, node_classes.ImportFrom):
@@ -239,9 +266,11 @@ class ItemContainer:
             parent_node = scope_node.parent  # scope returns self
             if parent_node is None:
                 # no parent scope
-                return None
+                break
             scope_node = parent_node.scope()
-        return None
+
+        # no item found up to module - check other imported modules
+        return self.mod_dict.get(name)
 
 
 # ============================================
@@ -264,31 +293,12 @@ class BaseParser:
         for child in astroid_node.get_children():
             self._visit(child)
 
+    def _visit_list(self, nodes_list):
+        for child in nodes_list:
+            self._visit(child)
+
 
 # ============================================
-
-
-class ImportParser(BaseParser):
-    def _visit(self, astroid_node):
-        _LOGGER.debug("visiting item: %s", type(astroid_node))
-
-        # if isinstance(astroid_node, node_classes.ImportFrom):
-        #     self.visit_importfrom(astroid_node)
-        #     return
-
-        self._visit_children(astroid_node)
-
-    # ============================================================
-
-    # def visit_import(self, astroid_node):
-    #     _LOGGER.debug("visiting ImportFrom %s", astroid_node.modname)
-    #     imported = astroid_node.do_import_module()
-    #     print("fffffff:", imported)
-    #
-    # def visit_importfrom(self, astroid_node):
-    #     _LOGGER.debug("visiting ImportFrom %s", astroid_node.modname)
-    #     imported = astroid_node.do_import_module()
-    #     print("fffffff:", imported)
 
 
 class DefParser(BaseParser):
@@ -384,13 +394,27 @@ class UseParser(BaseParser):
     def visit_call(self, astroid_node):
         _LOGGER.debug("visiting Call")
 
-        # handle function
-        call_func = astroid_node.func
-        if isinstance(call_func, node_classes.Name):
-            # call of free function
-            self._handle_name(call_func, None)
+        def_list = self._resolve_attribute(astroid_node.func)
+        if def_list:
+            user_def = self.items.get_parent_scope(astroid_node)
+            if not user_def:
+                raise RuntimeError("unable to get user def item")
+            for def_item in def_list[:-1]:
+                if not def_item:
+                    # happens e.g. in case of direct imports
+                    continue
+                if def_item.type == DefItemType.MODULE:
+                    continue
+                if def_item.type == DefItemType.CLASS:
+                    continue
+                self.items.append_use(user_def, def_item)
+            last_item = def_list[-1]
+            if last_item:
+                # None can occur for function calls (e.g. 'print')
+                last_callable = self._get_callable(last_item)
+                self.items.append_use(user_def, last_callable)
 
-        self._visit_children(astroid_node)
+        self._visit_list(astroid_node.args)
 
     def visit_assignname(self, astroid_node):
         # assigning value (expression) to object's attribute
@@ -435,35 +459,26 @@ class UseParser(BaseParser):
         # read value from object's attribute
         _LOGGER.debug("visiting Attribute")
 
-        attr_expr = astroid_node.expr
-        if isinstance(attr_expr, node_classes.Name):
-            attr_name = astroid_node.attrname
-            self._handle_name(attr_expr, attr_name)
-            return
+        # def_list = self._resolve_attribute(astroid_node)
 
-        if isinstance(attr_expr, node_classes.Attribute):
-            attr_name = astroid_node.attrname
-            type_def_item: Optional[DefItem] = self._find_type_def(attr_expr, attr_name)
-            if type_def_item:
-                if type_def_item.type != DefItemType.CLASS:
-                    _LOGGER.warning("unable to handle Attribute type")
-                    return
-
-                user_def = self.items.get_parent_scope(astroid_node)
-                if not user_def:
-                    raise RuntimeError("unable to get user def item")
-
-                callable_def = type_def_item.get_child(attr_name)
-                if callable_def:
-                    # attribute already added
-                    self.items.append_use(user_def, callable_def)
-                else:
-                    # add new attribute
-                    child = self.items.create_def(attr_name, DefItemType.MEMBER, astroid_node)
-                    self.items.append_def_parent(type_def_item, child)
-                    self.items.append_use(user_def, child)
-
-        self._visit_children(astroid_node)
+        def_list = self._resolve_attribute(astroid_node)
+        if def_list:
+            user_def = self.items.get_parent_scope(astroid_node)
+            if not user_def:
+                raise RuntimeError("unable to get user def item")
+            for def_item in def_list[:-1]:
+                if not def_item:
+                    # happens e.g. in case of direct imports
+                    continue
+                if def_item.type == DefItemType.MODULE:
+                    continue
+                if def_item.type == DefItemType.CLASS:
+                    continue
+                self.items.append_use(user_def, def_item)
+            last_item = def_list[-1]
+            if last_item:
+                # None can occur for function calls (e.g. 'print')
+                self.items.append_use(user_def, last_item)
 
     # if given then 'attribute_name' is name of member of object defined by 'name_node'
     # if 'attribute_name' is empty, then 'name_node' is name of free function
@@ -505,7 +520,53 @@ class UseParser(BaseParser):
         self.items.append_use(user_def, callable_def)
         return True
 
+    # get item defined by attribute
+    def _resolve_attribute(self, attr_node: NodeNG):
+        full_call = self._get_atrr_full_call(attr_node)
+        return self._resolve_item(attr_node, full_call)
+
     # ============================================
+
+    def _get_atrr_full_call(self, attr_node: NodeNG):
+        if isinstance(attr_node, node_classes.Name):
+            item_name = {"name": attr_node.name, "node": attr_node}
+            return [item_name]
+
+        if isinstance(attr_node, node_classes.Attribute):
+            sub_list = self._get_atrr_full_call(attr_node.expr)
+            item_attr = {"name": attr_node.attrname, "node": attr_node}
+            sub_list.append(item_attr)
+            return sub_list
+
+        raise RuntimeError("unhandled case")
+
+    def _resolve_item(self, attr_node: NodeNG, item_list) -> List[DefItem]:
+        if not item_list:
+            return []
+
+        ret_list = []
+
+        first_name = item_list[0]["name"]
+        first_def: Optional[DefItem] = self._find_type_def_in_scope(attr_node, first_name)
+        ret_list.append(first_def)
+
+        # ignore first item, because it is "self" or scope variable
+        for idx in range(1, len(item_list)):
+            item = item_list[idx]
+            prev_item = item_list[idx - 1]
+            prev_node = prev_item["node"]
+
+            prev_type: Optional[NodeNG] = infer_type(prev_node)
+            prev_def = self.items.find_def_item(prev_type)
+            if not prev_def:
+                # item not found - seems like 'prev_type' is builtins type
+                ret_list.append(None)
+                continue
+            item_name = item["name"]
+            child_def = prev_def.get_child(item_name)
+            ret_list.append(child_def)
+
+        return ret_list
 
     # 'func_name' is callable (function name or class name)
     def _get_callable_def(self, name_node: NodeNG) -> Optional[DefItem]:
@@ -514,27 +575,32 @@ class UseParser(BaseParser):
         # item_type: Optional[DefItem] = self._get_type_item(func_name)
         if item_type is None:
             return None
+        return self._get_callable(item_type)
+
+    def _get_callable(self, item_type: DefItem):
         if item_type.type != DefItemType.CLASS:
             # calling function
             return item_type
-
         # calling constructor
-        constr_item = item_type.get_child("__init__")
-        if constr_item is not None:
-            return constr_item
+        ctor_item = item_type.get_child("__init__")
+        if ctor_item is not None:
+            return ctor_item
         # constructor not explicitly defined - add node
-        constr_item = self.items.create_def("__init__", DefItemType.MEMBER, None)
-        item_type.append(constr_item)
-        return constr_item
+        ctor_item = self.items.create_def("__init__", DefItemType.MEMBER, None)
+        item_type.append(ctor_item)
+        return ctor_item
 
-    def _find_type_def(self, astroid_node: NodeNG, node_name: str) -> Optional[DefItem]:
+    def _find_type_def(self, astroid_node: NodeNG, node_name: str = None) -> Optional[DefItem]:
         type_name = get_type(astroid_node)
         if type_name is None:
             type_name = node_name
         if type_name is None:
             return None
+        return self._find_type_def_in_scope(astroid_node, type_name)
+
+    def _find_type_def_in_scope(self, astroid_node: NodeNG, item_name: str = None) -> Optional[DefItem]:
         name_scope = astroid_node.scope()
-        found_type_node = self.items.find_in_scope(name_scope, type_name)
+        found_type_node: Optional[NodeNG] = self.items.find_in_scope(name_scope, item_name)
         if found_type_node is None:
             # happens for build-ins such as "print"
             return None
@@ -559,10 +625,6 @@ class TreeParser:
 
     def analyze(self, astroid_node: Module):
         self.items.add_mod(astroid_node)
-
-        # _LOGGER.info("=== analyzing astroid imports ===")
-        # import_parser = ImportParser(self.items)
-        # import_parser.analyze(astroid_node)
 
         _LOGGER.info("=== analyzing astroid definitions ===")
         def_parser = DefParser(self.items)
@@ -593,12 +655,12 @@ class TreeParser:
             astroid_tree_list.append(astroid_tree)
 
         for astroid_tree in astroid_tree_list:
-            _LOGGER.info("=== analyzing astroid definitions ===")
+            _LOGGER.info("=== analyzing astroid definitions: %s", astroid_tree.file)
             def_parser = DefParser(self.items)
             def_parser.analyze(astroid_tree)
 
         for astroid_tree in astroid_tree_list:
-            _LOGGER.info("=== analyzing astroid usage ===")
+            _LOGGER.info("=== analyzing astroid usage: %s", astroid_tree.file)
             use_parser = UseParser(self.items)
             use_parser.analyze(astroid_tree)
 
