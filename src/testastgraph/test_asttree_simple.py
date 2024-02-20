@@ -413,16 +413,16 @@ def main():
 
     def test_analyze_chained(self):
         code = """\
-class ABC1:
+class ABC2:
     def __init__(self):
         self.field1 = {}
 
-class ABC2:
+class ABC3:
     def __init__(self):
-        self.field2 = ABC1()
+        self.field2 = ABC2()
 
 def main():
-    item3 = ABC2()
+    item3 = ABC3()
     item3.field2.field1.get("aaa")
 """
         parser = TreeParser()
@@ -436,23 +436,23 @@ def main():
         self.assertEqual(len(def_list), 8)
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("testmod.ABC1", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC1.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[3], ("testmod.ABC2", DefItemType.CLASS))
-        self.assertEqual(def_list[4], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[3], ("testmod.ABC3", DefItemType.CLASS))
+        self.assertEqual(def_list[4], ("testmod.ABC3.__init__", DefItemType.MEMBER))
         self.assertEqual(def_list[5], ("testmod.main", DefItemType.MEMBER))
-        self.assertEqual(def_list[6], ("testmod.ABC1.field1", DefItemType.MEMBER))
-        self.assertEqual(def_list[7], ("testmod.ABC2.field2", DefItemType.MEMBER))
+        self.assertEqual(def_list[6], ("testmod.ABC2.field1", DefItemType.MEMBER))
+        self.assertEqual(def_list[7], ("testmod.ABC3.field2", DefItemType.MEMBER))
 
         use_list = items_container.get_use_list()
         self.assertEqual(len(use_list), 6)
 
-        self.assertEqual(use_list[0], ("testmod.ABC1.__init__", "testmod.ABC1.field1"))
-        self.assertEqual(use_list[1], ("testmod.ABC2.__init__", "testmod.ABC2.field2"))
-        self.assertEqual(use_list[2], ("testmod.ABC2.__init__", "testmod.ABC1.__init__"))
-        self.assertEqual(use_list[3], ("testmod.main", "testmod.ABC2.__init__"))
-        self.assertEqual(use_list[4], ("testmod.main", "testmod.ABC2.field2"))
-        self.assertEqual(use_list[5], ("testmod.main", "testmod.ABC1.field1"))
+        self.assertEqual(use_list[0], ("testmod.ABC2.__init__", "testmod.ABC2.field1"))
+        self.assertEqual(use_list[1], ("testmod.ABC3.__init__", "testmod.ABC3.field2"))
+        self.assertEqual(use_list[2], ("testmod.ABC3.__init__", "testmod.ABC2.__init__"))
+        self.assertEqual(use_list[3], ("testmod.main", "testmod.ABC3.__init__"))
+        self.assertEqual(use_list[4], ("testmod.main", "testmod.ABC3.field2"))
+        self.assertEqual(use_list[5], ("testmod.main", "testmod.ABC2.field1"))
 
     def test_analyze_return_constant(self):
         code = """\
