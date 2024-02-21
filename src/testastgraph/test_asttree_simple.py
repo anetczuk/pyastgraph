@@ -411,6 +411,81 @@ def main():
         self.assertEqual(ctor_uses[0].name, "STATIC_FIELD")
         self.assertEqual(ctor_uses[0].type, DefItemType.MEMBER)
 
+    def test_analyze_var_infer(self):
+        code = """\
+class ABC2:
+    def __init__(self):
+        self.field1 = {}
+
+def get_object():
+    return ABC2()
+
+def main():
+    item2 = get_object()
+    item2.field1.get("aaa")
+"""
+        parser = TreeParser()
+        parser.analyze_code(module_name="testmod", code=code)
+
+        # print_ast(parser)
+        # draw(parser)
+
+        items_container = parser.items
+        def_list = items_container.get_def_list()
+        self.assertEqual(len(def_list), 6)
+
+        self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[3], ("testmod.get_object", DefItemType.MEMBER))
+        self.assertEqual(def_list[4], ("testmod.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[5], ("testmod.ABC2.field1", DefItemType.MEMBER))
+
+        use_list = items_container.get_use_list()
+        self.assertEqual(len(use_list), 4)
+
+        self.assertEqual(use_list[0], ("testmod.ABC2.__init__", "testmod.ABC2.field1"))
+        self.assertEqual(use_list[1], ("testmod.get_object", "testmod.ABC2.__init__"))
+        self.assertEqual(use_list[2], ("testmod.main", "testmod.get_object"))
+        self.assertEqual(use_list[3], ("testmod.main", "testmod.ABC2.field1"))
+
+    def test_analyze_call_infer(self):
+        code = """\
+class ABC2:
+    def __init__(self):
+        self.field1 = {}
+
+def get_object():
+    return ABC2()
+
+def main():
+    get_object().field1.get("aaa")
+"""
+        parser = TreeParser()
+        parser.analyze_code(module_name="testmod", code=code)
+
+        # print_ast(parser)
+        # draw(parser)
+
+        items_container = parser.items
+        def_list = items_container.get_def_list()
+        self.assertEqual(len(def_list), 6)
+
+        self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[3], ("testmod.get_object", DefItemType.MEMBER))
+        self.assertEqual(def_list[4], ("testmod.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[5], ("testmod.ABC2.field1", DefItemType.MEMBER))
+
+        use_list = items_container.get_use_list()
+        self.assertEqual(len(use_list), 4)
+
+        self.assertEqual(use_list[0], ("testmod.ABC2.__init__", "testmod.ABC2.field1"))
+        self.assertEqual(use_list[1], ("testmod.get_object", "testmod.ABC2.__init__"))
+        self.assertEqual(use_list[2], ("testmod.main", "testmod.get_object"))
+        self.assertEqual(use_list[3], ("testmod.main", "testmod.ABC2.field1"))
+
     def test_analyze_chained(self):
         code = """\
 class ABC2:
@@ -453,6 +528,54 @@ def main():
         self.assertEqual(use_list[3], ("testmod.main", "testmod.ABC3.__init__"))
         self.assertEqual(use_list[4], ("testmod.main", "testmod.ABC3.field2"))
         self.assertEqual(use_list[5], ("testmod.main", "testmod.ABC2.field1"))
+
+    def test_analyze_chained_call(self):
+        code = """\
+class ABC2:
+    def __init__(self):
+        self.field1 = {}
+
+class ABC3:
+    def __init__(self):
+        self.field2 = ABC2()
+
+    def get_field(self):
+        return self.field2
+
+def main():
+    item3 = ABC3()
+    item3.get_field().field1.get("aaa")
+"""
+        parser = TreeParser()
+        parser.analyze_code(module_name="testmod", code=code)
+
+        # print_ast(parser)
+        # draw(parser)
+
+        items_container = parser.items
+        def_list = items_container.get_def_list()
+        self.assertEqual(len(def_list), 9)
+
+        self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[3], ("testmod.ABC3", DefItemType.CLASS))
+        self.assertEqual(def_list[4], ("testmod.ABC3.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[5], ("testmod.ABC3.get_field", DefItemType.MEMBER))
+        self.assertEqual(def_list[6], ("testmod.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[7], ("testmod.ABC2.field1", DefItemType.MEMBER))
+        self.assertEqual(def_list[8], ("testmod.ABC3.field2", DefItemType.MEMBER))
+
+        use_list = items_container.get_use_list()
+        self.assertEqual(len(use_list), 7)
+
+        self.assertEqual(use_list[0], ("testmod.ABC2.__init__", "testmod.ABC2.field1"))
+        self.assertEqual(use_list[1], ("testmod.ABC3.__init__", "testmod.ABC3.field2"))
+        self.assertEqual(use_list[2], ("testmod.ABC3.__init__", "testmod.ABC2.__init__"))
+        self.assertEqual(use_list[3], ("testmod.ABC3.get_field", "testmod.ABC3.field2"))
+        self.assertEqual(use_list[4], ("testmod.main", "testmod.ABC3.__init__"))
+        self.assertEqual(use_list[5], ("testmod.main", "testmod.ABC3.get_field"))
+        self.assertEqual(use_list[6], ("testmod.main", "testmod.ABC2.field1"))
 
     def test_analyze_return_constant(self):
         code = """\

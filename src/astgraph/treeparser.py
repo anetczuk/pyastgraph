@@ -16,16 +16,29 @@ import astypes
 
 import astroid
 import astroid.nodes.scoped_nodes.scoped_nodes as astroid_nodes
+import astroid.bases as astroid_bases
 from astroid.nodes import node_classes, NodeNG
-from astroid.nodes.scoped_nodes.scoped_nodes import Module
 from astroid.modutils import _has_init
-from astroid.bases import Proxy
 
 
 _LOGGER = logging.getLogger(__name__)
 
 
 # ============================================
+
+
+def get_top_node(astroid_node: NodeNG):
+    while astroid_node.parent:
+        astroid_node = astroid_node.parent
+    return astroid_node
+
+
+def get_message(message: str, astroid_node: NodeNG):
+    module_node = get_top_node(astroid_node)
+    _LOGGER.error(
+        "unhandled node in file %s(%s):\n%s", module_node.file, astroid_node.lineno, astroid_node.parent.repr_tree()
+    )
+    return f"{message} (node {type(astroid_node)})"
 
 
 def get_type(astroid_node: NodeNG) -> str:
@@ -35,24 +48,38 @@ def get_type(astroid_node: NodeNG) -> str:
     return node_astype.annotation
 
 
-def infer_type(astroid_node: NodeNG) -> Optional[NodeNG]:
+def infer_node(astroid_node: NodeNG):
     try:
-        inferred = next(astroid_node.infer())
-        if not inferred:
-            return None
-        if isinstance(inferred, Proxy):
-            return unpack_proxy(inferred)
-        if isinstance(inferred, NodeNG):
-            return inferred
-        raise RuntimeError(f"unhandled type: {type(inferred)}")
+        return next(astroid_node.infer())
     except astroid.exceptions.InferenceError:
         # no inference succeed
         return None
 
 
+def infer_type(astroid_node: NodeNG) -> Optional[NodeNG]:
+    try:
+        inferred = next(astroid_node.infer())
+        if not inferred:
+            return None
+        # if isinstance(inferred, BoundMethod):
+        #     caller = astroid_node.expr
+        #     inferred_result = inferred.infer_call_result(caller)
+        #     inferred_value = next(inferred_result)
+        #     return unpack_proxy(inferred_value)
+        if isinstance(inferred, astroid_bases.Proxy):
+            return unpack_proxy(inferred)
+        if isinstance(inferred, NodeNG):
+            return inferred
+        raise RuntimeError(f"unhandled type: {type(inferred)}")
+    except astroid.exceptions.InferenceError as exc:
+        # no inference succeed
+        _LOGGER.warning("unable to infer: %s", exc)
+        return None
+
+
 def unpack_proxy(inferred):
     while inferred:
-        if isinstance(inferred, Proxy):
+        if isinstance(inferred, astroid_bases.Proxy):
             inferred = inferred._proxied  # pylint: disable=W0212
             continue
         if isinstance(inferred, NodeNG):
@@ -142,7 +169,7 @@ class ItemContainer:
         self.astroid_item_dict: Dict[int, DefItem] = {}  # map astroid node (id) to def item
         self.astroid_node_dict: Dict[int, NodeNG] = {}
 
-    def add_mod(self, mod: Module):
+    def add_mod(self, mod: astroid_nodes.Module):
         if mod.name in self.mod_dict:
             return False
         self.mod_dict[mod.name] = mod
@@ -282,7 +309,7 @@ class BaseParser:
             container = ItemContainer()
         self.items = container
 
-    def analyze(self, astroid_node: Module):
+    def analyze(self, astroid_node: astroid_nodes.Module):
         self._visit(astroid_node)
 
     def _visit(self, astroid_node):
@@ -394,7 +421,7 @@ class UseParser(BaseParser):
     def visit_call(self, astroid_node):
         _LOGGER.debug("visiting Call")
 
-        def_list = self._resolve_attribute(astroid_node.func)
+        def_list = self._resolve_attribute(astroid_node)
         if def_list:
             user_def = self.items.get_parent_scope(astroid_node)
             if not user_def:
@@ -459,8 +486,6 @@ class UseParser(BaseParser):
         # read value from object's attribute
         _LOGGER.debug("visiting Attribute")
 
-        # def_list = self._resolve_attribute(astroid_node)
-
         def_list = self._resolve_attribute(astroid_node)
         if def_list:
             user_def = self.items.get_parent_scope(astroid_node)
@@ -522,23 +547,32 @@ class UseParser(BaseParser):
 
     # get item defined by attribute
     def _resolve_attribute(self, attr_node: NodeNG):
-        full_call = self._get_atrr_full_call(attr_node)
+        full_call = self._get_attr_full_call(attr_node)
         return self._resolve_item(attr_node, full_call)
 
     # ============================================
 
-    def _get_atrr_full_call(self, attr_node: NodeNG):
+    def _get_attr_full_call(self, attr_node: NodeNG):
         if isinstance(attr_node, node_classes.Name):
-            item_name = {"name": attr_node.name, "node": attr_node}
+            inferred = infer_type(attr_node)
+            item_name = {"name": attr_node.name, "node": attr_node, "inferred": inferred}
             return [item_name]
 
         if isinstance(attr_node, node_classes.Attribute):
-            sub_list = self._get_atrr_full_call(attr_node.expr)
-            item_attr = {"name": attr_node.attrname, "node": attr_node}
+            inferred = infer_type(attr_node)
+            sub_list = self._get_attr_full_call(attr_node.expr)
+            item_attr = {"name": attr_node.attrname, "node": attr_node, "inferred": inferred}
             sub_list.append(item_attr)
             return sub_list
 
-        raise RuntimeError("unhandled case")
+        if isinstance(attr_node, node_classes.Call):
+            inferred = infer_type(attr_node)
+            sub_list = self._get_attr_full_call(attr_node.func)
+            sub_list[-1]["inferred"] = inferred
+            return sub_list
+
+        msg = get_message("unhandled case", attr_node)
+        raise RuntimeError(msg)
 
     def _resolve_item(self, attr_node: NodeNG, item_list) -> List[DefItem]:
         if not item_list:
@@ -546,6 +580,7 @@ class UseParser(BaseParser):
 
         ret_list = []
 
+        # first item can be function call
         first_name = item_list[0]["name"]
         first_def: Optional[DefItem] = self._find_type_def_in_scope(attr_node, first_name)
         ret_list.append(first_def)
@@ -554,9 +589,8 @@ class UseParser(BaseParser):
         for idx in range(1, len(item_list)):
             item = item_list[idx]
             prev_item = item_list[idx - 1]
-            prev_node = prev_item["node"]
+            prev_type: Optional[NodeNG] = prev_item["inferred"]
 
-            prev_type: Optional[NodeNG] = infer_type(prev_node)
             prev_def = self.items.find_def_item(prev_type)
             if not prev_def:
                 # item not found - seems like 'prev_type' is builtins type
@@ -623,7 +657,7 @@ class TreeParser:
     def __init__(self):
         self.items = ItemContainer()
 
-    def analyze(self, astroid_node: Module):
+    def analyze(self, astroid_node: astroid_nodes.Module):
         self.items.add_mod(astroid_node)
 
         _LOGGER.info("=== analyzing astroid definitions ===")
@@ -650,7 +684,7 @@ class TreeParser:
 
         astroid_tree_list = []
         for src_file_path in files_list:
-            astroid_tree: Module = astroid.MANAGER.ast_from_file(src_file_path)
+            astroid_tree: astroid_nodes.Module = astroid.MANAGER.ast_from_file(src_file_path)
             self.items.add_mod(astroid_tree)
             astroid_tree_list.append(astroid_tree)
 
