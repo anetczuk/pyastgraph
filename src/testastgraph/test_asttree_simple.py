@@ -486,6 +486,44 @@ def main():
         self.assertEqual(use_list[2], ("testmod.main", "testmod.get_object"))
         self.assertEqual(use_list[3], ("testmod.main", "testmod.ABC2.field1"))
 
+    def test_analyze_field_infer(self):
+        code = """\
+class ABC1:
+    def execute(self):
+        pass
+
+class ABC2:
+    def __init__(self, data_manager: ABC1):
+        self.data_manager: ABC1 = data_manager
+
+    def access_data(self):
+        return self.data_manager.execute()
+"""
+        parser = TreeParser()
+        parser.analyze_code(module_name="testmod", code=code)
+
+        # print_ast(parser)
+        # draw(parser)
+
+        items_container = parser.items
+        def_list = items_container.get_def_list()
+        self.assertEqual(len(def_list), 7)
+
+        self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("testmod.ABC1", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("testmod.ABC1.execute", DefItemType.MEMBER))
+        self.assertEqual(def_list[3], ("testmod.ABC2", DefItemType.CLASS))
+        self.assertEqual(def_list[4], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[5], ("testmod.ABC2.access_data", DefItemType.MEMBER))
+        self.assertEqual(def_list[6], ("testmod.ABC2.data_manager", DefItemType.MEMBER))
+
+        use_list = items_container.get_use_list()
+        self.assertEqual(len(use_list), 3)
+
+        self.assertEqual(use_list[0], ("testmod.ABC2.__init__", "testmod.ABC2.data_manager"))
+        self.assertEqual(use_list[1], ("testmod.ABC2.access_data", "testmod.ABC2.data_manager"))
+        self.assertEqual(use_list[2], ("testmod.ABC2.access_data", "testmod.ABC1.execute"))
+
     def test_analyze_chained(self):
         code = """\
 class ABC2:

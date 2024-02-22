@@ -45,7 +45,7 @@ obj1.get_field().get("aaa")
     class_abc3_node = astroid_node.body[0]
     get_field_node = class_abc3_node.body[1]
     return_node = get_field_node.body[0]
-    attr_node = return_node.value               # return attribute node
+    attr_node = return_node.value  # return attribute node
 
     node_infer_type = infer_type(attr_node)
     print("return type:", type(node_infer_type))
@@ -53,7 +53,7 @@ obj1.get_field().get("aaa")
     obj_call_node = astroid_node.body[2].value
     node_infer_type = infer_type(obj_call_node)
     astype_value = astypes.get_type(obj_call_node)
-    print("getter:", type(node_infer_type), astype_value)      # getter return
+    print("getter:", type(node_infer_type), astype_value)  # getter return
 
     obj_call_node = astroid_node.body[3].value
     node_infer_type = infer_type(obj_call_node)

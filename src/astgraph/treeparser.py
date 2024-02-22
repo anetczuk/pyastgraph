@@ -104,6 +104,7 @@ class DefItem:
         self.parent = None
         self.name = name
         self.items: List[Any] = []
+        self.type_hint: Optional[DefItem] = None  # member type hint
 
     @property
     def info(self):
@@ -411,6 +412,9 @@ class UseParser(BaseParser):
         if isinstance(astroid_node, node_classes.AssignAttr):
             self.visit_assignattr(astroid_node)
             return
+        if isinstance(astroid_node, node_classes.AnnAssign):
+            self.visit_annassign(astroid_node)
+            return
         if isinstance(astroid_node, node_classes.Attribute):
             self.visit_attribute(astroid_node)
             return
@@ -488,6 +492,24 @@ class UseParser(BaseParser):
 
         self._visit_children(astroid_node)
 
+    def visit_annassign(self, astroid_node):
+        # assigning value (expression) to object's attribute
+        _LOGGER.debug("visiting AnnAssign")
+
+        self._visit_children(astroid_node)
+
+        attr_list = self._resolve_attribute(astroid_node.target)
+        if not attr_list:
+            return
+        last_item: DefItem = attr_list[-1]
+        if not last_item:
+            return
+        inferred_hint = infer_type(astroid_node.annotation)
+        if not inferred_hint:
+            return
+        hint_def = self.items.find_def_item(inferred_hint)
+        last_item.type_hint = hint_def
+
     def visit_attribute(self, astroid_node):
         # read value from object's attribute
         _LOGGER.debug("visiting Attribute")
@@ -560,12 +582,19 @@ class UseParser(BaseParser):
     # ============================================
 
     def _get_attr_full_call(self, attr_node: NodeNG):
-        if isinstance(attr_node, node_classes.Name):
+        if isinstance(attr_node, (node_classes.Name, node_classes.AssignName)):
             inferred = infer_type(attr_node)
             item_name = {"name": attr_node.name, "node": attr_node, "inferred": inferred}
             return [item_name]
 
         if isinstance(attr_node, node_classes.Attribute):
+            inferred = infer_type(attr_node)
+            sub_list = self._get_attr_full_call(attr_node.expr)
+            item_attr = {"name": attr_node.attrname, "node": attr_node, "inferred": inferred}
+            sub_list.append(item_attr)
+            return sub_list
+
+        if isinstance(attr_node, node_classes.AssignAttr):
             inferred = infer_type(attr_node)
             sub_list = self._get_attr_full_call(attr_node.expr)
             item_attr = {"name": attr_node.attrname, "node": attr_node, "inferred": inferred}
@@ -591,28 +620,40 @@ class UseParser(BaseParser):
         if not item_list:
             return []
 
-        ret_list = []
-
         # first item can be function call
-        first_name = item_list[0]["name"]
+        first_item = item_list[0]
+        first_name = first_item["name"]
         first_def: Optional[DefItem] = self._find_type_def_in_scope(attr_node, first_name)
-        ret_list.append(first_def)
+        first_item["def"] = first_def
+        first_item["type_def"] = None
 
         # ignore first item, because it is "self" or scope variable
         for idx in range(1, len(item_list)):
             item = item_list[idx]
+            item["def"] = None
+            item["type_def"] = None
+
             prev_item = item_list[idx - 1]
+
             prev_type: Optional[NodeNG] = prev_item["inferred"]
+            prev_type_def = self.items.find_def_item(prev_type)
+            if not prev_type_def:
+                prev_type_def = prev_item.get("type_def")
+            prev_item["type_def"] = prev_type_def
 
-            prev_def = self.items.find_def_item(prev_type)
-            if not prev_def:
+            if not prev_type_def:
                 # item not found - seems like 'prev_type' is builtins type
-                ret_list.append(None)
                 continue
-            item_name = item["name"]
-            child_def = prev_def.get_child(item_name)
-            ret_list.append(child_def)
 
+            item_name = item["name"]
+            item_def = prev_type_def.get_child(item_name)
+            item["def"] = item_def
+            if item_def:
+                item["type_def"] = item_def.type_hint
+
+        ret_list = []
+        for item in item_list:
+            ret_list.append(item.get("def"))
         return ret_list
 
     # 'func_name' is callable (function name or class name)
