@@ -249,13 +249,18 @@ class ItemContainer:
             parent_node = parent_node.parent
         return None
 
-    def get_parent_scope(self, astroid_node: NodeNG) -> Optional[DefItem]:
-        parent_node = astroid_node.parent  # scope returns self
-        if parent_node is None:
-            # no parent scope
-            return None
-        scope_node = parent_node.scope()
-        return self.find_def_item(scope_node)
+    def find_parent_scope_def(self, astroid_node: NodeNG) -> Optional[DefItem]:
+        scope_node = astroid_node
+        while scope_node:
+            parent_node = scope_node.parent  # scope returns self
+            if parent_node is None:
+                # no parent scope
+                return None
+            scope_node = parent_node.scope()
+            scope_def = self.find_def_item(scope_node)
+            if scope_def is not None:
+                return scope_def
+        return None
 
     def find_scope_by_id(self, node_id: int) -> Optional[DefItem]:
         item_node: NodeNG = self.astroid_node_dict.get(node_id)
@@ -423,8 +428,9 @@ class UseParser(BaseParser):
 
         def_list = self._resolve_attribute(astroid_node)
         if def_list:
-            user_def = self.items.get_parent_scope(astroid_node)
+            user_def = self.items.find_parent_scope_def(astroid_node)
             if not user_def:
+                _LOGGER.debug("invalid node:\n%s", astroid_node.scope().repr_tree())
                 raise RuntimeError("unable to get user def item")
             for def_item in def_list[:-1]:
                 if not def_item:
@@ -488,8 +494,9 @@ class UseParser(BaseParser):
 
         def_list = self._resolve_attribute(astroid_node)
         if def_list:
-            user_def = self.items.get_parent_scope(astroid_node)
+            user_def = self.items.find_parent_scope_def(astroid_node)
             if not user_def:
+                _LOGGER.debug("invalid node:\n%s", astroid_node.scope().repr_tree())
                 raise RuntimeError("unable to get user def item")
             for def_item in def_list[:-1]:
                 if not def_item:
@@ -571,6 +578,12 @@ class UseParser(BaseParser):
             sub_list[-1]["inferred"] = inferred
             return sub_list
 
+        if isinstance(attr_node, node_classes.Subscript):
+            inferred = infer_type(attr_node)
+            sub_list = self._get_attr_full_call(attr_node.value)
+            sub_list[-1]["inferred"] = inferred
+            return sub_list
+
         msg = get_message("unhandled case", attr_node)
         raise RuntimeError(msg)
 
@@ -621,7 +634,7 @@ class UseParser(BaseParser):
             return ctor_item
         # constructor not explicitly defined - add node
         ctor_item = self.items.create_def("__init__", DefItemType.MEMBER, None)
-        item_type.append(ctor_item)
+        self.items.append_def_parent(item_type, ctor_item)
         return ctor_item
 
     def _find_type_def(self, astroid_node: NodeNG, node_name: str = None) -> Optional[DefItem]:
