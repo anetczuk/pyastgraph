@@ -12,3 +12,5 @@ $SCRIPT_DIR/simple/generate.sh
 $SCRIPT_DIR/multifile01/generate.sh
 
 $SCRIPT_DIR/astgraph/generate.sh
+
+$SCRIPT_DIR/thread01/generate.sh
