@@ -46,6 +46,7 @@ digraph G {
         thread01__runner01__Runner____init__ -> thread01__runner01__Runner__worker [style="solid",  color="#000000"];
         thread01__runner01__Runner____init__ -> thread01__worker01__Worker____init__ [style="solid",  color="#000000"];
         thread01__runner01__Runner____init__ -> thread01__runner01__Runner__thread [style="solid",  color="#000000"];
+        thread01__runner01__Runner____init__ -> thread01__worker01__Worker__work [style="solid",  color="#000000"];
         thread01__runner01__Runner__execute -> thread01__runner01__Runner__thread [style="solid",  color="#000000"];
         thread01__runner01__Runner__execute -> thread01__runner01__Runner__result [style="solid",  color="#000000"];
         thread01__runner01__main -> thread01__runner01__Runner____init__ [style="solid",  color="#000000"];

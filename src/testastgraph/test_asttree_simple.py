@@ -806,3 +806,30 @@ items[0].execute()
 
         self.assertEqual(use_list[0], ("testmod", "testmod.ABC.__init__"))
         self.assertEqual(use_list[1], ("testmod", "testmod.ABC.execute"))
+
+    def test_analyze_argument(self):
+        code = """\
+from threading import Thread
+
+def execute():
+    pass
+
+thread = Thread(target=execute, args=[])
+"""
+        parser = TreeParser()
+        parser.analyze_code(module_name="testmod", code=code)
+
+        # print_ast(parser)
+        # draw(parser)
+
+        items_container = parser.items
+        def_list = items_container.get_def_list()
+        self.assertEqual(len(def_list), 2)
+
+        self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("testmod.execute", DefItemType.MEMBER))
+
+        use_list = items_container.get_use_list()
+        self.assertEqual(len(use_list), 1)
+
+        self.assertEqual(use_list[0], ("testmod", "testmod.execute"))

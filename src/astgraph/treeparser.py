@@ -406,6 +406,9 @@ class UseParser(BaseParser):
         if isinstance(astroid_node, node_classes.Call):
             self.visit_call(astroid_node)
             return
+        if isinstance(astroid_node, node_classes.Keyword):
+            self.visit_keyword(astroid_node)
+            return
         if isinstance(astroid_node, node_classes.AssignName):
             self.visit_assignname(astroid_node)
             return
@@ -452,6 +455,30 @@ class UseParser(BaseParser):
                 self.items.append_use(user_def, last_callable)
 
         self._visit_list(astroid_node.args)
+        self._visit_list(astroid_node.keywords)
+
+    def visit_keyword(self, astroid_node):
+        _LOGGER.debug("visiting Keyword")
+        value_node = astroid_node.value
+        def_list = self._resolve_attribute(value_node)
+        if def_list:
+            user_def = self.items.find_parent_scope_def(value_node)
+            if not user_def:
+                _LOGGER.debug("invalid node:\n%s", value_node.scope().repr_tree())
+                raise RuntimeError("unable to get user def item")
+            for def_item in def_list[:-1]:
+                if not def_item:
+                    # happens e.g. in case of direct imports
+                    continue
+                if def_item.type == DefItemType.MODULE:
+                    continue
+                if def_item.type == DefItemType.CLASS:
+                    continue
+                self.items.append_use(user_def, def_item)
+            last_item = def_list[-1]
+            if last_item:
+                # None can occur for function calls (e.g. 'print')
+                self.items.append_use(user_def, last_item)
 
     def visit_assignname(self, astroid_node):
         # assigning value (expression) to object's attribute
@@ -613,8 +640,11 @@ class UseParser(BaseParser):
             sub_list[-1]["inferred"] = inferred
             return sub_list
 
-        msg = get_message("unhandled case", attr_node)
-        raise RuntimeError(msg)
+        # msg = get_message("unhandled case", attr_node)
+        # raise RuntimeError(msg)
+
+        # ignore type
+        return []
 
     def _resolve_item(self, attr_node: NodeNG, item_list) -> List[DefItem]:
         if not item_list:
