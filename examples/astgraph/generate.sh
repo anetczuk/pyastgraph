@@ -18,5 +18,8 @@ cd $SRC_DIR
 FILES=$(find $SRC_DIR/astgraph -type f -name "*.py")
 echo "passing files: ${FILES}"
 
-python3 -m astgraph -f $FILES --outsvgfile "$OUT_DIR/astgraph.svg" --outdotfile "$OUT_DIR/astgraph.dot.txt" $@
+python3 -m astgraph -f $FILES \
+                    --outdotfile "$OUT_DIR/astgraph.dot.txt" \
+                    --outsvgfile "$OUT_DIR/astgraph.svg" \
+                    $@
 convert -strip -density 80 "$OUT_DIR/astgraph.svg" "$OUT_DIR/astgraph.png"

@@ -13,7 +13,7 @@ from astgraph.treeparser import TreeParser, DefItemType
 
 
 def draw(parser, svg_out_path="/tmp/graph.svg"):
-    draw_graph(parser.items.def_items, parser.items.use_dict, svg_out_path)
+    draw_graph(parser.items.def_items, parser.items.use_dict, out_svg_file_path=svg_out_path)
 
 
 def print_ast(parser):

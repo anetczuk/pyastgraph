@@ -12,7 +12,7 @@ from attrdict import AttrDict
 
 from pyan.node import make_safe_label
 from pyan.visgraph import VisualGraph
-from pyan.writers import DotWriter, SVGWriter
+from pyan.writers import DotWriter, SVGWriter, HTMLWriter
 
 
 pyan_logger = logging.getLogger("pyan")
@@ -20,7 +20,7 @@ pyan_logger.setLevel(logging.WARN)
 # pyan_logger.setLevel(logging.DEBUG)
 
 
-def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=None):
+def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=None, out_html_file_path=None):
     graph_options = {
         "draw_defines": True,
         "draw_uses": True,
@@ -105,6 +105,10 @@ def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=No
 
     if out_svg_file_path:
         writer = SVGWriter(graph, options=options, output=out_svg_file_path, logger=pyan_logger)
+        writer.run()
+
+    if out_html_file_path:
+        writer = HTMLWriter(graph, options=options, output=out_html_file_path, logger=pyan_logger)
         writer.run()
 
 

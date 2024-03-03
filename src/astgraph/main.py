@@ -25,7 +25,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOGGER = logging.getLogger(__name__)
 
 
-def analyze_code(files_list, out_svg_file_path, out_dot_file_path, debug_dump=False):
+def analyze_code(files_list, out_dot_file_path, out_svg_file_path, out_html_file_path, debug_dump=False):
     analyzer = TreeParser()
     analyzer.analyze_files(files_list)
     items = analyzer.items
@@ -36,7 +36,7 @@ def analyze_code(files_list, out_svg_file_path, out_dot_file_path, debug_dump=Fa
         with open(dict_path, "w", encoding="utf-8") as out_file:
             pprint.pprint(graph_dict, out_file, indent=4, sort_dicts=False)
 
-    draw_graph(items.def_items, items.use_dict, out_svg_file_path, out_dot_file_path)
+    draw_graph(items.def_items, items.use_dict, out_dot_file_path, out_svg_file_path, out_html_file_path)
 
 
 def main():
@@ -44,6 +44,7 @@ def main():
     parser.add_argument("-f", "--files", nargs="+", default=[], help="Files to analyze")
     parser.add_argument("--outsvgfile", action="store", required=True, help="Path to output SVG file")
     parser.add_argument("--outdotfile", action="store", required=False, help="Path to output DOT file")
+    parser.add_argument("--outhtmlfile", action="store", required=False, help="Path to output HTML file")
     parser.add_argument(
         "-ddd",
         "--dumpdebugdata",
@@ -60,7 +61,7 @@ def main():
     files_list = args.files
     _LOGGER.info("parsing files: %s", files_list)
 
-    analyze_code(files_list, args.outsvgfile, args.outdotfile, args.dumpdebugdata)
+    analyze_code(files_list, args.outdotfile, args.outsvgfile, args.outhtmlfile, args.dumpdebugdata)
 
     _LOGGER.info("done")
     return 0
