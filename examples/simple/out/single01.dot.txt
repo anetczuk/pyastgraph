@@ -19,8 +19,6 @@ digraph G {
             }
         }
     }
-        simple__single01 -> simple__single01__Runner [style="dashed",  color="#838b8b"];
-        simple__single01 -> simple__single01__main [style="dashed",  color="#838b8b"];
         simple__single01__Runner -> simple__single01__Runner____init__ [style="dashed",  color="#838b8b"];
         simple__single01__Runner -> simple__single01__Runner__execute [style="dashed",  color="#838b8b"];
         simple__single01__Runner -> simple__single01__Runner__STATIC_FIELD [style="dashed",  color="#838b8b"];

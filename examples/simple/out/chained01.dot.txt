@@ -26,9 +26,6 @@ digraph G {
             }
         }
     }
-        simple__chained01 -> simple__chained01__Worker [style="dashed",  color="#838b8b"];
-        simple__chained01 -> simple__chained01__Runner [style="dashed",  color="#838b8b"];
-        simple__chained01 -> simple__chained01__main [style="dashed",  color="#838b8b"];
         simple__chained01__Worker -> simple__chained01__Worker____init__ [style="dashed",  color="#838b8b"];
         simple__chained01__Worker -> simple__chained01__Worker__work [style="dashed",  color="#838b8b"];
         simple__chained01__Worker -> simple__chained01__Worker__data_dict [style="dashed",  color="#838b8b"];

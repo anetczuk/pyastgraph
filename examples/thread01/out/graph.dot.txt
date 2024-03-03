@@ -3,44 +3,39 @@ digraph G {
     subgraph cluster_G {
 
         graph [style="filled,rounded", fillcolor="#80808018", label=""];
-        thread01 [label="thread01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
-        thread01__runner01 [label="thread01.runner01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="1"];
-        thread01__worker01 [label="thread01.worker01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="2"];
+        thread01__runner01 [label="thread01.runner01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
         subgraph cluster_thread01__runner01 {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="thread01.runner01"];
-            thread01__runner01__Runner [label="Runner", style="filled", fillcolor="#ccff99b2", fontcolor="#000000", group="1"];
-            thread01__runner01__main [label="main", style="filled", fillcolor="#ccff99b2", fontcolor="#000000", group="1"];
+            thread01__runner01__Runner [label="Runner", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            thread01__runner01__main [label="main", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
             subgraph cluster_thread01__runner01__Runner {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="thread01.runner01.Runner"];
-                thread01__runner01__Runner____init__ [label="__init__", style="filled", fillcolor="#b2ff65b2", fontcolor="#000000", group="1"];
-                thread01__runner01__Runner__execute [label="execute", style="filled", fillcolor="#b2ff65b2", fontcolor="#000000", group="1"];
-                thread01__runner01__Runner__result [label="result", style="filled", fillcolor="#b2ff65b2", fontcolor="#000000", group="1"];
-                thread01__runner01__Runner__thread [label="thread", style="filled", fillcolor="#b2ff65b2", fontcolor="#000000", group="1"];
-                thread01__runner01__Runner__worker [label="worker", style="filled", fillcolor="#b2ff65b2", fontcolor="#000000", group="1"];
+                thread01__runner01__Runner____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                thread01__runner01__Runner__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                thread01__runner01__Runner__result [label="result", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                thread01__runner01__Runner__thread [label="thread", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                thread01__runner01__Runner__worker [label="worker", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
         }
         subgraph cluster_thread01__worker01 {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="thread01.worker01"];
-            thread01__worker01__Worker [label="Worker", style="filled", fillcolor="#99feffb2", fontcolor="#000000", group="2"];
+            thread01__worker01__Worker [label="Worker", style="filled", fillcolor="#99ff99b2", fontcolor="#000000", group="1"];
             subgraph cluster_thread01__worker01__Worker {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="thread01.worker01.Worker"];
-                thread01__worker01__Worker____init__ [label="__init__", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="2"];
-                thread01__worker01__Worker__work [label="work", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="2"];
+                thread01__worker01__Worker____init__ [label="__init__", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
+                thread01__worker01__Worker__work [label="work", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
             }
         }
     }
-        thread01__runner01 -> thread01__runner01__Runner [style="dashed",  color="#838b8b"];
-        thread01__runner01 -> thread01__runner01__main [style="dashed",  color="#838b8b"];
         thread01__runner01__Runner -> thread01__runner01__Runner____init__ [style="dashed",  color="#838b8b"];
         thread01__runner01__Runner -> thread01__runner01__Runner__execute [style="dashed",  color="#838b8b"];
         thread01__runner01__Runner -> thread01__runner01__Runner__result [style="dashed",  color="#838b8b"];
         thread01__runner01__Runner -> thread01__runner01__Runner__worker [style="dashed",  color="#838b8b"];
         thread01__runner01__Runner -> thread01__runner01__Runner__thread [style="dashed",  color="#838b8b"];
-        thread01__worker01 -> thread01__worker01__Worker [style="dashed",  color="#838b8b"];
         thread01__worker01__Worker -> thread01__worker01__Worker____init__ [style="dashed",  color="#838b8b"];
         thread01__worker01__Worker -> thread01__worker01__Worker__work [style="dashed",  color="#838b8b"];
         thread01__runner01__Runner____init__ -> thread01__runner01__Runner__worker [style="solid",  color="#000000"];

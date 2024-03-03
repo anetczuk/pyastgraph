@@ -3,7 +3,6 @@ digraph G {
     subgraph cluster_G {
 
         graph [style="filled,rounded", fillcolor="#80808018", label=""];
-        simple__invalid01 [label="simple.invalid01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
         subgraph cluster_simple__invalid01 {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="simple.invalid01"];
@@ -17,7 +16,6 @@ digraph G {
             }
         }
     }
-        simple__invalid01 -> simple__invalid01__Invalid [style="dashed",  color="#838b8b"];
         simple__invalid01__Invalid -> simple__invalid01__Invalid____init__ [style="dashed",  color="#838b8b"];
         simple__invalid01__Invalid -> simple__invalid01__Invalid__execute [style="dashed",  color="#838b8b"];
         simple__invalid01__Invalid -> simple__invalid01__Invalid__data_field [style="dashed",  color="#838b8b"];

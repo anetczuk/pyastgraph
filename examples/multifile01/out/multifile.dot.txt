@@ -4,7 +4,6 @@ digraph G {
 
         graph [style="filled,rounded", fillcolor="#80808018", label=""];
         multifile01__multi01 [label="multifile01.multi01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
-        multifile01__multi02 [label="multifile01.multi02", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="1"];
         subgraph cluster_multifile01__multi01 {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="multifile01.multi01"];
@@ -24,8 +23,6 @@ digraph G {
             }
         }
     }
-        multifile01__multi01 -> multifile01__multi01__main [style="dashed",  color="#838b8b"];
-        multifile01__multi02 -> multifile01__multi02__Runner [style="dashed",  color="#838b8b"];
         multifile01__multi02__Runner -> multifile01__multi02__Runner____init__ [style="dashed",  color="#838b8b"];
         multifile01__multi02__Runner -> multifile01__multi02__Runner__execute [style="dashed",  color="#838b8b"];
         multifile01__multi02__Runner -> multifile01__multi02__Runner__instance_field [style="dashed",  color="#838b8b"];

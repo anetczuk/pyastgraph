@@ -13,6 +13,7 @@ from attrdict import AttrDict
 from pyan.node import make_safe_label
 from pyan.visgraph import VisualGraph
 from pyan.writers import DotWriter, SVGWriter, HTMLWriter
+from astgraph.treeparser import DefItem, DefItemType
 
 
 pyan_logger = logging.getLogger("pyan")
@@ -34,33 +35,28 @@ def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=No
     }
 
     node_translation_map = {}
-
-    pyan_nodes_dict = {}
     for def_item in def_items:
-        full_name = def_item.get_full_name()
-        nodes_list = pyan_nodes_dict.get(full_name, None)
-        if nodes_list is None:
-            nodes_list = []
-            pyan_nodes_dict[full_name] = nodes_list
-
         node = PyanNodeMock()
         node.namespace = def_item.get_namespace()
         node.name = def_item.get_name()
         node.filename = def_item.get_filename()
-        nodes_list.append(node)
-
         node_translation_map[def_item] = node
 
     out_edges_num = 0
     pyan_def_edges_dict = {}
+    # def_item: DefItem
     for def_item in def_items:
-        def_parent = def_item.parent
+        def_parent: DefItem = def_item.parent
         if def_parent is None:
             continue
-        node = node_translation_map.get(def_item)
+        if def_parent.type is DefItemType.MODULE:
+            continue
+        # if def_parent.type is DefItemType.CLASS:
+        #     continue
+        node: PyanNodeMock = node_translation_map.get(def_item)
         if node is None:
             continue
-        node_parent = node_translation_map.get(def_parent)
+        node_parent: PyanNodeMock = node_translation_map.get(def_parent)
         if node_parent is None:
             continue
         edges_list = pyan_def_edges_dict.get(node_parent, None)
@@ -72,11 +68,11 @@ def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=No
 
     pyan_use_edges_dict = {}
     for use_item, call_list in use_dict.items():
-        use_node = node_translation_map.get(use_item)
+        use_node: PyanNodeMock = node_translation_map.get(use_item)
         if use_node is None:
             continue
         for call_item in call_list:
-            call_node = node_translation_map.get(call_item)
+            call_node: PyanNodeMock = node_translation_map.get(call_item)
             if call_node is None:
                 continue
             edges_list = pyan_use_edges_dict.get(use_node, None)
@@ -85,6 +81,25 @@ def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=No
                 pyan_use_edges_dict[use_node] = edges_list
             edges_list.append(call_node)
             out_edges_num = max(out_edges_num, len(edges_list))
+
+    pyan_nodes_dict = {}
+    edge_nodes_list = set()
+    # node: PyanNodeMock
+    for node, connections in pyan_def_edges_dict.items():
+        edge_nodes_list.add(node)
+        edge_nodes_list.update(connections)
+    for node, connections in pyan_use_edges_dict.items():
+        edge_nodes_list.add(node)
+        edge_nodes_list.update(connections)
+
+    # node: PyanNodeMock
+    for node in edge_nodes_list:
+        full_name = node.get_name()
+        nodes_list = pyan_nodes_dict.get(full_name, None)
+        if nodes_list is None:
+            nodes_list = []
+            pyan_nodes_dict[full_name] = nodes_list
+        nodes_list.append(node)
 
     pyan_def_graph_dict = {
         "nodes": pyan_nodes_dict,

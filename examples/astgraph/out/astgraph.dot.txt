@@ -3,199 +3,188 @@ digraph G {
     subgraph cluster_G {
 
         graph [style="filled,rounded", fillcolor="#80808018", label=""];
-        astgraphX [label="astgraph", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
-        astgraphX____main__ [label="astgraph.__main__", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="1"];
-        astgraphX__asttree [label="astgraph.asttree", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="2"];
-        astgraphX__main [label="astgraph.main", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="3"];
-        astgraphX__objtodict [label="astgraph.objtodict", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="4"];
-        astgraphX__pyanwrap [label="astgraph.pyanwrap", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="5"];
-        astgraphX__treeparser [label="astgraph.treeparser", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="6"];
+        astgraphX____main__ [label="astgraph.__main__", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
+        astgraphX__main [label="astgraph.main", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="1"];
         subgraph cluster_astgraphX__asttree {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.asttree"];
-            astgraphX__asttree__add_nodeX [label="add_node", style="filled", fillcolor="#ccff99b2", fontcolor="#000000", group="2"];
-            astgraphX__asttree__draw_ast_graphX [label="draw_ast_graph", style="filled", fillcolor="#ccff99b2", fontcolor="#000000", group="2"];
-            astgraphX__asttree__generate_dot_graphX [label="generate_dot_graph", style="filled", fillcolor="#ccff99b2", fontcolor="#000000", group="2"];
+            astgraphX__asttree__add_nodeX [label="add_node", style="filled", fillcolor="#b6ff99b2", fontcolor="#000000", group="2"];
+            astgraphX__asttree__draw_ast_graphX [label="draw_ast_graph", style="filled", fillcolor="#b6ff99b2", fontcolor="#000000", group="2"];
+            astgraphX__asttree__generate_dot_graphX [label="generate_dot_graph", style="filled", fillcolor="#b6ff99b2", fontcolor="#000000", group="2"];
         }
         subgraph cluster_astgraphX__main {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.main"];
-            astgraphX__main__analyze_code [label="analyze_code", style="filled", fillcolor="#99ffb2b2", fontcolor="#000000", group="3"];
-            astgraphX__main__main [label="main", style="filled", fillcolor="#99ffb2b2", fontcolor="#000000", group="3"];
+            astgraphX__main__analyze_code [label="analyze_code", style="filled", fillcolor="#fff099b2", fontcolor="#000000", group="1"];
+            astgraphX__main__main [label="main", style="filled", fillcolor="#fff099b2", fontcolor="#000000", group="1"];
         }
         subgraph cluster_astgraphX__objtodict {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.objtodict"];
-            astgraphX__objtodict__ObjRepr [label="ObjRepr", style="filled", fillcolor="#99feffb2", fontcolor="#000000", group="4"];
-            astgraphX__objtodict__obj_to_dict [label="obj_to_dict", style="filled", fillcolor="#99feffb2", fontcolor="#000000", group="4"];
+            astgraphX__objtodict__ObjRepr [label="ObjRepr", style="filled", fillcolor="#99ffd3b2", fontcolor="#000000", group="3"];
+            astgraphX__objtodict__obj_to_dict [label="obj_to_dict", style="filled", fillcolor="#99ffd3b2", fontcolor="#000000", group="3"];
             subgraph cluster_astgraphX__objtodict__ObjRepr {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.objtodict.ObjRepr"];
-                astgraphX__objtodict__ObjRepr____init__ [label="__init__", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="4"];
-                astgraphX__objtodict__ObjRepr___visit [label="_visit", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="4"];
-                astgraphX__objtodict__ObjRepr___visited [label="_visited", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="4"];
-                astgraphX__objtodict__ObjRepr__ignore_fields [label="ignore_fields", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="4"];
-                astgraphX__objtodict__ObjRepr__repr_obj [label="repr_obj", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="4"];
-                astgraphX__objtodict__ObjRepr__skip_meta_data [label="skip_meta_data", style="filled", fillcolor="#65feffb2", fontcolor="#000000", group="4"];
+                astgraphX__objtodict__ObjRepr____init__ [label="__init__", style="filled", fillcolor="#65ffbdb2", fontcolor="#000000", group="3"];
+                astgraphX__objtodict__ObjRepr___visit [label="_visit", style="filled", fillcolor="#65ffbdb2", fontcolor="#000000", group="3"];
+                astgraphX__objtodict__ObjRepr___visited [label="_visited", style="filled", fillcolor="#65ffbdb2", fontcolor="#000000", group="3"];
+                astgraphX__objtodict__ObjRepr__ignore_fields [label="ignore_fields", style="filled", fillcolor="#65ffbdb2", fontcolor="#000000", group="3"];
+                astgraphX__objtodict__ObjRepr__repr_obj [label="repr_obj", style="filled", fillcolor="#65ffbdb2", fontcolor="#000000", group="3"];
+                astgraphX__objtodict__ObjRepr__skip_meta_data [label="skip_meta_data", style="filled", fillcolor="#65ffbdb2", fontcolor="#000000", group="3"];
             }
         }
         subgraph cluster_astgraphX__pyanwrap {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.pyanwrap"];
-            astgraphX__pyanwrap__PyanNodeMock [label="PyanNodeMock", style="filled", fillcolor="#99b2ffb2", fontcolor="#000000", group="5"];
-            astgraphX__pyanwrap__draw_graphX [label="draw_graph", style="filled", fillcolor="#99b2ffb2", fontcolor="#000000", group="5"];
+            astgraphX__pyanwrap__PyanNodeMock [label="PyanNodeMock", style="filled", fillcolor="#99d3ffb2", fontcolor="#000000", group="4"];
+            astgraphX__pyanwrap__draw_graphX [label="draw_graph", style="filled", fillcolor="#99d3ffb2", fontcolor="#000000", group="4"];
             subgraph cluster_astgraphX__pyanwrap__PyanNodeMock {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.pyanwrap.PyanNodeMock"];
-                astgraphX__pyanwrap__PyanNodeMock____init__ [label="__init__", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__defined [label="defined", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__filename [label="filename", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__flavor [label="flavor", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__get_label [label="get_label", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__get_level [label="get_level", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__get_name [label="get_name", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__get_namespace_label [label="get_namespace_label", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__get_short_name [label="get_short_name", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__name [label="name", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
-                astgraphX__pyanwrap__PyanNodeMock__namespace [label="namespace", style="filled", fillcolor="#658cffb2", fontcolor="#000000", group="5"];
+                astgraphX__pyanwrap__PyanNodeMock____init__ [label="__init__", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__defined [label="defined", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__filename [label="filename", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__flavor [label="flavor", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__get_label [label="get_label", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__get_level [label="get_level", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__get_name [label="get_name", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__get_namespace_label [label="get_namespace_label", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__get_short_name [label="get_short_name", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__name [label="name", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
+                astgraphX__pyanwrap__PyanNodeMock__namespace [label="namespace", style="filled", fillcolor="#65bdffb2", fontcolor="#000000", group="4"];
             }
         }
         subgraph cluster_astgraphX__treeparser {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser"];
-            astgraphX__treeparser__BaseParser [label="BaseParser", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__DefItem [label="DefItem", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__DefItemType [label="DefItemType", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__DefParser [label="DefParser", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__ItemContainer [label="ItemContainer", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__ModuleItem [label="ModuleItem", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__TreeParser [label="TreeParser", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__UseParser [label="UseParser", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__get_file_modname [label="get_file_modname", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__get_message [label="get_message", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__get_modname [label="get_modname", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__get_package_root [label="get_package_root", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__get_top_nodeX [label="get_top_node", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__get_type [label="get_type", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__infer_nodeX [label="infer_node", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__infer_type [label="infer_type", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
-            astgraphX__treeparser__unpack_proxy [label="unpack_proxy", style="filled", fillcolor="#cb99ffb2", fontcolor="#000000", group="6"];
+            astgraphX__treeparser__BaseParser [label="BaseParser", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__DefItem [label="DefItem", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__DefItemType [label="DefItemType", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__DefParser [label="DefParser", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__ItemContainer [label="ItemContainer", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__ModuleItem [label="ModuleItem", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__TreeParser [label="TreeParser", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__UseParser [label="UseParser", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__get_file_modname [label="get_file_modname", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__get_message [label="get_message", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__get_modname [label="get_modname", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__get_package_root [label="get_package_root", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__get_top_nodeX [label="get_top_node", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__get_type [label="get_type", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__infer_type [label="infer_type", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
+            astgraphX__treeparser__unpack_proxy [label="unpack_proxy", style="filled", fillcolor="#b699ffb2", fontcolor="#000000", group="5"];
             subgraph cluster_astgraphX__treeparser__BaseParser {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.BaseParser"];
-                astgraphX__treeparser__BaseParser____init__ [label="__init__", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__BaseParser___visit [label="_visit", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__BaseParser___visit_children [label="_visit_children", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__BaseParser___visit_list [label="_visit_list", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__BaseParser__analyze [label="analyze", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__BaseParser__items [label="items", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__BaseParser____init__ [label="__init__", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__BaseParser___visit [label="_visit", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__BaseParser___visit_children [label="_visit_children", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__BaseParser___visit_list [label="_visit_list", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__BaseParser__analyze [label="analyze", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__BaseParser__items [label="items", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
             subgraph cluster_astgraphX__treeparser__DefItem {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.DefItem"];
-                astgraphX__treeparser__DefItem____init__ [label="__init__", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__append [label="append", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__get_child [label="get_child", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__get_filename [label="get_filename", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__get_full_name [label="get_full_name", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__get_name [label="get_name", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__get_namespace [label="get_namespace", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__info [label="info", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__items [label="items", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__name [label="name", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__nodeX_id [label="node_id", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__parent [label="parent", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__to_string [label="to_string", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__type [label="type", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItem__type_hint [label="type_hint", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__DefItem____init__ [label="__init__", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__append [label="append", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__get_child [label="get_child", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__get_filename [label="get_filename", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__get_full_name [label="get_full_name", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__get_name [label="get_name", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__get_namespace [label="get_namespace", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__info [label="info", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__items [label="items", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__name [label="name", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__nodeX_id [label="node_id", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__parent [label="parent", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__to_string [label="to_string", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__type [label="type", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItem__type_hint [label="type_hint", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
             subgraph cluster_astgraphX__treeparser__DefItemType {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.DefItemType"];
-                astgraphX__treeparser__DefItemType__CLASS [label="CLASS", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItemType__MEMBER [label="MEMBER", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefItemType__MODULE [label="MODULE", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__DefItemType__CLASS [label="CLASS", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItemType__MEMBER [label="MEMBER", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefItemType__MODULE [label="MODULE", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
             subgraph cluster_astgraphX__treeparser__DefParser {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.DefParser"];
-                astgraphX__treeparser__DefParser____init__ [label="__init__", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefParser___visit [label="_visit", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefParser___visit_children [label="_visit_children", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefParser__visit_classdef [label="visit_classdef", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefParser__visit_functiondef [label="visit_functiondef", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__DefParser__visit_module [label="visit_module", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__DefParser____init__ [label="__init__", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefParser___visit [label="_visit", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefParser___visit_children [label="_visit_children", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefParser__visit_classdef [label="visit_classdef", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefParser__visit_functiondef [label="visit_functiondef", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__DefParser__visit_module [label="visit_module", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
             subgraph cluster_astgraphX__treeparser__ItemContainer {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.ItemContainer"];
-                astgraphX__treeparser__ItemContainer____init__ [label="__init__", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__add_mod [label="add_mod", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__append_def [label="append_def", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__append_def_parent [label="append_def_parent", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__append_use [label="append_use", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__astroid_item_dict [label="astroid_item_dict", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__astroid_nodeX_dict [label="astroid_node_dict", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__create_def [label="create_def", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__create_module_def [label="create_module_def", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__def_items [label="def_items", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__find_def_item [label="find_def_item", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__find_in_scope [label="find_in_scope", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__find_parent_scope_def [label="find_parent_scope_def", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__find_scope [label="find_scope", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__find_scope_by_id [label="find_scope_by_id", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__find_scope_class [label="find_scope_class", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__get_def_list [label="get_def_list", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__get_use_list [label="get_use_list", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__mod_dict [label="mod_dict", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ItemContainer__use_dict [label="use_dict", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__ItemContainer____init__ [label="__init__", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__add_mod [label="add_mod", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__append_def [label="append_def", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__append_def_parent [label="append_def_parent", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__append_use [label="append_use", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__astroid_item_dict [label="astroid_item_dict", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__astroid_nodeX_dict [label="astroid_node_dict", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__create_def [label="create_def", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__create_module_def [label="create_module_def", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__def_items [label="def_items", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__find_def_item [label="find_def_item", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__find_in_scope [label="find_in_scope", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__find_parent_scope_def [label="find_parent_scope_def", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__find_scope [label="find_scope", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__find_scope_by_id [label="find_scope_by_id", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__find_scope_class [label="find_scope_class", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__get_def_list [label="get_def_list", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__get_use_list [label="get_use_list", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__mod_dict [label="mod_dict", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ItemContainer__use_dict [label="use_dict", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
             subgraph cluster_astgraphX__treeparser__ModuleItem {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.ModuleItem"];
-                astgraphX__treeparser__ModuleItem____init__ [label="__init__", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ModuleItem__filename [label="filename", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ModuleItem__get_filename [label="get_filename", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ModuleItem__get_namespace [label="get_namespace", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__ModuleItem__namespace [label="namespace", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__ModuleItem____init__ [label="__init__", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ModuleItem__filename [label="filename", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ModuleItem__get_filename [label="get_filename", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ModuleItem__get_namespace [label="get_namespace", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__ModuleItem__namespace [label="namespace", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
             subgraph cluster_astgraphX__treeparser__TreeParser {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.TreeParser"];
-                astgraphX__treeparser__TreeParser____init__ [label="__init__", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__TreeParser__analyze [label="analyze", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__TreeParser__analyze_code [label="analyze_code", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__TreeParser__analyze_files [label="analyze_files", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__TreeParser__items [label="items", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__TreeParser____init__ [label="__init__", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__TreeParser__analyze [label="analyze", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__TreeParser__analyze_code [label="analyze_code", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__TreeParser__analyze_files [label="analyze_files", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__TreeParser__items [label="items", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
             subgraph cluster_astgraphX__treeparser__UseParser {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.UseParser"];
-                astgraphX__treeparser__UseParser____init__ [label="__init__", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___find_type_def [label="_find_type_def", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___find_type_def_in_scope [label="_find_type_def_in_scope", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___get_attr_full_call [label="_get_attr_full_call", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___get_callable [label="_get_callable", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___get_callable_def [label="_get_callable_def", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___handle_name [label="_handle_name", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___resolve_attribute [label="_resolve_attribute", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___resolve_item [label="_resolve_item", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___visit [label="_visit", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser___visit_children [label="_visit_children", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser__visit_annassign [label="visit_annassign", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser__visit_assignattr [label="visit_assignattr", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser__visit_assignname [label="visit_assignname", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser__visit_attribute [label="visit_attribute", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser__visit_call [label="visit_call", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
-                astgraphX__treeparser__UseParser__visit_keyword [label="visit_keyword", style="filled", fillcolor="#b265ffb2", fontcolor="#000000", group="6"];
+                astgraphX__treeparser__UseParser____init__ [label="__init__", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___find_type_def [label="_find_type_def", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___find_type_def_in_scope [label="_find_type_def_in_scope", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___get_attr_full_call [label="_get_attr_full_call", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___get_callable [label="_get_callable", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___get_callable_def [label="_get_callable_def", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___handle_name [label="_handle_name", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___resolve_attribute [label="_resolve_attribute", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___resolve_item [label="_resolve_item", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___visit [label="_visit", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser___visit_children [label="_visit_children", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser__visit_annassign [label="visit_annassign", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser__visit_assignattr [label="visit_assignattr", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser__visit_assignname [label="visit_assignname", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser__visit_attribute [label="visit_attribute", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser__visit_call [label="visit_call", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
+                astgraphX__treeparser__UseParser__visit_keyword [label="visit_keyword", style="filled", fillcolor="#9165ffb2", fontcolor="#000000", group="5"];
             }
         }
     }
-        astgraphX__asttree -> astgraphX__asttree__draw_ast_graphX [style="dashed",  color="#838b8b"];
-        astgraphX__asttree -> astgraphX__asttree__generate_dot_graphX [style="dashed",  color="#838b8b"];
-        astgraphX__asttree -> astgraphX__asttree__add_nodeX [style="dashed",  color="#838b8b"];
-        astgraphX__pyanwrap -> astgraphX__pyanwrap__draw_graphX [style="dashed",  color="#838b8b"];
-        astgraphX__pyanwrap -> astgraphX__pyanwrap__PyanNodeMock [style="dashed",  color="#838b8b"];
         astgraphX__pyanwrap__PyanNodeMock -> astgraphX__pyanwrap__PyanNodeMock____init__ [style="dashed",  color="#838b8b"];
         astgraphX__pyanwrap__PyanNodeMock -> astgraphX__pyanwrap__PyanNodeMock__get_name [style="dashed",  color="#838b8b"];
         astgraphX__pyanwrap__PyanNodeMock -> astgraphX__pyanwrap__PyanNodeMock__get_short_name [style="dashed",  color="#838b8b"];
@@ -207,23 +196,6 @@ digraph G {
         astgraphX__pyanwrap__PyanNodeMock -> astgraphX__pyanwrap__PyanNodeMock__filename [style="dashed",  color="#838b8b"];
         astgraphX__pyanwrap__PyanNodeMock -> astgraphX__pyanwrap__PyanNodeMock__defined [style="dashed",  color="#838b8b"];
         astgraphX__pyanwrap__PyanNodeMock -> astgraphX__pyanwrap__PyanNodeMock__flavor [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__get_top_nodeX [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__get_message [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__get_type [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__infer_nodeX [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__infer_type [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__unpack_proxy [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__DefItemType [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__DefItem [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__ModuleItem [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__ItemContainer [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__BaseParser [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__DefParser [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__UseParser [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__TreeParser [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__get_modname [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__get_package_root [style="dashed",  color="#838b8b"];
-        astgraphX__treeparser -> astgraphX__treeparser__get_file_modname [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__DefItem -> astgraphX__treeparser__DefItem____init__ [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__DefItem -> astgraphX__treeparser__DefItem__info [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__DefItem -> astgraphX__treeparser__DefItem__append [style="dashed",  color="#838b8b"];
@@ -298,16 +270,12 @@ digraph G {
         astgraphX__treeparser__TreeParser -> astgraphX__treeparser__TreeParser__analyze_code [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__TreeParser -> astgraphX__treeparser__TreeParser__analyze_files [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__TreeParser -> astgraphX__treeparser__TreeParser__items [style="dashed",  color="#838b8b"];
-        astgraphX__objtodict -> astgraphX__objtodict__ObjRepr [style="dashed",  color="#838b8b"];
-        astgraphX__objtodict -> astgraphX__objtodict__obj_to_dict [style="dashed",  color="#838b8b"];
         astgraphX__objtodict__ObjRepr -> astgraphX__objtodict__ObjRepr____init__ [style="dashed",  color="#838b8b"];
         astgraphX__objtodict__ObjRepr -> astgraphX__objtodict__ObjRepr__repr_obj [style="dashed",  color="#838b8b"];
         astgraphX__objtodict__ObjRepr -> astgraphX__objtodict__ObjRepr___visit [style="dashed",  color="#838b8b"];
         astgraphX__objtodict__ObjRepr -> astgraphX__objtodict__ObjRepr___visited [style="dashed",  color="#838b8b"];
         astgraphX__objtodict__ObjRepr -> astgraphX__objtodict__ObjRepr__skip_meta_data [style="dashed",  color="#838b8b"];
         astgraphX__objtodict__ObjRepr -> astgraphX__objtodict__ObjRepr__ignore_fields [style="dashed",  color="#838b8b"];
-        astgraphX__main -> astgraphX__main__analyze_code [style="dashed",  color="#838b8b"];
-        astgraphX__main -> astgraphX__main__main [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__DefItemType -> astgraphX__treeparser__DefItemType__MODULE [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__DefItemType -> astgraphX__treeparser__DefItemType__CLASS [style="dashed",  color="#838b8b"];
         astgraphX__treeparser__DefItemType -> astgraphX__treeparser__DefItemType__MEMBER [style="dashed",  color="#838b8b"];
