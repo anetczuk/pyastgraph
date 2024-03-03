@@ -51,6 +51,7 @@ def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=No
 
         node_translation_map[def_item] = node
 
+    out_edges_num = 0
     pyan_def_edges_dict = {}
     for def_item in def_items:
         def_parent = def_item.parent
@@ -67,6 +68,7 @@ def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=No
             edges_list = []
             pyan_def_edges_dict[node_parent] = edges_list
         edges_list.append(node)
+        out_edges_num = max(out_edges_num, len(edges_list))
 
     pyan_use_edges_dict = {}
     for use_item, call_list in use_dict.items():
@@ -82,6 +84,7 @@ def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=No
                 edges_list = []
                 pyan_use_edges_dict[use_node] = edges_list
             edges_list.append(call_node)
+            out_edges_num = max(out_edges_num, len(edges_list))
 
     pyan_def_graph_dict = {
         "nodes": pyan_nodes_dict,
@@ -92,12 +95,16 @@ def draw_graph(def_items, use_dict, out_svg_file_path=None, out_dot_file_path=No
 
     graph = VisualGraph.from_visitor(pyan_def_graph_obj, options=graph_options, logger=pyan_logger)
 
+    ranksep = out_edges_num / 12.0
+    ranksep = max(ranksep, 1.0)
+    options = ["rankdir=TB"]
+    options += [f'ranksep="{ranksep}"']
     if out_dot_file_path:
-        writer = DotWriter(graph, options=["rankdir=TB"], output=out_dot_file_path, logger=pyan_logger)
+        writer = DotWriter(graph, options=options, output=out_dot_file_path, logger=pyan_logger)
         writer.run()
 
     if out_svg_file_path:
-        writer = SVGWriter(graph, options=["rankdir=TB"], output=out_svg_file_path, logger=pyan_logger)
+        writer = SVGWriter(graph, options=options, output=out_svg_file_path, logger=pyan_logger)
         writer.run()
 
 

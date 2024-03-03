@@ -1,5 +1,5 @@
 digraph G {
-    graph [rankdir=TB, clusterrank="local"];
+    graph [rankdir=TB, ranksep="1.0", clusterrank="local"];
     subgraph cluster_G {
 
         graph [style="filled,rounded", fillcolor="#80808018", label=""];
