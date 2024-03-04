@@ -20,6 +20,8 @@ pyan_logger = logging.getLogger("pyan")
 pyan_logger.setLevel(logging.WARN)
 # pyan_logger.setLevel(logging.DEBUG)
 
+_LOGGER = logging.getLogger(__name__)
+
 
 def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=None, out_html_file_path=None):
     graph_options = {
@@ -115,14 +117,17 @@ def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=No
     options = ["rankdir=TB"]
     options += [f'ranksep="{ranksep}"']
     if out_dot_file_path:
+        _LOGGER.info("writing DOT file to %s", out_dot_file_path)
         writer = DotWriter(graph, options=options, output=out_dot_file_path, logger=pyan_logger)
         writer.run()
 
     if out_svg_file_path:
+        _LOGGER.info("writing SVG file to %s", out_svg_file_path)
         writer = SVGWriter(graph, options=options, output=out_svg_file_path, logger=pyan_logger)
         writer.run()
 
     if out_html_file_path:
+        _LOGGER.info("writing HTML file to %s", out_html_file_path)
         writer = HTMLWriter(graph, options=options, output=out_html_file_path, logger=pyan_logger)
         writer.run()
 
