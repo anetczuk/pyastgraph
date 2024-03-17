@@ -25,7 +25,7 @@ def read_list(file_path):
 packages_list = find_packages(include=["astgraph", "astgraph.*"])
 
 ## additional data to install
-packages_data: Dict[str, Any] = {"astgraph": []}
+packages_data: Dict[str, Any] = {"astgraph": ["*.txt"]}
 
 ## additional scripts to install
 additional_scripts: List[str] = []

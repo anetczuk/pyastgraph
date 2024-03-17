@@ -13,7 +13,8 @@ from astgraph.treeparser import TreeParser, DefItemType
 
 
 def draw(parser, svg_out_path="/tmp/graph.svg"):
-    draw_graph(parser.items.def_items, parser.items.use_dict, out_svg_file_path=svg_out_path)
+    output_dict = {"outsvgfile": svg_out_path}
+    draw_graph(parser.items.def_items, parser.items.use_dict, output_dict)
 
 
 def print_ast(parser):
@@ -53,7 +54,7 @@ def func():
         item = items_container.def_items[1]
         self.assertEqual(item.name, "func")
         self.assertEqual(item.get_namespace(), "testmod")
-        self.assertEqual(item.type, DefItemType.MEMBER)
+        self.assertEqual(item.type, DefItemType.DEF_METHOD)
 
     def test_analyze_func_call(self):
         code = """\
@@ -75,12 +76,12 @@ func()
         item = items_container.def_items[1]
         self.assertEqual(item.name, "func")
         self.assertEqual(item.get_namespace(), "testmod")
-        self.assertEqual(item.type, DefItemType.MEMBER)
+        self.assertEqual(item.type, DefItemType.DEF_METHOD)
 
         mod_uses = items_container.use_dict[mod_item]
         self.assertEqual(len(mod_uses), 1)
         self.assertEqual(mod_uses[0].name, "func")
-        self.assertEqual(mod_uses[0].type, DefItemType.MEMBER)
+        self.assertEqual(mod_uses[0].type, DefItemType.DEF_METHOD)
 
     def test_analyze_func_call_02(self):
         code = """\
@@ -103,12 +104,12 @@ def func_b():
         func_a_item = items_container.def_items[1]
         self.assertEqual(func_a_item.name, "func_a")
         self.assertEqual(func_a_item.get_namespace(), "testmod")
-        self.assertEqual(func_a_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_a_item.type, DefItemType.DEF_METHOD)
 
         func_b_item = items_container.def_items[2]
         self.assertEqual(func_b_item.name, "func_b")
         self.assertEqual(func_b_item.get_namespace(), "testmod")
-        self.assertEqual(func_b_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_b_item.type, DefItemType.DEF_METHOD)
 
         self.assertNotIn(mod_item, items_container.use_dict)
         self.assertNotIn(func_a_item, items_container.use_dict)
@@ -141,12 +142,12 @@ def func_b():
         func_a_item = items_container.def_items[1]
         self.assertEqual(func_a_item.name, "func_a")
         self.assertEqual(func_a_item.get_namespace(), "testmod")
-        self.assertEqual(func_a_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_a_item.type, DefItemType.DEF_METHOD)
 
         func_b_item = items_container.def_items[2]
         self.assertEqual(func_b_item.name, "func_b")
         self.assertEqual(func_b_item.get_namespace(), "testmod")
-        self.assertEqual(func_b_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_b_item.type, DefItemType.DEF_METHOD)
 
         self.assertNotIn(mod_item, items_container.use_dict)
         self.assertIn(func_a_item, items_container.use_dict)
@@ -155,7 +156,7 @@ def func_b():
         func_a_uses = items_container.use_dict[func_a_item]
         self.assertEqual(len(func_a_uses), 1)
         self.assertEqual(func_a_uses[0].name, "func_b")
-        self.assertEqual(func_a_uses[0].type, DefItemType.MEMBER)
+        self.assertEqual(func_a_uses[0].type, DefItemType.DEF_METHOD)
 
     def test_analyze_func_param(self):
         code = """\
@@ -181,12 +182,12 @@ def func_b():
         func_a_item = items_container.def_items[1]
         self.assertEqual(func_a_item.name, "func_a")
         self.assertEqual(func_a_item.get_namespace(), "testmod")
-        self.assertEqual(func_a_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_a_item.type, DefItemType.DEF_METHOD)
 
         func_b_item = items_container.def_items[2]
         self.assertEqual(func_b_item.name, "func_b")
         self.assertEqual(func_b_item.get_namespace(), "testmod")
-        self.assertEqual(func_b_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_b_item.type, DefItemType.DEF_METHOD)
 
         self.assertNotIn(mod_item, items_container.use_dict)
         self.assertNotIn(func_a_item, items_container.use_dict)
@@ -195,7 +196,7 @@ def func_b():
         func_b_uses = items_container.use_dict[func_b_item]
         self.assertEqual(len(func_b_uses), 1)
         self.assertEqual(func_b_uses[0].name, "func_a")
-        self.assertEqual(func_b_uses[0].type, DefItemType.MEMBER)
+        self.assertEqual(func_b_uses[0].type, DefItemType.DEF_METHOD)
 
     def test_analyze_func_assign(self):
         code = """\
@@ -220,14 +221,14 @@ xxx = func_a()
         func_a_item = items_container.def_items[1]
         self.assertEqual(func_a_item.name, "func_a")
         self.assertEqual(func_a_item.get_namespace(), "testmod")
-        self.assertEqual(func_a_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_a_item.type, DefItemType.DEF_METHOD)
 
         self.assertIn(mod_item, items_container.use_dict)
 
         mod_uses = items_container.use_dict[mod_item]
         self.assertEqual(len(mod_uses), 1)
         self.assertEqual(mod_uses[0].name, "func_a")
-        self.assertEqual(mod_uses[0].type, DefItemType.MEMBER)
+        self.assertEqual(mod_uses[0].type, DefItemType.DEF_METHOD)
 
     def test_analyze_func_call_recursive(self):
         code = """\
@@ -247,7 +248,7 @@ def func_a():
         func_a_item = items_container.def_items[1]
         self.assertEqual(func_a_item.name, "func_a")
         self.assertEqual(func_a_item.get_namespace(), "testmod")
-        self.assertEqual(func_a_item.type, DefItemType.MEMBER)
+        self.assertEqual(func_a_item.type, DefItemType.DEF_METHOD)
 
         self.assertNotIn(mod_item, items_container.use_dict)
         self.assertIn(func_a_item, items_container.use_dict)
@@ -255,7 +256,7 @@ def func_a():
         func_a_uses = items_container.use_dict[func_a_item]
         self.assertEqual(len(func_a_uses), 1)
         self.assertEqual(func_a_uses[0].name, "func_a")
-        self.assertEqual(func_a_uses[0].type, DefItemType.MEMBER)
+        self.assertEqual(func_a_uses[0].type, DefItemType.DEF_METHOD)
 
     def test_analyze_classdef(self):
         code = """\
@@ -281,7 +282,7 @@ class ABC:
         ctor_item = items_container.def_items[2]
         self.assertEqual(ctor_item.name, "__init__")
         self.assertEqual(ctor_item.get_namespace(), "testmod.ABC")
-        self.assertEqual(ctor_item.type, DefItemType.MEMBER)
+        self.assertEqual(ctor_item.type, DefItemType.DEF_METHOD)
 
     def test_analyze_field_assignattr(self):
         code = """\
@@ -310,7 +311,7 @@ class ABC:
         ctor_item = items_container.def_items[2]
         self.assertEqual(ctor_item.name, "__init__")
         self.assertEqual(ctor_item.get_namespace(), "testmod.ABC")
-        self.assertEqual(ctor_item.type, DefItemType.MEMBER)
+        self.assertEqual(ctor_item.type, DefItemType.DEF_METHOD)
 
         field_item = items_container.def_items[3]
         self.assertEqual(field_item.name, "data_field")
@@ -354,19 +355,19 @@ class ABC:
         ctor_item = items_container.def_items[2]
         self.assertEqual(ctor_item.name, "__init__")
         self.assertEqual(ctor_item.get_namespace(), "testmod.ABC")
-        self.assertEqual(ctor_item.type, DefItemType.MEMBER)
+        self.assertEqual(ctor_item.type, DefItemType.DEF_METHOD)
 
         field_item = items_container.def_items[3]
         self.assertEqual(field_item.name, "execute")
         self.assertEqual(field_item.get_namespace(), "testmod.ABC")
-        self.assertEqual(field_item.type, DefItemType.MEMBER)
+        self.assertEqual(field_item.type, DefItemType.DEF_METHOD)
 
         self.assertIn(ctor_item, items_container.use_dict)
 
         ctor_uses = items_container.use_dict[ctor_item]
         self.assertEqual(len(ctor_uses), 1)
         self.assertEqual(ctor_uses[0].name, "execute")
-        self.assertEqual(ctor_uses[0].type, DefItemType.MEMBER)
+        self.assertEqual(ctor_uses[0].type, DefItemType.DEF_METHOD)
 
     def test_analyze_access_static(self):
         code = """\
@@ -397,7 +398,7 @@ def main():
         main_item = items_container.def_items[2]
         self.assertEqual(main_item.name, "main")
         self.assertEqual(main_item.get_namespace(), "testmod")
-        self.assertEqual(main_item.type, DefItemType.MEMBER)
+        self.assertEqual(main_item.type, DefItemType.DEF_METHOD)
 
         field_item = items_container.def_items[3]
         self.assertEqual(field_item.name, "STATIC_FIELD")
@@ -436,9 +437,9 @@ def main():
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
         self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[3], ("testmod.get_object", DefItemType.MEMBER))
-        self.assertEqual(def_list[4], ("testmod.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("testmod.get_object", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[4], ("testmod.main", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[5], ("testmod.ABC2.field1", DefItemType.MEMBER))
 
         use_list = items_container.get_use_list()
@@ -473,9 +474,9 @@ def main():
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
         self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[3], ("testmod.get_object", DefItemType.MEMBER))
-        self.assertEqual(def_list[4], ("testmod.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("testmod.get_object", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[4], ("testmod.main", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[5], ("testmod.ABC2.field1", DefItemType.MEMBER))
 
         use_list = items_container.get_use_list()
@@ -511,10 +512,10 @@ class ABC2:
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
         self.assertEqual(def_list[1], ("testmod.ABC1", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC1.execute", DefItemType.MEMBER))
+        self.assertEqual(def_list[2], ("testmod.ABC1.execute", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[3], ("testmod.ABC2", DefItemType.CLASS))
-        self.assertEqual(def_list[4], ("testmod.ABC2.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[5], ("testmod.ABC2.access_data", DefItemType.MEMBER))
+        self.assertEqual(def_list[4], ("testmod.ABC2.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("testmod.ABC2.access_data", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[6], ("testmod.ABC2.data_manager", DefItemType.MEMBER))
 
         use_list = items_container.get_use_list()
@@ -550,10 +551,10 @@ def main():
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
         self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[3], ("testmod.ABC3", DefItemType.CLASS))
-        self.assertEqual(def_list[4], ("testmod.ABC3.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[5], ("testmod.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[4], ("testmod.ABC3.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("testmod.main", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[6], ("testmod.ABC2.field1", DefItemType.MEMBER))
         self.assertEqual(def_list[7], ("testmod.ABC3.field2", DefItemType.MEMBER))
 
@@ -596,11 +597,11 @@ def main():
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
         self.assertEqual(def_list[1], ("testmod.ABC2", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[2], ("testmod.ABC2.__init__", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[3], ("testmod.ABC3", DefItemType.CLASS))
-        self.assertEqual(def_list[4], ("testmod.ABC3.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[5], ("testmod.ABC3.get_field", DefItemType.MEMBER))
-        self.assertEqual(def_list[6], ("testmod.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[4], ("testmod.ABC3.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("testmod.ABC3.get_field", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[6], ("testmod.main", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[7], ("testmod.ABC2.field1", DefItemType.MEMBER))
         self.assertEqual(def_list[8], ("testmod.ABC3.field2", DefItemType.MEMBER))
 
@@ -633,7 +634,7 @@ def execute():
         abc_item = items_container.def_items[1]
         self.assertEqual(abc_item.name, "execute")
         self.assertEqual(abc_item.get_namespace(), "testmod")
-        self.assertEqual(abc_item.type, DefItemType.MEMBER)
+        self.assertEqual(abc_item.type, DefItemType.DEF_METHOD)
 
     def test_analyze_return_variable(self):
         code = """\
@@ -654,7 +655,7 @@ def execute():
         abc_item = items_container.def_items[1]
         self.assertEqual(abc_item.name, "execute")
         self.assertEqual(abc_item.get_namespace(), "testmod")
-        self.assertEqual(abc_item.type, DefItemType.MEMBER)
+        self.assertEqual(abc_item.type, DefItemType.DEF_METHOD)
 
     def test_analyze_import(self):
         code = """\
@@ -769,8 +770,8 @@ class ABC:
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
         self.assertEqual(def_list[1], ("testmod.ABC", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC.get_data", DefItemType.MEMBER))
-        self.assertEqual(def_list[3], ("testmod.ABC.execute", DefItemType.MEMBER))
+        self.assertEqual(def_list[2], ("testmod.ABC.get_data", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("testmod.ABC.execute", DefItemType.DEF_METHOD))
 
         use_list = items_container.get_use_list()
         self.assertEqual(len(use_list), 1)
@@ -798,8 +799,8 @@ items[0].execute()
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
         self.assertEqual(def_list[1], ("testmod.ABC", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("testmod.ABC.execute", DefItemType.MEMBER))
-        self.assertEqual(def_list[3], ("testmod.ABC.__init__", DefItemType.MEMBER))
+        self.assertEqual(def_list[2], ("testmod.ABC.execute", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("testmod.ABC.__init__", DefItemType.DEF_METHOD))
 
         use_list = items_container.get_use_list()
         self.assertEqual(len(use_list), 2)
@@ -827,7 +828,7 @@ thread = Thread(target=execute, args=[])
         self.assertEqual(len(def_list), 2)
 
         self.assertEqual(def_list[0], ("testmod", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("testmod.execute", DefItemType.MEMBER))
+        self.assertEqual(def_list[1], ("testmod.execute", DefItemType.DEF_METHOD))
 
         use_list = items_container.get_use_list()
         self.assertEqual(len(use_list), 1)

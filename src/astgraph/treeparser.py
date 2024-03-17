@@ -94,6 +94,7 @@ def unpack_proxy(inferred):
 class DefItemType(Enum):
     MODULE = "module"
     CLASS = "class"
+    DEF_METHOD = "method"  # defined method
     MEMBER = "member"  # free function, method or attribute
 
 
@@ -109,6 +110,15 @@ class DefItem:
     @property
     def info(self):
         return (self.get_full_name(), self.type)
+
+    def is_module(self) -> bool:
+        return self.type == DefItemType.MODULE
+
+    def is_method(self) -> bool:
+        return self.type == DefItemType.DEF_METHOD
+
+    def is_field(self) -> bool:
+        return self.type == DefItemType.MEMBER
 
     def append(self, item):
         self.items.append(item)
@@ -144,6 +154,11 @@ class DefItem:
 
     def to_string(self):
         return f"({self.name}, {self.type})"
+
+    def __repr__(self):
+        full_name = self.get_full_name()
+        hex_id = f"0x{id(self):0x}"
+        return f"<{full_name}, {self.type} {hex_id}>"
 
 
 class ModuleItem(DefItem):
@@ -390,7 +405,7 @@ class DefParser(BaseParser):
             return
 
         func_name = astroid_node.name
-        functiondef = self.items.create_def(func_name, DefItemType.MEMBER, astroid_node)
+        functiondef = self.items.create_def(func_name, DefItemType.DEF_METHOD, astroid_node)
         self.items.append_def(functiondef)
 
         self._visit_children(astroid_node)
@@ -704,7 +719,7 @@ class UseParser(BaseParser):
         if ctor_item is not None:
             return ctor_item
         # constructor not explicitly defined - add node
-        ctor_item = self.items.create_def("__init__", DefItemType.MEMBER, None)
+        ctor_item = self.items.create_def("__init__", DefItemType.DEF_METHOD, None)
         self.items.append_def_parent(item_type, ctor_item)
         return ctor_item
 

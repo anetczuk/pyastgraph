@@ -23,7 +23,10 @@ pyan_logger.setLevel(logging.WARN)
 _LOGGER = logging.getLogger(__name__)
 
 
-def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=None, out_html_file_path=None):
+def draw_graph(def_items, use_dict, output_dict=None):
+    if not output_dict:
+        output_dict = {}
+
     graph_options = {
         "draw_defines": True,
         "draw_uses": True,
@@ -112,10 +115,15 @@ def draw_graph(def_items, use_dict, out_dot_file_path=None, out_svg_file_path=No
 
     graph = VisualGraph.from_visitor(pyan_def_graph_obj, options=graph_options, logger=pyan_logger)
 
+    out_dot_file_path = output_dict.get("outdotfile")
+    out_svg_file_path = output_dict.get("outsvgfile")
+    out_html_file_path = output_dict.get("outhtmlfile")
+
     ranksep = out_edges_num / 12.0
     ranksep = max(ranksep, 1.0)
     options = ["rankdir=TB"]
     options += [f'ranksep="{ranksep}"']
+
     if out_dot_file_path:
         _LOGGER.info("writing DOT file to %s", out_dot_file_path)
         writer = DotWriter(graph, options=options, output=out_dot_file_path, logger=pyan_logger)

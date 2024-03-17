@@ -16,7 +16,8 @@ from astgraph.treeparser import TreeParser, DefItemType
 
 
 def draw(parser, svg_out_path="/tmp/graph.svg"):
-    draw_graph(parser.items.def_items, parser.items.use_dict, out_svg_file_path=svg_out_path)
+    output_dict = {"outsvgfile": svg_out_path}
+    draw_graph(parser.items.def_items, parser.items.use_dict, output_dict)
 
 
 def print_ast(parser):
@@ -43,11 +44,11 @@ class TreeParserMultifileTest(unittest.TestCase):
         self.assertEqual(len(def_list), 6)
 
         self.assertEqual(def_list[0], ("multifileimportfrom.modulea", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("multifileimportfrom.modulea.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[1], ("multifileimportfrom.modulea.main", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[2], ("multifileimportfrom.item", DefItemType.MODULE))
         self.assertEqual(def_list[3], ("multifileimportfrom.item.Item", DefItemType.CLASS))
-        self.assertEqual(def_list[4], ("multifileimportfrom.item.Item.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[5], ("multifileimportfrom.item.Item.do_work", DefItemType.MEMBER))
+        self.assertEqual(def_list[4], ("multifileimportfrom.item.Item.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("multifileimportfrom.item.Item.do_work", DefItemType.DEF_METHOD))
 
         use_list = items_container.get_use_list()
         self.assertEqual(len(use_list), 2)
@@ -72,11 +73,11 @@ class TreeParserMultifileTest(unittest.TestCase):
         self.assertEqual(len(def_list), 6)
 
         self.assertEqual(def_list[0], ("multifileimport.modulea", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("multifileimport.modulea.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[1], ("multifileimport.modulea.main", DefItemType.DEF_METHOD))
         self.assertEqual(def_list[2], ("multifileimport.item", DefItemType.MODULE))
         self.assertEqual(def_list[3], ("multifileimport.item.Item", DefItemType.CLASS))
-        self.assertEqual(def_list[4], ("multifileimport.item.Item.__init__", DefItemType.MEMBER))
-        self.assertEqual(def_list[5], ("multifileimport.item.Item.do_work", DefItemType.MEMBER))
+        self.assertEqual(def_list[4], ("multifileimport.item.Item.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("multifileimport.item.Item.do_work", DefItemType.DEF_METHOD))
 
         use_list = items_container.get_use_list()
         self.assertEqual(len(use_list), 2)
@@ -100,7 +101,7 @@ class TreeParserMultifileTest(unittest.TestCase):
         self.assertEqual(len(def_list), 2)
 
         self.assertEqual(def_list[0], ("multifileimportfrom.modulea", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("multifileimportfrom.modulea.main", DefItemType.MEMBER))
+        self.assertEqual(def_list[1], ("multifileimportfrom.modulea.main", DefItemType.DEF_METHOD))
 
         use_list = items_container.get_use_list()
         self.assertEqual(len(use_list), 0)
