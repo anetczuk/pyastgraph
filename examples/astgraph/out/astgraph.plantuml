@@ -1,0 +1,1347 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+[-> astgraph.asttree : draw_ast_graph
+activate astgraph.asttree
+  astgraph.asttree o-> astgraph.asttree : generate_dot_graph
+  activate astgraph.asttree
+    astgraph.asttree o-> astgraph.asttree : add_node
+    activate astgraph.asttree
+      astgraph.asttree o-> astgraph.asttree : add_node
+    astgraph.asttree --> astgraph.asttree
+    deactivate astgraph.asttree
+
+  astgraph.asttree --> astgraph.asttree
+  deactivate astgraph.asttree
+
+[-->x astgraph.asttree
+deactivate astgraph.asttree
+
+[-> astgraph.pyanwrap : draw_graph
+activate astgraph.pyanwrap
+  astgraph.pyanwrap o-> astgraph.pyanwrap.PyanNodeMock : __init__
+  activate astgraph.pyanwrap.PyanNodeMock
+    hnote right of astgraph.pyanwrap.PyanNodeMock
+    defined
+    endrnote
+    hnote right of astgraph.pyanwrap.PyanNodeMock
+    namespace
+    endrnote
+    hnote right of astgraph.pyanwrap.PyanNodeMock
+    name
+    endrnote
+    hnote right of astgraph.pyanwrap.PyanNodeMock
+    filename
+    endrnote
+    hnote right of astgraph.pyanwrap.PyanNodeMock
+    flavor
+    endrnote
+  astgraph.pyanwrap.PyanNodeMock --> astgraph.pyanwrap
+  deactivate astgraph.pyanwrap.PyanNodeMock
+
+  hnote right of astgraph.pyanwrap
+  namespace
+  endrnote
+  hnote right of astgraph.pyanwrap
+  name
+  endrnote
+  hnote right of astgraph.pyanwrap
+  filename
+  endrnote
+[-->x astgraph.pyanwrap
+deactivate astgraph.pyanwrap
+
+[-> astgraph.pyanwrap.PyanNodeMock : get_short_name
+activate astgraph.pyanwrap.PyanNodeMock
+  hnote right of astgraph.pyanwrap.PyanNodeMock
+  name
+  endrnote
+[-->x astgraph.pyanwrap.PyanNodeMock
+deactivate astgraph.pyanwrap.PyanNodeMock
+
+[-> astgraph.pyanwrap.PyanNodeMock : get_level
+activate astgraph.pyanwrap.PyanNodeMock
+  hnote right of astgraph.pyanwrap.PyanNodeMock
+  namespace
+  endrnote
+[-->x astgraph.pyanwrap.PyanNodeMock
+deactivate astgraph.pyanwrap.PyanNodeMock
+
+[-> astgraph.pyanwrap.PyanNodeMock : get_label
+activate astgraph.pyanwrap.PyanNodeMock
+  astgraph.pyanwrap.PyanNodeMock o-> astgraph.pyanwrap.PyanNodeMock : get_name
+  activate astgraph.pyanwrap.PyanNodeMock
+    hnote right of astgraph.pyanwrap.PyanNodeMock
+    namespace
+    endrnote
+    hnote right of astgraph.pyanwrap.PyanNodeMock
+    name
+    endrnote
+  astgraph.pyanwrap.PyanNodeMock --> astgraph.pyanwrap.PyanNodeMock
+  deactivate astgraph.pyanwrap.PyanNodeMock
+
+[-->x astgraph.pyanwrap.PyanNodeMock
+deactivate astgraph.pyanwrap.PyanNodeMock
+
+[-> astgraph.pyanwrap.PyanNodeMock : get_namespace_label
+activate astgraph.pyanwrap.PyanNodeMock
+  hnote right of astgraph.pyanwrap.PyanNodeMock
+  namespace
+  endrnote
+[-->x astgraph.pyanwrap.PyanNodeMock
+deactivate astgraph.pyanwrap.PyanNodeMock
+
+astgraph.__main__ o-> astgraph.main : main
+activate astgraph.main
+  astgraph.main o-> astgraph.main : analyze_code
+  activate astgraph.main
+    astgraph.main o-> astgraph.treeparser.TreeParser : __init__
+    activate astgraph.treeparser.TreeParser
+      hnote right of astgraph.treeparser.TreeParser
+      items
+      endrnote
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : __init__
+      activate astgraph.treeparser.ItemContainer
+        hnote right of astgraph.treeparser.ItemContainer
+        mod_dict
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        def_items
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        use_dict
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        astroid_item_dict
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        astroid_node_dict
+        endrnote
+      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+      deactivate astgraph.treeparser.ItemContainer
+
+    astgraph.treeparser.TreeParser --> astgraph.main
+    deactivate astgraph.treeparser.TreeParser
+
+    astgraph.main o-> astgraph.treeparser.TreeParser : analyze_files
+    activate astgraph.treeparser.TreeParser
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser : get_package_root
+      hnote right of astgraph.treeparser.TreeParser
+      items
+      endrnote
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : add_mod
+      activate astgraph.treeparser.ItemContainer
+        hnote right of astgraph.treeparser.ItemContainer
+        mod_dict
+        endrnote
+      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+      deactivate astgraph.treeparser.ItemContainer
+
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+    astgraph.treeparser.TreeParser --> astgraph.main
+    deactivate astgraph.treeparser.TreeParser
+
+    astgraph.main o-> astgraph.treeparser.TreeParser : items
+    astgraph.main o-> astgraph.objtodict : obj_to_dict
+    activate astgraph.objtodict
+      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : __init__
+      activate astgraph.objtodict.ObjRepr
+        hnote right of astgraph.objtodict.ObjRepr
+        _visited
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        skip_meta_data
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        ignore_fields
+        endrnote
+      astgraph.objtodict.ObjRepr --> astgraph.objtodict
+      deactivate astgraph.objtodict.ObjRepr
+
+      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : repr_obj
+      activate astgraph.objtodict.ObjRepr
+        hnote right of astgraph.objtodict.ObjRepr
+        skip_meta_data
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        ignore_fields
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        _visited
+        endrnote
+        astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+        activate astgraph.objtodict.ObjRepr
+          hnote right of astgraph.objtodict.ObjRepr
+          _visited
+          endrnote
+          hnote right of astgraph.objtodict.ObjRepr
+          ignore_fields
+          endrnote
+          astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+          hnote right of astgraph.objtodict.ObjRepr
+          skip_meta_data
+          endrnote
+        astgraph.objtodict.ObjRepr --> astgraph.objtodict.ObjRepr
+        deactivate astgraph.objtodict.ObjRepr
+
+      astgraph.objtodict.ObjRepr --> astgraph.objtodict
+      deactivate astgraph.objtodict.ObjRepr
+
+    astgraph.objtodict --> astgraph.main
+    deactivate astgraph.objtodict
+
+    astgraph.main o-> astgraph.treeparser.ItemContainer : def_items
+    astgraph.main o-> astgraph.treeparser.ItemContainer : use_dict
+  astgraph.main --> astgraph.main
+  deactivate astgraph.main
+
+astgraph.main --> astgraph.__main__
+deactivate astgraph.main
+
+[-> astgraph.treeparser : get_message
+activate astgraph.treeparser
+  astgraph.treeparser o-> astgraph.treeparser : get_top_node
+[-->x astgraph.treeparser
+deactivate astgraph.treeparser
+
+[-> astgraph.treeparser.DefItem : info
+activate astgraph.treeparser.DefItem
+  astgraph.treeparser.DefItem o-> astgraph.treeparser.DefItem : get_full_name
+  activate astgraph.treeparser.DefItem
+    astgraph.treeparser.DefItem o-> astgraph.treeparser.DefItem : get_name
+    activate astgraph.treeparser.DefItem
+      hnote right of astgraph.treeparser.DefItem
+      name
+      endrnote
+    astgraph.treeparser.DefItem --> astgraph.treeparser.DefItem
+    deactivate astgraph.treeparser.DefItem
+
+    hnote right of astgraph.treeparser.DefItem
+    parent
+    endrnote
+  astgraph.treeparser.DefItem --> astgraph.treeparser.DefItem
+  deactivate astgraph.treeparser.DefItem
+
+  hnote right of astgraph.treeparser.DefItem
+  type
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : is_module
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  type
+  endrnote
+  hnote right of astgraph.treeparser.DefItem
+  MODULE
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : is_method
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  type
+  endrnote
+  hnote right of astgraph.treeparser.DefItem
+  DEF_METHOD
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : is_field
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  type
+  endrnote
+  hnote right of astgraph.treeparser.DefItem
+  MEMBER
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : append
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  items
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : get_namespace
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  parent
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : get_filename
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  parent
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : get_child
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  items
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : to_string
+activate astgraph.treeparser.DefItem
+  hnote right of astgraph.treeparser.DefItem
+  name
+  endrnote
+  hnote right of astgraph.treeparser.DefItem
+  type
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.DefItem : __repr__
+activate astgraph.treeparser.DefItem
+  astgraph.treeparser.DefItem o-> astgraph.treeparser.DefItem : get_full_name
+  activate astgraph.treeparser.DefItem
+    astgraph.treeparser.DefItem o-> astgraph.treeparser.DefItem : get_name
+    activate astgraph.treeparser.DefItem
+      hnote right of astgraph.treeparser.DefItem
+      name
+      endrnote
+    astgraph.treeparser.DefItem --> astgraph.treeparser.DefItem
+    deactivate astgraph.treeparser.DefItem
+
+    hnote right of astgraph.treeparser.DefItem
+    parent
+    endrnote
+  astgraph.treeparser.DefItem --> astgraph.treeparser.DefItem
+  deactivate astgraph.treeparser.DefItem
+
+  hnote right of astgraph.treeparser.DefItem
+  type
+  endrnote
+[-->x astgraph.treeparser.DefItem
+deactivate astgraph.treeparser.DefItem
+
+[-> astgraph.treeparser.ModuleItem : get_namespace
+activate astgraph.treeparser.ModuleItem
+  hnote right of astgraph.treeparser.ModuleItem
+  namespace
+  endrnote
+[-->x astgraph.treeparser.ModuleItem
+deactivate astgraph.treeparser.ModuleItem
+
+[-> astgraph.treeparser.ModuleItem : get_filename
+activate astgraph.treeparser.ModuleItem
+  hnote right of astgraph.treeparser.ModuleItem
+  filename
+  endrnote
+[-->x astgraph.treeparser.ModuleItem
+deactivate astgraph.treeparser.ModuleItem
+
+[-> astgraph.treeparser.ItemContainer : get_def_list
+activate astgraph.treeparser.ItemContainer
+  hnote right of astgraph.treeparser.ItemContainer
+  def_items
+  endrnote
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.ItemContainer : get_use_list
+activate astgraph.treeparser.ItemContainer
+  hnote right of astgraph.treeparser.ItemContainer
+  use_dict
+  endrnote
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.ItemContainer : create_def
+activate astgraph.treeparser.ItemContainer
+  hnote right of astgraph.treeparser.ItemContainer
+  MODULE
+  endrnote
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ModuleItem : __init__
+  activate astgraph.treeparser.ModuleItem
+    astgraph.treeparser.ModuleItem o-> astgraph.treeparser.DefItemType : MODULE
+    hnote right of astgraph.treeparser.ModuleItem
+    namespace
+    endrnote
+    hnote right of astgraph.treeparser.ModuleItem
+    filename
+    endrnote
+  astgraph.treeparser.ModuleItem --> astgraph.treeparser.ItemContainer
+  deactivate astgraph.treeparser.ModuleItem
+
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.DefItem : __init__
+  activate astgraph.treeparser.DefItem
+    hnote right of astgraph.treeparser.DefItem
+    node_id
+    endrnote
+    hnote right of astgraph.treeparser.DefItem
+    type
+    endrnote
+    hnote right of astgraph.treeparser.DefItem
+    parent
+    endrnote
+    hnote right of astgraph.treeparser.DefItem
+    name
+    endrnote
+    hnote right of astgraph.treeparser.DefItem
+    items
+    endrnote
+    hnote right of astgraph.treeparser.DefItem
+    type_hint
+    endrnote
+  astgraph.treeparser.DefItem --> astgraph.treeparser.ItemContainer
+  deactivate astgraph.treeparser.DefItem
+
+  hnote right of astgraph.treeparser.ItemContainer
+  astroid_item_dict
+  endrnote
+  hnote right of astgraph.treeparser.ItemContainer
+  astroid_node_dict
+  endrnote
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.ItemContainer : create_module_def
+activate astgraph.treeparser.ItemContainer
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ModuleItem : __init__
+  activate astgraph.treeparser.ModuleItem
+    astgraph.treeparser.ModuleItem o-> astgraph.treeparser.DefItemType : MODULE
+    hnote right of astgraph.treeparser.ModuleItem
+    namespace
+    endrnote
+    hnote right of astgraph.treeparser.ModuleItem
+    filename
+    endrnote
+  astgraph.treeparser.ModuleItem --> astgraph.treeparser.ItemContainer
+  deactivate astgraph.treeparser.ModuleItem
+
+  hnote right of astgraph.treeparser.ItemContainer
+  astroid_item_dict
+  endrnote
+  hnote right of astgraph.treeparser.ItemContainer
+  astroid_node_dict
+  endrnote
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.ItemContainer : append_def
+activate astgraph.treeparser.ItemContainer
+  hnote right of astgraph.treeparser.ItemContainer
+  MODULE
+  endrnote
+  hnote right of astgraph.treeparser.ItemContainer
+  def_items
+  endrnote
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ItemContainer : find_scope_by_id
+  activate astgraph.treeparser.ItemContainer
+    hnote right of astgraph.treeparser.ItemContainer
+    astroid_node_dict
+    endrnote
+    astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ItemContainer : find_scope
+    activate astgraph.treeparser.ItemContainer
+      astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ItemContainer : find_def_item
+      activate astgraph.treeparser.ItemContainer
+        hnote right of astgraph.treeparser.ItemContainer
+        astroid_item_dict
+        endrnote
+      astgraph.treeparser.ItemContainer --> astgraph.treeparser.ItemContainer
+      deactivate astgraph.treeparser.ItemContainer
+
+    astgraph.treeparser.ItemContainer --> astgraph.treeparser.ItemContainer
+    deactivate astgraph.treeparser.ItemContainer
+
+  astgraph.treeparser.ItemContainer --> astgraph.treeparser.ItemContainer
+  deactivate astgraph.treeparser.ItemContainer
+
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ItemContainer : append_def_parent
+  activate astgraph.treeparser.ItemContainer
+    hnote right of astgraph.treeparser.ItemContainer
+    def_items
+    endrnote
+  astgraph.treeparser.ItemContainer --> astgraph.treeparser.ItemContainer
+  deactivate astgraph.treeparser.ItemContainer
+
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.ItemContainer : append_use
+activate astgraph.treeparser.ItemContainer
+  hnote right of astgraph.treeparser.ItemContainer
+  use_dict
+  endrnote
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.ItemContainer : find_parent_scope_def
+activate astgraph.treeparser.ItemContainer
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ItemContainer : find_def_item
+  activate astgraph.treeparser.ItemContainer
+    hnote right of astgraph.treeparser.ItemContainer
+    astroid_item_dict
+    endrnote
+  astgraph.treeparser.ItemContainer --> astgraph.treeparser.ItemContainer
+  deactivate astgraph.treeparser.ItemContainer
+
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.ItemContainer : find_scope_class
+activate astgraph.treeparser.ItemContainer
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ItemContainer : find_def_item
+  activate astgraph.treeparser.ItemContainer
+    hnote right of astgraph.treeparser.ItemContainer
+    astroid_item_dict
+    endrnote
+  astgraph.treeparser.ItemContainer --> astgraph.treeparser.ItemContainer
+  deactivate astgraph.treeparser.ItemContainer
+
+  hnote right of astgraph.treeparser.ItemContainer
+  CLASS
+  endrnote
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.BaseParser : __init__
+activate astgraph.treeparser.BaseParser
+  astgraph.treeparser.BaseParser o-> astgraph.treeparser.ItemContainer : __init__
+  activate astgraph.treeparser.ItemContainer
+    hnote right of astgraph.treeparser.ItemContainer
+    mod_dict
+    endrnote
+    hnote right of astgraph.treeparser.ItemContainer
+    def_items
+    endrnote
+    hnote right of astgraph.treeparser.ItemContainer
+    use_dict
+    endrnote
+    hnote right of astgraph.treeparser.ItemContainer
+    astroid_item_dict
+    endrnote
+    hnote right of astgraph.treeparser.ItemContainer
+    astroid_node_dict
+    endrnote
+  astgraph.treeparser.ItemContainer --> astgraph.treeparser.BaseParser
+  deactivate astgraph.treeparser.ItemContainer
+
+  hnote right of astgraph.treeparser.BaseParser
+  items
+  endrnote
+[-->x astgraph.treeparser.BaseParser
+deactivate astgraph.treeparser.BaseParser
+
+[-> astgraph.treeparser.BaseParser : analyze
+activate astgraph.treeparser.BaseParser
+  astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+[-->x astgraph.treeparser.BaseParser
+deactivate astgraph.treeparser.BaseParser
+
+[-> astgraph.treeparser.BaseParser : _visit_children
+activate astgraph.treeparser.BaseParser
+  astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+[-->x astgraph.treeparser.BaseParser
+deactivate astgraph.treeparser.BaseParser
+
+[-> astgraph.treeparser.BaseParser : _visit_list
+activate astgraph.treeparser.BaseParser
+  astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+[-->x astgraph.treeparser.BaseParser
+deactivate astgraph.treeparser.BaseParser
+
+[-> astgraph.treeparser.TreeParser : analyze_code
+activate astgraph.treeparser.TreeParser
+  astgraph.treeparser.TreeParser o-> astgraph.treeparser.TreeParser : analyze
+  activate astgraph.treeparser.TreeParser
+    hnote right of astgraph.treeparser.TreeParser
+    items
+    endrnote
+    astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : add_mod
+    activate astgraph.treeparser.ItemContainer
+      hnote right of astgraph.treeparser.ItemContainer
+      mod_dict
+      endrnote
+    astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+    deactivate astgraph.treeparser.ItemContainer
+
+    astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+    astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+  astgraph.treeparser.TreeParser --> astgraph.treeparser.TreeParser
+  deactivate astgraph.treeparser.TreeParser
+
+[-->x astgraph.treeparser.TreeParser
+deactivate astgraph.treeparser.TreeParser
+
+[-> astgraph.treeparser : get_modname
+activate astgraph.treeparser
+  astgraph.treeparser o-> astgraph.treeparser : get_package_root
+  astgraph.treeparser o-> astgraph.treeparser : get_file_modname
+[-->x astgraph.treeparser
+deactivate astgraph.treeparser
+
+[-> astgraph.plantuml.NotesContainer : __init__
+activate astgraph.plantuml.NotesContainer
+  hnote right of astgraph.plantuml.NotesContainer
+  _notes_lines
+  endrnote
+  hnote right of astgraph.plantuml.NotesContainer
+  bg_color
+  endrnote
+[-->x astgraph.plantuml.NotesContainer
+deactivate astgraph.plantuml.NotesContainer
+
+[-> astgraph.plantuml.NotesContainer : __len__
+activate astgraph.plantuml.NotesContainer
+  hnote right of astgraph.plantuml.NotesContainer
+  _notes_lines
+  endrnote
+[-->x astgraph.plantuml.NotesContainer
+deactivate astgraph.plantuml.NotesContainer
+
+[-> astgraph.plantuml.NotesContainer : __getitem__
+activate astgraph.plantuml.NotesContainer
+  hnote right of astgraph.plantuml.NotesContainer
+  _notes_lines
+  endrnote
+[-->x astgraph.plantuml.NotesContainer
+deactivate astgraph.plantuml.NotesContainer
+
+[-> astgraph.plantuml.NotesContainer : __iter__
+activate astgraph.plantuml.NotesContainer
+  hnote right of astgraph.plantuml.NotesContainer
+  _notes_lines
+  endrnote
+[-->x astgraph.plantuml.NotesContainer
+deactivate astgraph.plantuml.NotesContainer
+
+[-> astgraph.plantuml.SequenceCall : get_receiver
+activate astgraph.plantuml.SequenceCall
+  hnote right of astgraph.plantuml.SequenceCall
+  calles
+  endrnote
+[-->x astgraph.plantuml.SequenceCall
+deactivate astgraph.plantuml.SequenceCall
+
+[-> astgraph.plantuml.SequenceCall : add_simple_subcall
+activate astgraph.plantuml.SequenceCall
+  astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : create_simple
+  activate astgraph.plantuml.SequenceCall
+    astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : __init__
+    activate astgraph.plantuml.SequenceCall
+      hnote right of astgraph.plantuml.SequenceCall
+      parent
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      caller
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      calles
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      subcalls
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      label
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      notes_data
+      endrnote
+    astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+    deactivate astgraph.plantuml.SequenceCall
+
+    hnote right of astgraph.plantuml.SequenceCall
+    caller
+    endrnote
+    hnote right of astgraph.plantuml.SequenceCall
+    calles
+    endrnote
+    hnote right of astgraph.plantuml.SequenceCall
+    label
+    endrnote
+  astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+  deactivate astgraph.plantuml.SequenceCall
+
+  astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : append_subcall
+  activate astgraph.plantuml.SequenceCall
+    hnote right of astgraph.plantuml.SequenceCall
+    subcalls
+    endrnote
+  astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+  deactivate astgraph.plantuml.SequenceCall
+
+[-->x astgraph.plantuml.SequenceCall
+deactivate astgraph.plantuml.SequenceCall
+
+[-> astgraph.plantuml.SequenceCall : add_subcalles
+activate astgraph.plantuml.SequenceCall
+  astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : create_calles
+  activate astgraph.plantuml.SequenceCall
+    astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : __init__
+    activate astgraph.plantuml.SequenceCall
+      hnote right of astgraph.plantuml.SequenceCall
+      parent
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      caller
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      calles
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      subcalls
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      label
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      notes_data
+      endrnote
+    astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+    deactivate astgraph.plantuml.SequenceCall
+
+    hnote right of astgraph.plantuml.SequenceCall
+    caller
+    endrnote
+    hnote right of astgraph.plantuml.SequenceCall
+    calles
+    endrnote
+    hnote right of astgraph.plantuml.SequenceCall
+    label
+    endrnote
+  astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+  deactivate astgraph.plantuml.SequenceCall
+
+  astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : append_subcall
+  activate astgraph.plantuml.SequenceCall
+    hnote right of astgraph.plantuml.SequenceCall
+    subcalls
+    endrnote
+  astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+  deactivate astgraph.plantuml.SequenceCall
+
+[-->x astgraph.plantuml.SequenceCall
+deactivate astgraph.plantuml.SequenceCall
+
+[-> astgraph.plantuml.SequenceCallList : add_calles
+activate astgraph.plantuml.SequenceCallList
+  astgraph.plantuml.SequenceCallList o-> astgraph.plantuml.SequenceCall : create_calles
+  activate astgraph.plantuml.SequenceCall
+    astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : __init__
+    activate astgraph.plantuml.SequenceCall
+      hnote right of astgraph.plantuml.SequenceCall
+      parent
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      caller
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      calles
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      subcalls
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      label
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCall
+      notes_data
+      endrnote
+    astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+    deactivate astgraph.plantuml.SequenceCall
+
+    hnote right of astgraph.plantuml.SequenceCall
+    caller
+    endrnote
+    hnote right of astgraph.plantuml.SequenceCall
+    calles
+    endrnote
+    hnote right of astgraph.plantuml.SequenceCall
+    label
+    endrnote
+  astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCallList
+  deactivate astgraph.plantuml.SequenceCall
+
+  hnote right of astgraph.plantuml.SequenceCallList
+  items
+  endrnote
+[-->x astgraph.plantuml.SequenceCallList
+deactivate astgraph.plantuml.SequenceCallList
+
+[-> astgraph.plantuml.SequenceGraph : add_actor
+activate astgraph.plantuml.SequenceGraph
+  hnote right of astgraph.plantuml.SequenceGraph
+  actors_list
+  endrnote
+[-->x astgraph.plantuml.SequenceGraph
+deactivate astgraph.plantuml.SequenceGraph
+
+[-> astgraph.plantuml.SequenceGraph : get_actors
+activate astgraph.plantuml.SequenceGraph
+  hnote right of astgraph.plantuml.SequenceGraph
+  actors_list
+  endrnote
+[-->x astgraph.plantuml.SequenceGraph
+deactivate astgraph.plantuml.SequenceGraph
+
+[-> astgraph.plantuml.SequenceGraph : get_all_calls_flat
+activate astgraph.plantuml.SequenceGraph
+  astgraph.plantuml.SequenceGraph o-> astgraph.plantuml.SequenceGraph : get_all_calls
+  activate astgraph.plantuml.SequenceGraph
+    hnote right of astgraph.plantuml.SequenceGraph
+    loops
+    endrnote
+  astgraph.plantuml.SequenceGraph --> astgraph.plantuml.SequenceGraph
+  deactivate astgraph.plantuml.SequenceGraph
+
+[-->x astgraph.plantuml.SequenceGraph
+deactivate astgraph.plantuml.SequenceGraph
+
+[-> astgraph.plantuml : draw_graph
+activate astgraph.plantuml
+  astgraph.plantuml o-> astgraph.plantuml.Converter : __init__
+  activate astgraph.plantuml.Converter
+    hnote right of astgraph.plantuml.Converter
+    use_dict
+    endrnote
+    hnote right of astgraph.plantuml.Converter
+    sequence_graph
+    endrnote
+    hnote right of astgraph.plantuml.Converter
+    sequence
+    endrnote
+  astgraph.plantuml.Converter --> astgraph.plantuml
+  deactivate astgraph.plantuml.Converter
+
+  astgraph.plantuml o-> astgraph.plantuml.Converter : convert
+  activate astgraph.plantuml.Converter
+    hnote right of astgraph.plantuml.Converter
+    use_dict
+    endrnote
+    hnote right of astgraph.plantuml.Converter
+    sequence_graph
+    endrnote
+    astgraph.plantuml.Converter o-> astgraph.plantuml.SequenceGraph : __init__
+    activate astgraph.plantuml.SequenceGraph
+      hnote right of astgraph.plantuml.SequenceGraph
+      params
+      endrnote
+      hnote right of astgraph.plantuml.SequenceGraph
+      actors_list
+      endrnote
+      hnote right of astgraph.plantuml.SequenceGraph
+      loops
+      endrnote
+    astgraph.plantuml.SequenceGraph --> astgraph.plantuml.Converter
+    deactivate astgraph.plantuml.SequenceGraph
+
+    hnote right of astgraph.plantuml.Converter
+    sequence
+    endrnote
+    astgraph.plantuml.Converter o-> astgraph.plantuml.SequenceCallList : __init__
+    activate astgraph.plantuml.SequenceCallList
+      hnote right of astgraph.plantuml.SequenceCallList
+      repeats
+      endrnote
+      hnote right of astgraph.plantuml.SequenceCallList
+      items
+      endrnote
+    astgraph.plantuml.SequenceCallList --> astgraph.plantuml.Converter
+    deactivate astgraph.plantuml.SequenceCallList
+
+    astgraph.plantuml.Converter o-> astgraph.graphtheory : get_root_items
+    activate astgraph.graphtheory
+      astgraph.graphtheory o-> astgraph.graphtheory : get_connected
+    astgraph.graphtheory --> astgraph.plantuml.Converter
+    deactivate astgraph.graphtheory
+
+    astgraph.plantuml.Converter o-> astgraph.graphtheory : visit_graph
+    activate astgraph.graphtheory
+      astgraph.graphtheory o-> astgraph.graphtheory.Visitor : __init__
+      activate astgraph.graphtheory.Visitor
+        hnote right of astgraph.graphtheory.Visitor
+        _edges_dict
+        endrnote
+        hnote right of astgraph.graphtheory.Visitor
+        _callback
+        endrnote
+        hnote right of astgraph.graphtheory.Visitor
+        _visited
+        endrnote
+      astgraph.graphtheory.Visitor --> astgraph.graphtheory
+      deactivate astgraph.graphtheory.Visitor
+
+      astgraph.graphtheory o-> astgraph.graphtheory.Visitor : visit
+      activate astgraph.graphtheory.Visitor
+        hnote right of astgraph.graphtheory.Visitor
+        _edges_dict
+        endrnote
+        hnote right of astgraph.graphtheory.Visitor
+        _callback
+        endrnote
+        hnote right of astgraph.graphtheory.Visitor
+        _visited
+        endrnote
+        astgraph.graphtheory.Visitor o-> astgraph.graphtheory.Visitor : _visit_node
+        activate astgraph.graphtheory.Visitor
+          hnote right of astgraph.graphtheory.Visitor
+          _visited
+          endrnote
+          hnote right of astgraph.graphtheory.Visitor
+          _callback
+          endrnote
+          hnote right of astgraph.graphtheory.Visitor
+          _edges_dict
+          endrnote
+          astgraph.graphtheory.Visitor o-> astgraph.graphtheory.Visitor : _visit_node
+        astgraph.graphtheory.Visitor --> astgraph.graphtheory.Visitor
+        deactivate astgraph.graphtheory.Visitor
+
+      astgraph.graphtheory.Visitor --> astgraph.graphtheory
+      deactivate astgraph.graphtheory.Visitor
+
+    astgraph.graphtheory --> astgraph.plantuml.Converter
+    deactivate astgraph.graphtheory
+
+    astgraph.plantuml.Converter o-> astgraph.plantuml.Converter : _convert_root
+    activate astgraph.plantuml.Converter
+      astgraph.plantuml.Converter o-> astgraph.plantuml.Converter : _get_parent_name
+      activate astgraph.plantuml.Converter
+        astgraph.plantuml.Converter o-> astgraph.plantuml.Converter : _get_parent
+        activate astgraph.plantuml.Converter
+          astgraph.plantuml.Converter o-> astgraph.treeparser.DefItemType : MODULE
+          astgraph.plantuml.Converter o-> astgraph.treeparser.DefItemType : CLASS
+        astgraph.plantuml.Converter --> astgraph.plantuml.Converter
+        deactivate astgraph.plantuml.Converter
+
+      astgraph.plantuml.Converter --> astgraph.plantuml.Converter
+      deactivate astgraph.plantuml.Converter
+
+      hnote right of astgraph.plantuml.Converter
+      sequence
+      endrnote
+      astgraph.plantuml.Converter o-> astgraph.plantuml.SequenceCallList : add_simple_call
+      activate astgraph.plantuml.SequenceCallList
+        astgraph.plantuml.SequenceCallList o-> astgraph.plantuml.SequenceCall : create_simple
+        activate astgraph.plantuml.SequenceCall
+          astgraph.plantuml.SequenceCall o-> astgraph.plantuml.SequenceCall : __init__
+          activate astgraph.plantuml.SequenceCall
+            hnote right of astgraph.plantuml.SequenceCall
+            parent
+            endrnote
+            hnote right of astgraph.plantuml.SequenceCall
+            caller
+            endrnote
+            hnote right of astgraph.plantuml.SequenceCall
+            calles
+            endrnote
+            hnote right of astgraph.plantuml.SequenceCall
+            subcalls
+            endrnote
+            hnote right of astgraph.plantuml.SequenceCall
+            label
+            endrnote
+            hnote right of astgraph.plantuml.SequenceCall
+            notes_data
+            endrnote
+          astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCall
+          deactivate astgraph.plantuml.SequenceCall
+
+          hnote right of astgraph.plantuml.SequenceCall
+          caller
+          endrnote
+          hnote right of astgraph.plantuml.SequenceCall
+          calles
+          endrnote
+          hnote right of astgraph.plantuml.SequenceCall
+          label
+          endrnote
+        astgraph.plantuml.SequenceCall --> astgraph.plantuml.SequenceCallList
+        deactivate astgraph.plantuml.SequenceCall
+
+        hnote right of astgraph.plantuml.SequenceCallList
+        items
+        endrnote
+      astgraph.plantuml.SequenceCallList --> astgraph.plantuml.Converter
+      deactivate astgraph.plantuml.SequenceCallList
+
+      hnote right of astgraph.plantuml.Converter
+      use_dict
+      endrnote
+    astgraph.plantuml.Converter --> astgraph.plantuml.Converter
+    deactivate astgraph.plantuml.Converter
+
+    astgraph.plantuml.Converter o-> astgraph.plantuml.SequenceGraph : append_loop
+    activate astgraph.plantuml.SequenceGraph
+      hnote right of astgraph.plantuml.SequenceGraph
+      loops
+      endrnote
+    astgraph.plantuml.SequenceGraph --> astgraph.plantuml.Converter
+    deactivate astgraph.plantuml.SequenceGraph
+
+  astgraph.plantuml.Converter --> astgraph.plantuml
+  deactivate astgraph.plantuml.Converter
+
+  astgraph.plantuml o-> astgraph.plantuml : generate_diagram
+  activate astgraph.plantuml
+    astgraph.plantuml o-> astgraph.plantuml.SequenceDiagramGenerator : __init__
+    activate astgraph.plantuml.SequenceDiagramGenerator
+      hnote right of astgraph.plantuml.SequenceDiagramGenerator
+      seq_diagram
+      endrnote
+      hnote right of astgraph.plantuml.SequenceDiagramGenerator
+      name_dict
+      endrnote
+      hnote right of astgraph.plantuml.SequenceDiagramGenerator
+      params_dict
+      endrnote
+      astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceGraph : params
+    astgraph.plantuml.SequenceDiagramGenerator --> astgraph.plantuml
+    deactivate astgraph.plantuml.SequenceDiagramGenerator
+
+    astgraph.plantuml o-> astgraph.plantuml.SequenceDiagramGenerator : generate
+    activate astgraph.plantuml.SequenceDiagramGenerator
+      astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml : calculate_actors_optimized_order
+      activate astgraph.plantuml
+        astgraph.plantuml o-> astgraph.plantuml : calculate_width
+      astgraph.plantuml --> astgraph.plantuml.SequenceDiagramGenerator
+      deactivate astgraph.plantuml
+
+      hnote right of astgraph.plantuml.SequenceDiagramGenerator
+      seq_diagram
+      endrnote
+      astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceDiagramGenerator : _get_item_id
+      activate astgraph.plantuml.SequenceDiagramGenerator
+        hnote right of astgraph.plantuml.SequenceDiagramGenerator
+        name_dict
+        endrnote
+      astgraph.plantuml.SequenceDiagramGenerator --> astgraph.plantuml.SequenceDiagramGenerator
+      deactivate astgraph.plantuml.SequenceDiagramGenerator
+
+      astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceGraph : get_loops
+      activate astgraph.plantuml.SequenceGraph
+        hnote right of astgraph.plantuml.SequenceGraph
+        loops
+        endrnote
+      astgraph.plantuml.SequenceGraph --> astgraph.plantuml.SequenceDiagramGenerator
+      deactivate astgraph.plantuml.SequenceGraph
+
+      astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceDiagramGenerator : generate_loop
+      activate astgraph.plantuml.SequenceDiagramGenerator
+        hnote right of astgraph.plantuml.SequenceDiagramGenerator
+        params_dict
+        endrnote
+        astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceDiagramGenerator : _add_seqcall
+        activate astgraph.plantuml.SequenceDiagramGenerator
+          astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceDiagramGenerator : _get_item_id
+          astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceDiagramGenerator : _add_call
+          activate astgraph.plantuml.SequenceDiagramGenerator
+            astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceDiagramGenerator : _add_notes
+            activate astgraph.plantuml.SequenceDiagramGenerator
+              astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml : convert_notes
+              activate astgraph.plantuml
+                astgraph.plantuml o-> astgraph.plantuml.NoteType : INFO
+                astgraph.plantuml o-> astgraph.plantuml.NoteType : ERROR
+                astgraph.plantuml o-> astgraph.plantuml : format_note_error
+              astgraph.plantuml --> astgraph.plantuml.SequenceDiagramGenerator
+              deactivate astgraph.plantuml
+
+            astgraph.plantuml.SequenceDiagramGenerator --> astgraph.plantuml.SequenceDiagramGenerator
+            deactivate astgraph.plantuml.SequenceDiagramGenerator
+
+          astgraph.plantuml.SequenceDiagramGenerator --> astgraph.plantuml.SequenceDiagramGenerator
+          deactivate astgraph.plantuml.SequenceDiagramGenerator
+
+          astgraph.plantuml.SequenceDiagramGenerator o-> astgraph.plantuml.SequenceDiagramGenerator : _add_seqcall
+        astgraph.plantuml.SequenceDiagramGenerator --> astgraph.plantuml.SequenceDiagramGenerator
+        deactivate astgraph.plantuml.SequenceDiagramGenerator
+
+      astgraph.plantuml.SequenceDiagramGenerator --> astgraph.plantuml.SequenceDiagramGenerator
+      deactivate astgraph.plantuml.SequenceDiagramGenerator
+
+    astgraph.plantuml.SequenceDiagramGenerator --> astgraph.plantuml
+    deactivate astgraph.plantuml.SequenceDiagramGenerator
+
+  astgraph.plantuml --> astgraph.plantuml
+  deactivate astgraph.plantuml
+
+  astgraph.plantuml o-> astgraph.plantuml : convert_to_svg
+[-->x astgraph.plantuml
+deactivate astgraph.plantuml
+
+astgraph.main o-> astgraph.main : main
+activate astgraph.main
+  astgraph.main o-> astgraph.main : analyze_code
+  activate astgraph.main
+    astgraph.main o-> astgraph.treeparser.TreeParser : __init__
+    activate astgraph.treeparser.TreeParser
+      hnote right of astgraph.treeparser.TreeParser
+      items
+      endrnote
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : __init__
+      activate astgraph.treeparser.ItemContainer
+        hnote right of astgraph.treeparser.ItemContainer
+        mod_dict
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        def_items
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        use_dict
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        astroid_item_dict
+        endrnote
+        hnote right of astgraph.treeparser.ItemContainer
+        astroid_node_dict
+        endrnote
+      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+      deactivate astgraph.treeparser.ItemContainer
+
+    astgraph.treeparser.TreeParser --> astgraph.main
+    deactivate astgraph.treeparser.TreeParser
+
+    astgraph.main o-> astgraph.treeparser.TreeParser : analyze_files
+    activate astgraph.treeparser.TreeParser
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser : get_package_root
+      hnote right of astgraph.treeparser.TreeParser
+      items
+      endrnote
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : add_mod
+      activate astgraph.treeparser.ItemContainer
+        hnote right of astgraph.treeparser.ItemContainer
+        mod_dict
+        endrnote
+      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+      deactivate astgraph.treeparser.ItemContainer
+
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+      astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+    astgraph.treeparser.TreeParser --> astgraph.main
+    deactivate astgraph.treeparser.TreeParser
+
+    astgraph.main o-> astgraph.treeparser.TreeParser : items
+    astgraph.main o-> astgraph.objtodict : obj_to_dict
+    activate astgraph.objtodict
+      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : __init__
+      activate astgraph.objtodict.ObjRepr
+        hnote right of astgraph.objtodict.ObjRepr
+        _visited
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        skip_meta_data
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        ignore_fields
+        endrnote
+      astgraph.objtodict.ObjRepr --> astgraph.objtodict
+      deactivate astgraph.objtodict.ObjRepr
+
+      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : repr_obj
+      activate astgraph.objtodict.ObjRepr
+        hnote right of astgraph.objtodict.ObjRepr
+        skip_meta_data
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        ignore_fields
+        endrnote
+        hnote right of astgraph.objtodict.ObjRepr
+        _visited
+        endrnote
+        astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+        activate astgraph.objtodict.ObjRepr
+          hnote right of astgraph.objtodict.ObjRepr
+          _visited
+          endrnote
+          hnote right of astgraph.objtodict.ObjRepr
+          ignore_fields
+          endrnote
+          astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+          hnote right of astgraph.objtodict.ObjRepr
+          skip_meta_data
+          endrnote
+        astgraph.objtodict.ObjRepr --> astgraph.objtodict.ObjRepr
+        deactivate astgraph.objtodict.ObjRepr
+
+      astgraph.objtodict.ObjRepr --> astgraph.objtodict
+      deactivate astgraph.objtodict.ObjRepr
+
+    astgraph.objtodict --> astgraph.main
+    deactivate astgraph.objtodict
+
+    astgraph.main o-> astgraph.treeparser.ItemContainer : def_items
+    astgraph.main o-> astgraph.treeparser.ItemContainer : use_dict
+  astgraph.main --> astgraph.main
+  deactivate astgraph.main
+
+astgraph.main --> astgraph.main
+deactivate astgraph.main
+
+[-> astgraph.treeparser : infer_type
+activate astgraph.treeparser
+  astgraph.treeparser o-> astgraph.treeparser : unpack_proxy
+[-->x astgraph.treeparser
+deactivate astgraph.treeparser
+
+[-> astgraph.treeparser.ItemContainer : find_in_scope
+activate astgraph.treeparser.ItemContainer
+  hnote right of astgraph.treeparser.ItemContainer
+  mod_dict
+  endrnote
+  astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ItemContainer : find_in_scope
+[-->x astgraph.treeparser.ItemContainer
+deactivate astgraph.treeparser.ItemContainer
+
+[-> astgraph.treeparser.DefParser : _visit
+activate astgraph.treeparser.DefParser
+  astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : visit_module
+  activate astgraph.treeparser.DefParser
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.ModuleItem : filename
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : _visit_children
+    activate astgraph.treeparser.DefParser
+      astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : _visit
+    astgraph.treeparser.DefParser --> astgraph.treeparser.DefParser
+    deactivate astgraph.treeparser.DefParser
+
+  astgraph.treeparser.DefParser --> astgraph.treeparser.DefParser
+  deactivate astgraph.treeparser.DefParser
+
+  astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : visit_classdef
+  activate astgraph.treeparser.DefParser
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.DefItemType : CLASS
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : _visit_children
+  astgraph.treeparser.DefParser --> astgraph.treeparser.DefParser
+  deactivate astgraph.treeparser.DefParser
+
+  astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : visit_functiondef
+  activate astgraph.treeparser.DefParser
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.DefItemType : DEF_METHOD
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : _visit_children
+  astgraph.treeparser.DefParser --> astgraph.treeparser.DefParser
+  deactivate astgraph.treeparser.DefParser
+
+  astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : _visit_children
+[-->x astgraph.treeparser.DefParser
+deactivate astgraph.treeparser.DefParser
+
+[-> astgraph.treeparser.UseParser : _visit
+activate astgraph.treeparser.UseParser
+  astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_call
+  activate astgraph.treeparser.UseParser
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_attribute
+    activate astgraph.treeparser.UseParser
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _get_attr_full_call
+      activate astgraph.treeparser.UseParser
+        astgraph.treeparser.UseParser o-> astgraph.treeparser : infer_type
+        activate astgraph.treeparser
+          astgraph.treeparser o-> astgraph.treeparser : unpack_proxy
+        astgraph.treeparser --> astgraph.treeparser.UseParser
+        deactivate astgraph.treeparser
+
+        astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _get_attr_full_call
+      astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+      deactivate astgraph.treeparser.UseParser
+
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_item
+      activate astgraph.treeparser.UseParser
+        astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _find_type_def_in_scope
+        activate astgraph.treeparser.UseParser
+          astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit
+        astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+        deactivate astgraph.treeparser.UseParser
+
+      astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+      deactivate astgraph.treeparser.UseParser
+
+    astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+    deactivate astgraph.treeparser.UseParser
+
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : MODULE
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : CLASS
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _get_callable
+    activate astgraph.treeparser.UseParser
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : CLASS
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : DEF_METHOD
+    astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+    deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+  deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_keyword
+  activate astgraph.treeparser.UseParser
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_attribute
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : MODULE
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : CLASS
+  astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+  deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_assignname
+  activate astgraph.treeparser.UseParser
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : MEMBER
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit_children
+    activate astgraph.treeparser.UseParser
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit
+    astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+    deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+  deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_assignattr
+  activate astgraph.treeparser.UseParser
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _handle_name
+    activate astgraph.treeparser.UseParser
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _find_type_def
+      activate astgraph.treeparser.UseParser
+        astgraph.treeparser.UseParser o-> astgraph.treeparser : get_type
+        astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _find_type_def_in_scope
+      astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+      deactivate astgraph.treeparser.UseParser
+
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : CLASS
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : MEMBER
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _get_callable_def
+      activate astgraph.treeparser.UseParser
+        astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _find_type_def
+        astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _get_callable
+      astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+      deactivate astgraph.treeparser.UseParser
+
+    astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+    deactivate astgraph.treeparser.UseParser
+
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit_children
+  astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+  deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_annassign
+  activate astgraph.treeparser.UseParser
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit_children
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_attribute
+    astgraph.treeparser.UseParser o-> astgraph.treeparser : infer_type
+  astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+  deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_attribute
+  activate astgraph.treeparser.UseParser
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_attribute
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : MODULE
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType : CLASS
+  astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
+  deactivate astgraph.treeparser.UseParser
+
+  astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit_children
+[-->x astgraph.treeparser.UseParser
+deactivate astgraph.treeparser.UseParser
+
+
+@enduml

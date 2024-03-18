@@ -1,0 +1,34 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+thread01.runner01 o-> thread01.runner01 : main
+activate thread01.runner01
+  thread01.runner01 o-> thread01.runner01.Runner : __init__
+  activate thread01.runner01.Runner
+    hnote right of thread01.runner01.Runner
+    worker
+    endrnote
+    thread01.runner01.Runner o-> thread01.worker01.Worker : __init__
+    hnote right of thread01.runner01.Runner
+    thread
+    endrnote
+    thread01.runner01.Runner o-> thread01.worker01.Worker : work
+  thread01.runner01.Runner --> thread01.runner01
+  deactivate thread01.runner01.Runner
+
+  thread01.runner01 o-> thread01.runner01.Runner : execute
+  activate thread01.runner01.Runner
+    hnote right of thread01.runner01.Runner
+    thread
+    endrnote
+    thread01.runner01.Runner o-> thread01.runner01.Runner : result
+  thread01.runner01.Runner --> thread01.runner01
+  deactivate thread01.runner01.Runner
+
+thread01.runner01 --> thread01.runner01
+deactivate thread01.runner01
+
+
+@enduml

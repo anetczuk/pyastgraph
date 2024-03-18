@@ -22,5 +22,7 @@ python3 -m astgraph -f $FILES \
                     --outdotfile "$OUT_DIR/astgraph.dot.txt" \
                     --outsvgfile "$OUT_DIR/astgraph.svg" \
                     --outhtmlfile "$OUT_DIR/astgraph.html" \
+                    --outseqdiag "$OUT_DIR/astgraph.plantuml" \
+                    --outseqsvg "$OUT_DIR/astgraph.plantuml.svg" \
                     $@
 convert -strip -density 80 "$OUT_DIR/astgraph.svg" "$OUT_DIR/astgraph.png"

@@ -1,0 +1,34 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+multifile01.multi01 o-> multifile01.multi01 : main
+activate multifile01.multi01
+  multifile01.multi01 o-> multifile01.multi02.Runner : __init__
+  activate multifile01.multi02.Runner
+    hnote right of multifile01.multi02.Runner
+    instance_field
+    endrnote
+    multifile01.multi02.Runner o-> multifile01.multi02.Runner : execute
+    activate multifile01.multi02.Runner
+      hnote right of multifile01.multi02.Runner
+      instance_field
+      endrnote
+      hnote right of multifile01.multi02.Runner
+      STATIC_FIELD
+      endrnote
+    multifile01.multi02.Runner --> multifile01.multi02.Runner
+    deactivate multifile01.multi02.Runner
+
+  multifile01.multi02.Runner --> multifile01.multi01
+  deactivate multifile01.multi02.Runner
+
+  multifile01.multi01 o-> multifile01.multi02.Runner : instance_field
+  multifile01.multi01 o-> multifile01.multi02.Runner : execute
+  multifile01.multi01 o-> multifile01.multi02.Runner : STATIC_FIELD
+multifile01.multi01 --> multifile01.multi01
+deactivate multifile01.multi01
+
+
+@enduml

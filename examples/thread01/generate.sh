@@ -19,5 +19,11 @@ echo "passing files: ${FILES}"
 
 cd $SRC_DIR
 
-python3 -m astgraph -f $FILES --outsvgfile "$OUT_DIR/graph.svg" --outdotfile "$OUT_DIR/graph.dot.txt" $@
+python3 -m astgraph -f $FILES \
+                    --outsvgfile "$OUT_DIR/graph.svg" \
+                    --outdotfile "$OUT_DIR/graph.dot.txt" \
+                    --outseqdiag "$OUT_DIR/graph.plantuml" \
+                    --outseqsvg "$OUT_DIR/graph.plantuml.svg" \
+                    $@
+
 convert -strip -density 80 "$OUT_DIR/graph.svg" "$OUT_DIR/graph.png"

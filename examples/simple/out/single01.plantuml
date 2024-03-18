@@ -1,0 +1,34 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+simple.single01 o-> simple.single01 : main
+activate simple.single01
+  simple.single01 o-> simple.single01.Runner : __init__
+  activate simple.single01.Runner
+    hnote right of simple.single01.Runner
+    instance_field
+    endrnote
+    simple.single01.Runner o-> simple.single01.Runner : execute
+    activate simple.single01.Runner
+      hnote right of simple.single01.Runner
+      instance_field
+      endrnote
+      hnote right of simple.single01.Runner
+      STATIC_FIELD
+      endrnote
+    simple.single01.Runner --> simple.single01.Runner
+    deactivate simple.single01.Runner
+
+  simple.single01.Runner --> simple.single01
+  deactivate simple.single01.Runner
+
+  simple.single01 o-> simple.single01.Runner : instance_field
+  simple.single01 o-> simple.single01.Runner : execute
+  simple.single01 o-> simple.single01.Runner : STATIC_FIELD
+simple.single01 --> simple.single01
+deactivate simple.single01
+
+
+@enduml

@@ -6,12 +6,14 @@ Generate call graph from static Python code.
 ## Similar projects
 
 - [pyan](https://github.com/Technologicat/pyan)
+- [python-graphs](https://github.com/google-research/python-graphs)
 
 
 ## References
 
 - [Python AST](https://earthly.dev/blog/python-ast/)
 - [Python AST for linters](https://deepsource.com/blog/python-asts-by-building-your-own-linter)
+- [PlantUML](https://plantuml.com/)
 
 
 ## License

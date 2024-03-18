@@ -1,0 +1,46 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+simple.chained01 o-> simple.chained01 : main
+activate simple.chained01
+  simple.chained01 o-> simple.chained01.Runner : __init__
+  activate simple.chained01.Runner
+    hnote right of simple.chained01.Runner
+    worker
+    endrnote
+    simple.chained01.Runner o-> simple.chained01.Worker : __init__
+    activate simple.chained01.Worker
+      hnote right of simple.chained01.Worker
+      data_dict
+      endrnote
+    simple.chained01.Worker --> simple.chained01.Runner
+    deactivate simple.chained01.Worker
+
+  simple.chained01.Runner --> simple.chained01
+  deactivate simple.chained01.Runner
+
+  simple.chained01 o-> simple.chained01.Runner : execute
+  activate simple.chained01.Runner
+    hnote right of simple.chained01.Runner
+    worker
+    endrnote
+    simple.chained01.Runner o-> simple.chained01.Worker : work
+    activate simple.chained01.Worker
+      hnote right of simple.chained01.Worker
+      data_dict
+      endrnote
+    simple.chained01.Worker --> simple.chained01.Runner
+    deactivate simple.chained01.Worker
+
+  simple.chained01.Runner --> simple.chained01
+  deactivate simple.chained01.Runner
+
+  simple.chained01 o-> simple.chained01.Runner : worker
+  simple.chained01 o-> simple.chained01.Worker : data_dict
+simple.chained01 --> simple.chained01
+deactivate simple.chained01
+
+
+@enduml
