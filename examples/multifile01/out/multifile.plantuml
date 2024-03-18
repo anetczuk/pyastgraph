@@ -9,24 +9,30 @@ activate multifile01.multi01
   activate multifile01.multi02.Runner
     hnote right of multifile01.multi02.Runner
     instance_field
-    endrnote
+    endnote
     multifile01.multi02.Runner o-> multifile01.multi02.Runner : execute
     activate multifile01.multi02.Runner
       hnote right of multifile01.multi02.Runner
       instance_field
-      endrnote
+      endnote
       hnote right of multifile01.multi02.Runner
       STATIC_FIELD
-      endrnote
+      endnote
     multifile01.multi02.Runner --> multifile01.multi02.Runner
     deactivate multifile01.multi02.Runner
 
   multifile01.multi02.Runner --> multifile01.multi01
   deactivate multifile01.multi02.Runner
 
-  multifile01.multi01 o-> multifile01.multi02.Runner : instance_field
+  multifile01.multi01 o-> multifile01.multi02.Runner 
+  hnote right
+  instance_field
+  end note
   multifile01.multi01 o-> multifile01.multi02.Runner : execute
-  multifile01.multi01 o-> multifile01.multi02.Runner : STATIC_FIELD
+  multifile01.multi01 o-> multifile01.multi02.Runner 
+  hnote right
+  STATIC_FIELD
+  end note
 multifile01.multi01 --> multifile01.multi01
 deactivate multifile01.multi01
 

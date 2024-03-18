@@ -9,24 +9,30 @@ activate simple.single01
   activate simple.single01.Runner
     hnote right of simple.single01.Runner
     instance_field
-    endrnote
+    endnote
     simple.single01.Runner o-> simple.single01.Runner : execute
     activate simple.single01.Runner
       hnote right of simple.single01.Runner
       instance_field
-      endrnote
+      endnote
       hnote right of simple.single01.Runner
       STATIC_FIELD
-      endrnote
+      endnote
     simple.single01.Runner --> simple.single01.Runner
     deactivate simple.single01.Runner
 
   simple.single01.Runner --> simple.single01
   deactivate simple.single01.Runner
 
-  simple.single01 o-> simple.single01.Runner : instance_field
+  simple.single01 o-> simple.single01.Runner 
+  hnote right
+  instance_field
+  end note
   simple.single01 o-> simple.single01.Runner : execute
-  simple.single01 o-> simple.single01.Runner : STATIC_FIELD
+  simple.single01 o-> simple.single01.Runner 
+  hnote right
+  STATIC_FIELD
+  end note
 simple.single01 --> simple.single01
 deactivate simple.single01
 

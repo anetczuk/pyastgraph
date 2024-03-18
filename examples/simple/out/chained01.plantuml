@@ -9,12 +9,12 @@ activate simple.chained01
   activate simple.chained01.Runner
     hnote right of simple.chained01.Runner
     worker
-    endrnote
+    endnote
     simple.chained01.Runner o-> simple.chained01.Worker : __init__
     activate simple.chained01.Worker
       hnote right of simple.chained01.Worker
       data_dict
-      endrnote
+      endnote
     simple.chained01.Worker --> simple.chained01.Runner
     deactivate simple.chained01.Worker
 
@@ -25,20 +25,26 @@ activate simple.chained01
   activate simple.chained01.Runner
     hnote right of simple.chained01.Runner
     worker
-    endrnote
+    endnote
     simple.chained01.Runner o-> simple.chained01.Worker : work
     activate simple.chained01.Worker
       hnote right of simple.chained01.Worker
       data_dict
-      endrnote
+      endnote
     simple.chained01.Worker --> simple.chained01.Runner
     deactivate simple.chained01.Worker
 
   simple.chained01.Runner --> simple.chained01
   deactivate simple.chained01.Runner
 
-  simple.chained01 o-> simple.chained01.Runner : worker
-  simple.chained01 o-> simple.chained01.Worker : data_dict
+  simple.chained01 o-> simple.chained01.Runner 
+  hnote right
+  worker
+  end note
+  simple.chained01 o-> simple.chained01.Worker 
+  hnote right
+  data_dict
+  end note
 simple.chained01 --> simple.chained01
 deactivate simple.chained01
 

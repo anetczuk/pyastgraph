@@ -7,12 +7,12 @@ skinparam backgroundColor #FEFEFE
 activate simple.invalid01.Invalid
   hnote right of simple.invalid01.Invalid
   data_field
-  endrnote
+  endnote
   simple.invalid01.Invalid o-> simple.invalid01.Invalid : execute
   activate simple.invalid01.Invalid
     hnote right of simple.invalid01.Invalid
     data_field
-    endrnote
+    endnote
   simple.invalid01.Invalid --> simple.invalid01.Invalid
   deactivate simple.invalid01.Invalid
 

@@ -9,11 +9,11 @@ activate thread01.runner01
   activate thread01.runner01.Runner
     hnote right of thread01.runner01.Runner
     worker
-    endrnote
+    endnote
     thread01.runner01.Runner o-> thread01.worker01.Worker : __init__
     hnote right of thread01.runner01.Runner
     thread
-    endrnote
+    endnote
     thread01.runner01.Runner o-> thread01.worker01.Worker : work
   thread01.runner01.Runner --> thread01.runner01
   deactivate thread01.runner01.Runner
@@ -22,7 +22,7 @@ activate thread01.runner01
   activate thread01.runner01.Runner
     hnote right of thread01.runner01.Runner
     thread
-    endrnote
+    endnote
     thread01.runner01.Runner o-> thread01.runner01.Runner : result
   thread01.runner01.Runner --> thread01.runner01
   deactivate thread01.runner01.Runner

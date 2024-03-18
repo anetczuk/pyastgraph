@@ -111,6 +111,7 @@ digraph G {
                 astgraphX__plantuml__SequenceCall__get_flat_list [label="get_flat_list", style="filled", fillcolor="#65cbffb2", fontcolor="#000000", group="5"];
                 astgraphX__plantuml__SequenceCall__get_receiver [label="get_receiver", style="filled", fillcolor="#65cbffb2", fontcolor="#000000", group="5"];
                 astgraphX__plantuml__SequenceCall__label [label="label", style="filled", fillcolor="#65cbffb2", fontcolor="#000000", group="5"];
+                astgraphX__plantuml__SequenceCall__label_note [label="label_note", style="filled", fillcolor="#65cbffb2", fontcolor="#000000", group="5"];
                 astgraphX__plantuml__SequenceCall__notes_data [label="notes_data", style="filled", fillcolor="#65cbffb2", fontcolor="#000000", group="5"];
                 astgraphX__plantuml__SequenceCall__parent [label="parent", style="filled", fillcolor="#65cbffb2", fontcolor="#000000", group="5"];
                 astgraphX__plantuml__SequenceCall__subcalls [label="subcalls", style="filled", fillcolor="#65cbffb2", fontcolor="#000000", group="5"];
@@ -424,6 +425,7 @@ digraph G {
         astgraphX__plantuml__SequenceCall -> astgraphX__plantuml__SequenceCall__calles [style="dashed",  color="#838b8b"];
         astgraphX__plantuml__SequenceCall -> astgraphX__plantuml__SequenceCall__subcalls [style="dashed",  color="#838b8b"];
         astgraphX__plantuml__SequenceCall -> astgraphX__plantuml__SequenceCall__label [style="dashed",  color="#838b8b"];
+        astgraphX__plantuml__SequenceCall -> astgraphX__plantuml__SequenceCall__label_note [style="dashed",  color="#838b8b"];
         astgraphX__plantuml__SequenceCall -> astgraphX__plantuml__SequenceCall__notes_data [style="dashed",  color="#838b8b"];
         astgraphX__plantuml__SequenceCallList -> astgraphX__plantuml__SequenceCallList____init__ [style="dashed",  color="#838b8b"];
         astgraphX__plantuml__SequenceCallList -> astgraphX__plantuml__SequenceCallList__add_simple_call [style="dashed",  color="#838b8b"];
@@ -648,6 +650,7 @@ digraph G {
         astgraphX__plantuml__SequenceCall____init__ -> astgraphX__plantuml__SequenceCall__calles [style="solid",  color="#000000"];
         astgraphX__plantuml__SequenceCall____init__ -> astgraphX__plantuml__SequenceCall__subcalls [style="solid",  color="#000000"];
         astgraphX__plantuml__SequenceCall____init__ -> astgraphX__plantuml__SequenceCall__label [style="solid",  color="#000000"];
+        astgraphX__plantuml__SequenceCall____init__ -> astgraphX__plantuml__SequenceCall__label_note [style="solid",  color="#000000"];
         astgraphX__plantuml__SequenceCall____init__ -> astgraphX__plantuml__SequenceCall__notes_data [style="solid",  color="#000000"];
         astgraphX__plantuml__SequenceCall__get_receiver -> astgraphX__plantuml__SequenceCall__calles [style="solid",  color="#000000"];
         astgraphX__plantuml__SequenceCall__append_subcall -> astgraphX__plantuml__SequenceCall__subcalls [style="solid",  color="#000000"];

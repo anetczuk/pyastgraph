@@ -71,6 +71,7 @@ class SequenceCall:
         self.calles: List[str] = []  # actor names
         self.subcalls: List[SequenceCall] = []
         self.label: str = None
+        self.label_note = False
         self.notes_data: NotesContainer = None
 
     def get_receiver(self):
@@ -271,6 +272,7 @@ skinparam backgroundColor #FEFEFE
 
         ## topic url: out/topics/_turtle1_cmd_vel.html
         call_label = call_data.label
+        label_note = call_data.label_note
         indent = ""
 
         if len(receivers) > 1:
@@ -284,7 +286,9 @@ skinparam backgroundColor #FEFEFE
             pub_id = self._get_item_id(call_data.caller)
             for rec in receivers:
                 rec_id = self._get_item_id(rec)
-                content += self._add_call(pub_id, rec_id, call_label, call_data.notes_data, loop_indent + indent)
+                content += self._add_call(
+                    pub_id, rec_id, call_label, call_data.notes_data, loop_indent + indent, label_note
+                )
                 call_label = ""  ## clear label after first item
 
             if use_subs_group:
@@ -295,7 +299,7 @@ skinparam backgroundColor #FEFEFE
             rec = receivers[0]
             pub_id = self._get_item_id(call_data.caller)
             rec_id = self._get_item_id(rec)
-            content += self._add_call(pub_id, rec_id, call_label, call_data.notes_data, item_indent)
+            content += self._add_call(pub_id, rec_id, call_label, call_data.notes_data, item_indent, label_note)
 
             use_activate = True
             # if call_data.parent:
@@ -326,25 +330,35 @@ skinparam backgroundColor #FEFEFE
             # no receivers
             item_indent = loop_indent + indent
             pub_id = self._get_item_id(call_data.caller)
-            content += self._add_call(pub_id, None, call_label, call_data.notes_data, item_indent)
+            content += self._add_call(pub_id, None, call_label, call_data.notes_data, item_indent, label_note)
             # no receivers, so there should be no subcalls
             if len(call_data.subcalls) > 0:
                 raise RuntimeError("unexpected number of subcalls")
 
         return content
 
-    def _add_call(self, pub_id, rec_id, call_label, notes_data, indent):
+    def _add_call(self, pub_id, rec_id, call_label, notes_data, indent, label_note: bool):
         if rec_id:
+            arrow_label = ""
+            if not label_note:
+                arrow_label = f": {call_label}"
+
             if pub_id:
-                content = f"""{indent}{pub_id} o-> {rec_id} : {call_label}\n"""
+                content = f"""{indent}{pub_id} o-> {rec_id} {arrow_label}\n"""
             else:
-                content = f"""{indent}[-> {rec_id} : {call_label}\n"""
+                content = f"""{indent}[-> {rec_id} {arrow_label}\n"""
+
+            if label_note:
+                content += f"""{indent}hnote right\n"""
+                content += f"""{indent}{call_label}\n"""
+                content += f"""{indent}end note\n"""
+
         else:
             if pub_id:
                 content = f"""{indent}hnote right of {pub_id}\n"""
                 content += f"""{indent}{call_label}\n"""
-                content += f"""{indent}endrnote\n"""
-                # content = f"""{indent}{pub_id} o->x] : {call_label}\n"""
+                content += f"""{indent}endnote\n"""
+                # content = f"""{indent}{pub_id} o->] : {call_label}\n"""
             else:
                 raise RuntimeError(
                     f"invalid case: there should be at least one of: publisher id or receiver id in {call_label}"
@@ -600,13 +614,16 @@ class Converter:
             # called: DefItem
             for called in call_list:
                 called_name = called.get_name()
+                label_note = False
                 called_parent_name = self._get_parent_name(called)
                 if called.is_field():
+                    label_note = True
                     if use_parent_name == called_parent_name:
                         called_parent_name = None
                 seq_call: SequenceCall = parent_call.add_simple_subcall(
                     use_parent_name, called_parent_name, called_name
                 )
+                seq_call.label_note = label_note
                 node_seq_map[called] = seq_call
 
     def _get_parent_name(self, item: DefItem):
