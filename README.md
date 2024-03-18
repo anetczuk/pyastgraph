@@ -2,6 +2,8 @@
 
 Generate call graph from static Python code.
 
+Description of command-line arguments can be found [here](doc/cmdargs.md).
+
 
 ## Similar projects
 

@@ -11,6 +11,8 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 $SCRIPT_DIR/tools/installvenv.sh --no-prompt
 $SCRIPT_DIR/venv/runtests.py
 
+$SCRIPT_DIR/doc/generate-doc.sh
+
 $SCRIPT_DIR/examples/generate-all.sh
 
 $SCRIPT_DIR/tools/checkall.sh
