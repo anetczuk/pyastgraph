@@ -15,10 +15,7 @@ mkdir -p "${OUT_DIR}"
 cd $SRC_DIR
 
 
-FILES=$(find $SRC_DIR/astgraph -type f -name "*.py")
-echo "passing files: ${FILES}"
-
-python3 -m astgraph -f $FILES \
+python3 -m astgraph -d "$SRC_DIR/astgraph" \
                     --outdotfile "$OUT_DIR/astgraph.dot.txt" \
                     --outsvgfile "$OUT_DIR/astgraph.svg" \
                     --outhtmlfile "$OUT_DIR/astgraph.html" \

@@ -34,6 +34,7 @@ digraph G {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.main"];
             astgraphX__main__analyze_code [label="analyze_code", style="filled", fillcolor="#ffdd99b2", fontcolor="#000000", group="1"];
+            astgraphX__main__find_files [label="find_files", style="filled", fillcolor="#ffdd99b2", fontcolor="#000000", group="1"];
             astgraphX__main__main [label="main", style="filled", fillcolor="#ffdd99b2", fontcolor="#000000", group="1"];
         }
         subgraph cluster_astgraphX__objtodict {
@@ -746,6 +747,7 @@ digraph G {
         astgraphX__main__analyze_code -> astgraphX__objtodict__obj_to_dict [style="solid",  color="#000000"];
         astgraphX__main__analyze_code -> astgraphX__treeparser__ItemContainer__def_items [style="solid",  color="#000000"];
         astgraphX__main__analyze_code -> astgraphX__treeparser__ItemContainer__use_dict [style="solid",  color="#000000"];
+        astgraphX__main__main -> astgraphX__main__find_files [style="solid",  color="#000000"];
         astgraphX__main__main -> astgraphX__main__analyze_code [style="solid",  color="#000000"];
         astgraphX__main -> astgraphX__main__main [style="solid",  color="#000000"];
     }

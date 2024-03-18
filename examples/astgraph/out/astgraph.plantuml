@@ -95,6 +95,7 @@ deactivate astgraph.pyanwrap.PyanNodeMock
 
 astgraph.__main__ o-> astgraph.main : main
 activate astgraph.main
+  astgraph.main o-> astgraph.main : find_files
   astgraph.main o-> astgraph.main : analyze_code
   activate astgraph.main
     astgraph.main o-> astgraph.treeparser.TreeParser : __init__
@@ -1121,6 +1122,7 @@ deactivate astgraph.plantuml
 
 astgraph.main o-> astgraph.main : main
 activate astgraph.main
+  astgraph.main o-> astgraph.main : find_files
   astgraph.main o-> astgraph.main : analyze_code
   activate astgraph.main
     astgraph.main o-> astgraph.treeparser.TreeParser : __init__

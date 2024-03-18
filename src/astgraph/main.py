@@ -12,6 +12,7 @@ import sys
 import os
 import logging
 import argparse
+from glob import glob
 
 import pprint
 
@@ -42,9 +43,18 @@ def analyze_code(files_list, output_dict, debug_dump=False):
     draw_plantuml_graph(items.use_dict, output_dict)
 
 
+# ext - with dot if needed
+def find_files(search_dir, ext):
+    ret_list = []
+    for filename in glob(f"{search_dir}/**/*{ext}", recursive=True):
+        ret_list.append(filename)
+    return ret_list
+
+
 def main():
     parser = argparse.ArgumentParser(description="Thread graph generator")
     parser.add_argument("-f", "--files", nargs="+", default=[], help="Files to analyze")
+    parser.add_argument("-d", "--dir", action="store", help="Path to directory to search .py files")
     parser.add_argument("--outsvgfile", action="store", required=True, help="Path to output SVG file")
     parser.add_argument("--outdotfile", action="store", required=False, help="Path to output DOT file")
     parser.add_argument("--outhtmlfile", action="store", required=False, help="Path to output HTML file")
@@ -65,7 +75,10 @@ def main():
     # logging.basicConfig(level=logging.INFO)
     logging.basicConfig(level=logging.DEBUG)
 
-    files_list = args.files
+    files_list = find_files(args.dir, ".py")
+    if args.files:
+        files_list.extend(args.files)
+
     _LOGGER.info("parsing files: %s", files_list)
 
     output_dict = {
