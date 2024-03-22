@@ -11,20 +11,13 @@ digraph G {
             subgraph cluster_simple__single01__Runner {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="simple.single01.Runner"];
-                simple__single01__Runner__STATIC_FIELD [label="STATIC_FIELD", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 simple__single01__Runner____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 simple__single01__Runner__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
-                simple__single01__Runner__instance_field [label="instance_field", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
         }
     }
-        simple__single01__Runner____init__ -> simple__single01__Runner__instance_field [style="solid",  color="#000000"];
         simple__single01__Runner____init__ -> simple__single01__Runner__execute [style="solid",  color="#000000"];
-        simple__single01__Runner__execute -> simple__single01__Runner__instance_field [style="solid",  color="#000000"];
-        simple__single01__Runner__execute -> simple__single01__Runner__STATIC_FIELD [style="solid",  color="#000000"];
-        simple__single01__main -> simple__single01__Runner____init__ [style="solid",  color="#000000"];
-        simple__single01__main -> simple__single01__Runner__instance_field [style="solid",  color="#000000"];
         simple__single01__main -> simple__single01__Runner__execute [style="solid",  color="#000000"];
-        simple__single01__main -> simple__single01__Runner__STATIC_FIELD [style="solid",  color="#000000"];
+        simple__single01__main -> simple__single01__Runner____init__ [style="solid",  color="#000000"];
         simple__single01 -> simple__single01__main [style="solid",  color="#000000"];
     }

@@ -27,3 +27,12 @@ python3 -m astgraph -f $FILES \
                     $@
 
 convert -strip -density 80 "$OUT_DIR/graph.svg" "$OUT_DIR/graph.png"
+
+
+python3 -m astgraph -f $FILES \
+                    --filterup '.*Runner.execute.*' \
+                    --filterdown '.*Runner.execute.*' \
+                    --outsvgfile "$OUT_DIR/graph_filtered.svg" \
+                    --outdotfile "$OUT_DIR/graph_filtered.dot.txt" \
+                    $@
+convert -strip -density 150 "$OUT_DIR/graph_filtered.svg" "$OUT_DIR/graph_filtered.png"

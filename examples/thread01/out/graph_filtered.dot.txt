@@ -11,27 +11,14 @@ digraph G {
             subgraph cluster_thread01__runner01__Runner {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="thread01.runner01.Runner"];
-                thread01__runner01__Runner____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 thread01__runner01__Runner__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 thread01__runner01__Runner__result [label="result", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 thread01__runner01__Runner__thread [label="thread", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
-                thread01__runner01__Runner__worker [label="worker", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
         }
-        subgraph cluster_thread01__worker01__Worker {
-
-            graph [style="filled,rounded", fillcolor="#80808018", label="thread01.worker01.Worker"];
-            thread01__worker01__Worker____init__ [label="__init__", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
-            thread01__worker01__Worker__work [label="work", style="filled", fillcolor="#65ff65b2", fontcolor="#000000", group="1"];
-        }
     }
-        thread01__runner01__Runner____init__ -> thread01__runner01__Runner__worker [style="solid",  color="#000000"];
-        thread01__runner01__Runner____init__ -> thread01__worker01__Worker____init__ [style="solid",  color="#000000"];
-        thread01__runner01__Runner____init__ -> thread01__runner01__Runner__thread [style="solid",  color="#000000"];
-        thread01__runner01__Runner____init__ -> thread01__worker01__Worker__work [style="solid",  color="#000000"];
         thread01__runner01__Runner__execute -> thread01__runner01__Runner__thread [style="solid",  color="#000000"];
         thread01__runner01__Runner__execute -> thread01__runner01__Runner__result [style="solid",  color="#000000"];
-        thread01__runner01__main -> thread01__runner01__Runner____init__ [style="solid",  color="#000000"];
         thread01__runner01__main -> thread01__runner01__Runner__execute [style="solid",  color="#000000"];
         thread01__runner01 -> thread01__runner01__main [style="solid",  color="#000000"];
     }

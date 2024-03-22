@@ -1,0 +1,60 @@
+digraph G {
+    graph [rankdir=TB, ranksep="1.0", clusterrank="local"];
+    subgraph cluster_G {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        subgraph cluster_astgraphX__treeparser {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser"];
+            astgraphX__treeparser__get_package_root [label="get_package_root", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            subgraph cluster_astgraphX__treeparser__DefParser {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.DefParser"];
+                astgraphX__treeparser__DefParser____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            }
+            subgraph cluster_astgraphX__treeparser__ItemContainer {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.ItemContainer"];
+                astgraphX__treeparser__ItemContainer____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__ItemContainer__add_mod [label="add_mod", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__ItemContainer__astroid_item_dict [label="astroid_item_dict", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__ItemContainer__astroid_nodeX_dict [label="astroid_node_dict", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__ItemContainer__def_items [label="def_items", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__ItemContainer__mod_dict [label="mod_dict", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__ItemContainer__use_dict [label="use_dict", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            }
+            subgraph cluster_astgraphX__treeparser__TreeParser {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.TreeParser"];
+                astgraphX__treeparser__TreeParser____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__TreeParser__analyze [label="analyze", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__TreeParser__analyze_code [label="analyze_code", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__TreeParser__analyze_files [label="analyze_files", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__TreeParser__items [label="items", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            }
+            subgraph cluster_astgraphX__treeparser__UseParser {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.UseParser"];
+                astgraphX__treeparser__UseParser____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            }
+        }
+    }
+        astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__mod_dict [style="solid",  color="#000000"];
+        astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__def_items [style="solid",  color="#000000"];
+        astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__use_dict [style="solid",  color="#000000"];
+        astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__astroid_item_dict [style="solid",  color="#000000"];
+        astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__astroid_nodeX_dict [style="solid",  color="#000000"];
+        astgraphX__treeparser__ItemContainer__add_mod -> astgraphX__treeparser__ItemContainer__mod_dict [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser____init__ -> astgraphX__treeparser__TreeParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser____init__ -> astgraphX__treeparser__ItemContainer____init__ [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze -> astgraphX__treeparser__TreeParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze -> astgraphX__treeparser__ItemContainer__add_mod [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze -> astgraphX__treeparser__DefParser____init__ [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze -> astgraphX__treeparser__UseParser____init__ [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze_code -> astgraphX__treeparser__TreeParser__analyze [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze_files -> astgraphX__treeparser__get_package_root [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze_files -> astgraphX__treeparser__TreeParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze_files -> astgraphX__treeparser__ItemContainer__add_mod [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze_files -> astgraphX__treeparser__DefParser____init__ [style="solid",  color="#000000"];
+        astgraphX__treeparser__TreeParser__analyze_files -> astgraphX__treeparser__UseParser____init__ [style="solid",  color="#000000"];
+    }

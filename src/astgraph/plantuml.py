@@ -642,9 +642,8 @@ class Converter:
 
 
 def draw_graph(use_dict, output_dict=None):
-    import pprint
-
-    pprint.pprint(use_dict)
+    # import pprint
+    # pprint.pprint(use_dict)
 
     if not output_dict:
         output_dict = {}

@@ -7,6 +7,7 @@
 #
 
 import logging
+from typing import List, Dict, Any
 
 from attrdict import AttrDict
 
@@ -23,7 +24,7 @@ pyan_logger.setLevel(logging.WARN)
 _LOGGER = logging.getLogger(__name__)
 
 
-def draw_graph(def_items, use_dict, output_dict=None):
+def draw_full_graph(def_items: List[Any], use_dict: Dict[Any, Any], output_dict=None):
     if not output_dict:
         output_dict = {}
 
@@ -39,39 +40,70 @@ def draw_graph(def_items, use_dict, output_dict=None):
         "annotated": False,
     }
 
-    node_translation_map = {}
-    for def_item in def_items:
-        node = PyanNodeMock()
-        node.namespace = def_item.get_namespace()
-        node.name = def_item.get_name()
-        node.filename = def_item.get_filename()
-        node_translation_map[def_item] = node
+    out_edges_num = count_max_edges(use_dict)
+    pyan_def_graph_obj = convert_to_pyan_graph(def_items, use_dict)
 
-    out_edges_num = 0
-    pyan_def_edges_dict = {}
+    graph = VisualGraph.from_visitor(pyan_def_graph_obj, options=graph_options, logger=pyan_logger)
+
+    out_dot_file_path = output_dict.get("outdotfile")
+    out_svg_file_path = output_dict.get("outsvgfile")
+    out_html_file_path = output_dict.get("outhtmlfile")
+
+    ranksep = out_edges_num / 12.0
+    ranksep = max(ranksep, 1.0)
+    options = ["rankdir=TB"]
+    options += [f'ranksep="{ranksep}"']
+
+    if out_dot_file_path:
+        _LOGGER.info("writing DOT file to %s", out_dot_file_path)
+        writer = DotWriter(graph, options=options, output=out_dot_file_path, logger=pyan_logger)
+        writer.run()
+
+    if out_svg_file_path:
+        _LOGGER.info("writing SVG file to %s", out_svg_file_path)
+        writer = SVGWriter(graph, options=options, output=out_svg_file_path, logger=pyan_logger)
+        writer.run()
+
+    if out_html_file_path:
+        _LOGGER.info("writing HTML file to %s", out_html_file_path)
+        writer = HTMLWriter(graph, options=options, output=out_html_file_path, logger=pyan_logger)
+        writer.run()
+
+
+def draw_use_graph(use_dict: Dict[Any, Any], output_dict=None):
+    if not output_dict:
+        output_dict = {}
+
+    graph_options = {
+        "draw_defines": False,
+        "draw_uses": True,
+        "colored": True,
+        "grouped_alt": False,
+        "grouped": True,
+        # "grouped_alt": True,
+        # "grouped": False,
+        "nested_groups": True,
+        "annotated": False,
+    }
+
+    # initialize translation map
+    node_translation_map: Dict[DefItem, PyanNodeMock] = {}
     # def_item: DefItem
-    for def_item in def_items:
-        def_parent: DefItem = def_item.parent
-        if def_parent is None:
-            continue
-        if def_parent.type is DefItemType.MODULE:
-            continue
-        # if def_parent.type is DefItemType.CLASS:
-        #     continue
-        node: PyanNodeMock = node_translation_map.get(def_item)
-        if node is None:
-            continue
-        node_parent: PyanNodeMock = node_translation_map.get(def_parent)
-        if node_parent is None:
-            continue
-        edges_list = pyan_def_edges_dict.get(node_parent, None)
-        if edges_list is None:
-            edges_list = []
-            pyan_def_edges_dict[node_parent] = edges_list
-        edges_list.append(node)
-        out_edges_num = max(out_edges_num, len(edges_list))
+    for use_item, call_list in use_dict.items():
+        copied_list = call_list.copy()
+        copied_list.append(use_item)
+        for def_item in copied_list:
+            if def_item in node_translation_map:
+                continue
+            node = PyanNodeMock()
+            node.namespace = def_item.get_namespace()
+            node.name = def_item.get_name()
+            node.filename = def_item.get_filename()
+            node_translation_map[def_item] = node
 
-    pyan_use_edges_dict = {}
+    # generate pyan use edges graph
+    out_edges_num = 0
+    pyan_use_edges_dict: Dict[PyanNodeMock, List[PyanNodeMock]] = {}
     for use_item, call_list in use_dict.items():
         use_node: PyanNodeMock = node_translation_map.get(use_item)
         if use_node is None:
@@ -87,12 +119,10 @@ def draw_graph(def_items, use_dict, output_dict=None):
             edges_list.append(call_node)
             out_edges_num = max(out_edges_num, len(edges_list))
 
-    pyan_nodes_dict = {}
+    # generate names dict
+    pyan_nodes_dict: Dict[str, List[PyanNodeMock]] = {}
     edge_nodes_list = set()
     # node: PyanNodeMock
-    for node, connections in pyan_def_edges_dict.items():
-        edge_nodes_list.add(node)
-        edge_nodes_list.update(connections)
     for node, connections in pyan_use_edges_dict.items():
         edge_nodes_list.add(node)
         edge_nodes_list.update(connections)
@@ -106,11 +136,7 @@ def draw_graph(def_items, use_dict, output_dict=None):
             pyan_nodes_dict[full_name] = nodes_list
         nodes_list.append(node)
 
-    pyan_def_graph_dict = {
-        "nodes": pyan_nodes_dict,
-        "defines_edges": pyan_def_edges_dict,
-        "uses_edges": pyan_use_edges_dict,
-    }
+    pyan_def_graph_dict = {"nodes": pyan_nodes_dict, "defines_edges": {}, "uses_edges": pyan_use_edges_dict}
     pyan_def_graph_obj = AttrDict(pyan_def_graph_dict)  # recursively convert dict to obj (keys become attributes)
 
     graph = VisualGraph.from_visitor(pyan_def_graph_obj, options=graph_options, logger=pyan_logger)
@@ -138,6 +164,92 @@ def draw_graph(def_items, use_dict, output_dict=None):
         _LOGGER.info("writing HTML file to %s", out_html_file_path)
         writer = HTMLWriter(graph, options=options, output=out_html_file_path, logger=pyan_logger)
         writer.run()
+
+
+def convert_to_pyan_graph(def_items: List[Any], use_dict: Dict[Any, Any]):
+    # initialize translation map
+    node_translation_map: Dict[DefItem, PyanNodeMock] = {}
+    # def_item: DefItem
+    for def_item in def_items:
+        pyan_node = PyanNodeMock()
+        pyan_node.namespace = def_item.get_namespace()
+        pyan_node.name = def_item.get_name()
+        pyan_node.filename = def_item.get_filename()
+        node_translation_map[def_item] = pyan_node
+
+    # generate pyan def edges graph
+    pyan_def_edges_dict: Dict[PyanNodeMock, List[PyanNodeMock]] = {}
+    # def_item: DefItem
+    for def_item in def_items:
+        def_parent: DefItem = def_item.parent
+        if def_parent is None:
+            continue
+        if def_parent.type is DefItemType.MODULE:
+            continue
+        # if def_parent.type is DefItemType.CLASS:
+        #     continue
+        node: PyanNodeMock = node_translation_map.get(def_item)
+        if node is None:
+            continue
+        node_parent: PyanNodeMock = node_translation_map.get(def_parent)
+        if node_parent is None:
+            continue
+        edges_list = pyan_def_edges_dict.get(node_parent, None)
+        if edges_list is None:
+            edges_list = []
+            pyan_def_edges_dict[node_parent] = edges_list
+        edges_list.append(node)
+
+    # generate pyan use edges graph
+    pyan_use_edges_dict: Dict[PyanNodeMock, List[PyanNodeMock]] = {}
+    for use_item, call_list in use_dict.items():
+        use_node: PyanNodeMock = node_translation_map.get(use_item)
+        if use_node is None:
+            continue
+        for call_item in call_list:
+            call_node: PyanNodeMock = node_translation_map.get(call_item)
+            if call_node is None:
+                continue
+            edges_list = pyan_use_edges_dict.get(use_node, None)
+            if edges_list is None:
+                edges_list = []
+                pyan_use_edges_dict[use_node] = edges_list
+            edges_list.append(call_node)
+
+    pyan_nodes_dict: Dict[str, List[PyanNodeMock]] = {}
+    edge_nodes_list = set()
+    # node: PyanNodeMock
+    for node, connections in pyan_def_edges_dict.items():
+        edge_nodes_list.add(node)
+        edge_nodes_list.update(connections)
+    for node, connections in pyan_use_edges_dict.items():
+        edge_nodes_list.add(node)
+        edge_nodes_list.update(connections)
+
+    # node: PyanNodeMock
+    for node in edge_nodes_list:
+        full_name = node.get_name()
+        nodes_list = pyan_nodes_dict.get(full_name, None)
+        if nodes_list is None:
+            nodes_list = []
+            pyan_nodes_dict[full_name] = nodes_list
+        nodes_list.append(node)
+
+    pyan_def_graph_dict = {
+        "nodes": pyan_nodes_dict,
+        "defines_edges": pyan_def_edges_dict,
+        "uses_edges": pyan_use_edges_dict,
+    }
+    pyan_def_graph_obj = AttrDict(pyan_def_graph_dict)  # recursively convert dict to obj (keys become attributes)
+
+    return pyan_def_graph_obj
+
+
+def count_max_edges(use_dict: Dict[Any, Any]):
+    out_edges_num = 0
+    for uses_list in use_dict.values():
+        out_edges_num = max(out_edges_num, len(uses_list))
+    return out_edges_num
 
 
 # fake pyan node by implementing required members

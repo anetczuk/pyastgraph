@@ -25,6 +25,20 @@ python3 -m astgraph -f $FILES \
                     $@
 convert -strip -density 150 "$OUT_DIR/single01.svg" "$OUT_DIR/single01.png"
 
+python3 -m astgraph -f $FILES \
+                    --filterdown '.*Runner.execute.*' \
+                    --outsvgfile "$OUT_DIR/single01_filter_down.svg" \
+                    --outdotfile "$OUT_DIR/single01_filter_down.dot.txt" \
+                    $@
+convert -strip -density 150 "$OUT_DIR/single01_filter_down.svg" "$OUT_DIR/single01_filter_down.png"
+
+python3 -m astgraph -f $FILES \
+                    --filterup '.*Runner.execute.*' \
+                    --outsvgfile "$OUT_DIR/single01_filter_up.svg" \
+                    --outdotfile "$OUT_DIR/single01_filter_up.dot.txt" \
+                    $@
+convert -strip -density 150 "$OUT_DIR/single01_filter_up.svg" "$OUT_DIR/single01_filter_up.png"
+
 
 FILES="$SCRIPT_DIR/chained01.py"
 echo "passing files: ${FILES}"

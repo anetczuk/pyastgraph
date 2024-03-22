@@ -19,6 +19,7 @@ import astroid.nodes.scoped_nodes.scoped_nodes as astroid_nodes
 import astroid.bases as astroid_bases
 from astroid.nodes import node_classes, NodeNG
 from astroid.modutils import _has_init
+from astgraph.graphtheory import convert_to_list
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -104,7 +105,7 @@ class DefItem:
         self.type: DefItemType = item_type
         self.parent = None
         self.name = name
-        self.items: List[Any] = []
+        self.items: List[Any] = []  # children
         self.type_hint: Optional[DefItem] = None  # member type hint
 
     @property
@@ -196,6 +197,13 @@ class ItemContainer:
         for def_item in self.def_items:
             ret_list.append(def_item.info)
         return ret_list
+
+    def get_def_dict(self):
+        flat_list = convert_to_list(self.def_items, lambda item: item.items)
+        def_dict = {}
+        for item in flat_list:
+            def_dict[item] = item.items
+        return def_dict
 
     def get_use_list(self):
         ret_list = []

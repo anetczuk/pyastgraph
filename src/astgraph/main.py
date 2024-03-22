@@ -12,14 +12,16 @@ import sys
 import os
 import logging
 import argparse
-from glob import glob
 
+from glob import glob
+import re
 import pprint
 
 from astgraph.objtodict import obj_to_dict
-from astgraph.treeparser import TreeParser
-from astgraph.pyanwrap import draw_graph as draw_pyan_graph
+from astgraph.treeparser import TreeParser, DefItem
+from astgraph.pyanwrap import draw_use_graph as draw_pyan_graph
 from astgraph.plantuml import draw_graph as draw_plantuml_graph
+from astgraph.graphtheory import filter_down, Filter, join_graph, filter_up
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -27,20 +29,94 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOGGER = logging.getLogger(__name__)
 
 
-def analyze_code(files_list, output_dict, debug_dump=False):
+def process_files(files_list, filters, output_dict, debug_dump=False):
+    data_dump_path = None
+    if debug_dump:
+        out_svg_file_path = output_dict["outsvgfile"]
+        data_dump_path = f"{out_svg_file_path}.analyze.txt"
+
+    analyze_data = analyze_files(files_list, filters, data_dump_path)
+
+    filtered_uses = analyze_data[1]
+    draw_pyan_graph(filtered_uses, output_dict)
+    draw_plantuml_graph(filtered_uses, output_dict)
+
+    # filtered_defs = analyze_data[0]
+    # filtered_uses = analyze_data[1]
+    # draw_pyan_graph(filtered_uses, output_dict)
+    # draw_pyan_graph(filtered_defs, filtered_uses, output_dict)
+    # draw_plantuml_graph(filtered_uses, output_dict)
+
+
+def analyze_files(files_list, filters, data_dump_path=None):
+    if filters is None:
+        filters = {}
+
     analyzer = TreeParser()
     analyzer.analyze_files(files_list)
     items = analyzer.items
 
-    if debug_dump:
-        out_svg_file_path = output_dict["outsvgfile"]
+    if data_dump_path:
         graph_dict = obj_to_dict(items, skip_meta_data=False)
-        dict_path = f"{out_svg_file_path}.analyze.txt"
-        with open(dict_path, "w", encoding="utf-8") as out_file:
+        with open(data_dump_path, "w", encoding="utf-8") as out_file:
             pprint.pprint(graph_dict, out_file, indent=4, sort_dicts=False)
 
-    draw_pyan_graph(items.def_items, items.use_dict, output_dict)
-    draw_plantuml_graph(items.use_dict, output_dict)
+    filter_down_list = filters.get("filterdown", [])
+    filter_up_list = filters.get("filterup", [])
+
+    filtered_defs = items.get_def_dict()
+    filtered_uses = {}
+
+    if filter_down_list or filter_up_list:
+        if filter_down_list:
+            filter_patterns = [re.compile(item) for item in filter_down_list]
+            filter_obj = DefItemFilter(filter_patterns)
+            down_uses = filter_down(items.use_dict, filter_obj)
+            join_graph(filtered_uses, down_uses)
+
+            # defs_dict = items.get_def_dict()
+            # print("xxxxxxxxxxxx1:", defs_dict)
+            # filtered_defs = filter_updown(defs_dict, filter_obj)
+            # print("xxxxxxxxxxxx2:", filtered_defs)
+            # filtered_defs = flatten_to_list(filtered_defs)
+            # print("xxxxxxxxxxxx3:", filtered_defs)
+
+        if filter_up_list:
+            filter_patterns = [re.compile(item) for item in filter_up_list]
+            filter_obj = DefItemFilter(filter_patterns)
+            up_uses = filter_up(items.use_dict, filter_obj)
+            join_graph(filtered_uses, up_uses)
+
+    else:
+        filtered_uses = items.use_dict
+
+    return (filtered_defs, filtered_uses)
+
+
+class DefItemFilter(Filter):
+    def is_matching(self, item: DefItem):
+        name = item.get_full_name()
+        return self._is_matching(name)
+
+
+# def filter_items(items_list, regex_list):
+#     if not items_list:
+#         return items_list
+#     if not regex_list:
+#         return items_list
+#
+#     ret_list = []
+#     pattern_list = [re.compile(item) for item in regex_list]
+#     for item in items_list:
+#         is_excluded = False
+#         for pattern in pattern_list:
+#             if pattern.match(item):
+#                 is_excluded = True
+#                 break
+#         if is_excluded is False:
+#             ret_list.append(item)
+#
+#     return ret_list
 
 
 # ext - with dot if needed
@@ -55,6 +131,22 @@ def main():
     parser = argparse.ArgumentParser(description="Thread graph generator")
     parser.add_argument("-f", "--files", nargs="+", default=[], help="Files to analyze")
     parser.add_argument("-d", "--dir", action="store", help="Path to directory to search .py files")
+    parser.add_argument(
+        "--filterdown",
+        metavar="N",
+        type=str,
+        nargs="+",
+        help="Space separated list of regex strings applied on found items to be included in diagram"
+        " (otherwise items will be excluded)",
+    )
+    parser.add_argument(
+        "--filterup",
+        metavar="N",
+        type=str,
+        nargs="+",
+        help="Space separated list of regex strings applied on found items to be included in diagram"
+        " (otherwise items will be excluded)",
+    )
     parser.add_argument("--outsvgfile", action="store", required=True, help="Path to output SVG file")
     parser.add_argument("--outdotfile", action="store", required=False, help="Path to output DOT file")
     parser.add_argument("--outhtmlfile", action="store", required=False, help="Path to output HTML file")
@@ -75,6 +167,8 @@ def main():
     # logging.basicConfig(level=logging.INFO)
     logging.basicConfig(level=logging.DEBUG)
 
+    filters = {"filterdown": args.filterdown, "filterup": args.filterup}
+
     files_list = find_files(args.dir, ".py")
     if args.files:
         files_list.extend(args.files)
@@ -88,7 +182,7 @@ def main():
         "outseqdiag": args.outseqdiag,
         "outseqsvg": args.outseqsvg,
     }
-    analyze_code(files_list, output_dict, args.dumpdebugdata)
+    process_files(files_list, filters, output_dict, args.dumpdebugdata)
 
     _LOGGER.info("done")
     return 0

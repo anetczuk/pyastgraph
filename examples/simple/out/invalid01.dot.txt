@@ -3,22 +3,14 @@ digraph G {
     subgraph cluster_G {
 
         graph [style="filled,rounded", fillcolor="#80808018", label=""];
-        subgraph cluster_simple__invalid01 {
+        subgraph cluster_simple__invalid01__Invalid {
 
-            graph [style="filled,rounded", fillcolor="#80808018", label="simple.invalid01"];
-            simple__invalid01__Invalid [label="Invalid", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
-            subgraph cluster_simple__invalid01__Invalid {
-
-                graph [style="filled,rounded", fillcolor="#80808018", label="simple.invalid01.Invalid"];
-                simple__invalid01__Invalid____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
-                simple__invalid01__Invalid__data_field [label="data_field", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
-                simple__invalid01__Invalid__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
-            }
+            graph [style="filled,rounded", fillcolor="#80808018", label="simple.invalid01.Invalid"];
+            simple__invalid01__Invalid____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            simple__invalid01__Invalid__data_field [label="data_field", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            simple__invalid01__Invalid__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
         }
     }
-        simple__invalid01__Invalid -> simple__invalid01__Invalid____init__ [style="dashed",  color="#838b8b"];
-        simple__invalid01__Invalid -> simple__invalid01__Invalid__execute [style="dashed",  color="#838b8b"];
-        simple__invalid01__Invalid -> simple__invalid01__Invalid__data_field [style="dashed",  color="#838b8b"];
         simple__invalid01__Invalid____init__ -> simple__invalid01__Invalid__data_field [style="solid",  color="#000000"];
         simple__invalid01__Invalid____init__ -> simple__invalid01__Invalid__execute [style="solid",  color="#000000"];
         simple__invalid01__Invalid__execute -> simple__invalid01__Invalid__data_field [style="solid",  color="#000000"];

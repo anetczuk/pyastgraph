@@ -7,8 +7,6 @@ digraph G {
         subgraph cluster_simple__chained01 {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="simple.chained01"];
-            simple__chained01__Runner [label="Runner", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
-            simple__chained01__Worker [label="Worker", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
             simple__chained01__main [label="main", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
             subgraph cluster_simple__chained01__Runner {
 
@@ -26,12 +24,6 @@ digraph G {
             }
         }
     }
-        simple__chained01__Worker -> simple__chained01__Worker____init__ [style="dashed",  color="#838b8b"];
-        simple__chained01__Worker -> simple__chained01__Worker__work [style="dashed",  color="#838b8b"];
-        simple__chained01__Worker -> simple__chained01__Worker__data_dict [style="dashed",  color="#838b8b"];
-        simple__chained01__Runner -> simple__chained01__Runner____init__ [style="dashed",  color="#838b8b"];
-        simple__chained01__Runner -> simple__chained01__Runner__execute [style="dashed",  color="#838b8b"];
-        simple__chained01__Runner -> simple__chained01__Runner__worker [style="dashed",  color="#838b8b"];
         simple__chained01__Worker____init__ -> simple__chained01__Worker__data_dict [style="solid",  color="#000000"];
         simple__chained01__Worker__work -> simple__chained01__Worker__data_dict [style="solid",  color="#000000"];
         simple__chained01__Runner____init__ -> simple__chained01__Runner__worker [style="solid",  color="#000000"];

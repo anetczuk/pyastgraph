@@ -8,7 +8,7 @@
 
 import unittest
 
-from astgraph.graphtheory import get_root_items, visit_graph
+from astgraph.graphtheory import get_root_items, visit_graph, get_connected
 
 
 class GraphTheoryTest(unittest.TestCase):
@@ -21,6 +21,11 @@ class GraphTheoryTest(unittest.TestCase):
         edges_dict = {1: [2], 3: [4], 4: [3]}
         root_items = get_root_items(edges_dict)
         self.assertEqual(root_items, [1, 3])
+
+    def test_get_connected(self):
+        edges_dict = {1: [2], 2: [3], 4: [5]}
+        root_items = get_connected(edges_dict, 1)
+        self.assertEqual(root_items, [1, 2, 3])
 
     def test_visit_graph_simple(self):
         edges_dict = {1: [2], 2: [3]}

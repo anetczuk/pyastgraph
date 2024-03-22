@@ -1,0 +1,16 @@
+digraph G {
+    graph [rankdir=TB, ranksep="1.0", clusterrank="local"];
+    subgraph cluster_G {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        subgraph cluster_simple__single01__Runner {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="simple.single01.Runner"];
+            simple__single01__Runner__STATIC_FIELD [label="STATIC_FIELD", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            simple__single01__Runner__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            simple__single01__Runner__instance_field [label="instance_field", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+        }
+    }
+        simple__single01__Runner__execute -> simple__single01__Runner__instance_field [style="solid",  color="#000000"];
+        simple__single01__Runner__execute -> simple__single01__Runner__STATIC_FIELD [style="solid",  color="#000000"];
+    }

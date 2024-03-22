@@ -11,13 +11,13 @@ import unittest
 
 from testastgraph.sample import get_data_root_path
 
-from astgraph.pyanwrap import draw_graph
+from astgraph.pyanwrap import draw_full_graph
 from astgraph.treeparser import TreeParser, DefItemType
 
 
 def draw(parser, svg_out_path="/tmp/graph.svg"):
     output_dict = {"outsvgfile": svg_out_path}
-    draw_graph(parser.items.def_items, parser.items.use_dict, output_dict)
+    draw_full_graph(parser.items.def_items, parser.items.use_dict, output_dict)
 
 
 def print_ast(parser):

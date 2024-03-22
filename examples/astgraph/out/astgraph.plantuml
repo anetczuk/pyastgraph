@@ -19,7 +19,50 @@ activate astgraph.asttree
 [-->x astgraph.asttree
 deactivate astgraph.asttree
 
-[-> astgraph.pyanwrap : draw_graph
+[-> astgraph.pyanwrap : draw_full_graph
+activate astgraph.pyanwrap
+  astgraph.pyanwrap o-> astgraph.pyanwrap : count_max_edges
+  astgraph.pyanwrap o-> astgraph.pyanwrap : convert_to_pyan_graph
+  activate astgraph.pyanwrap
+    astgraph.pyanwrap o-> astgraph.pyanwrap.PyanNodeMock : __init__
+    activate astgraph.pyanwrap.PyanNodeMock
+      hnote right of astgraph.pyanwrap.PyanNodeMock
+      defined
+      endnote
+      hnote right of astgraph.pyanwrap.PyanNodeMock
+      namespace
+      endnote
+      hnote right of astgraph.pyanwrap.PyanNodeMock
+      name
+      endnote
+      hnote right of astgraph.pyanwrap.PyanNodeMock
+      filename
+      endnote
+      hnote right of astgraph.pyanwrap.PyanNodeMock
+      flavor
+      endnote
+    astgraph.pyanwrap.PyanNodeMock --> astgraph.pyanwrap
+    deactivate astgraph.pyanwrap.PyanNodeMock
+
+    astgraph.pyanwrap o-> astgraph.pyanwrap.PyanNodeMock 
+    hnote right
+    namespace
+    end note
+    astgraph.pyanwrap o-> astgraph.pyanwrap.PyanNodeMock 
+    hnote right
+    name
+    end note
+    astgraph.pyanwrap o-> astgraph.pyanwrap.PyanNodeMock 
+    hnote right
+    filename
+    end note
+  astgraph.pyanwrap --> astgraph.pyanwrap
+  deactivate astgraph.pyanwrap
+
+[-->x astgraph.pyanwrap
+deactivate astgraph.pyanwrap
+
+[-> astgraph.pyanwrap : draw_use_graph
 activate astgraph.pyanwrap
   astgraph.pyanwrap o-> astgraph.pyanwrap.PyanNodeMock : __init__
   activate astgraph.pyanwrap.PyanNodeMock
@@ -93,118 +136,236 @@ activate astgraph.pyanwrap.PyanNodeMock
 [-->x astgraph.pyanwrap.PyanNodeMock
 deactivate astgraph.pyanwrap.PyanNodeMock
 
+[-> astgraph.graphtheory : flatten_to_list
+activate astgraph.graphtheory
+  astgraph.graphtheory o-> astgraph.graphtheory : visit_graph
+  activate astgraph.graphtheory
+    astgraph.graphtheory o-> astgraph.graphtheory.Visitor : __init__
+    activate astgraph.graphtheory.Visitor
+      hnote right of astgraph.graphtheory.Visitor
+      _edges_dict
+      endnote
+      hnote right of astgraph.graphtheory.Visitor
+      _callback
+      endnote
+      hnote right of astgraph.graphtheory.Visitor
+      _visited
+      endnote
+    astgraph.graphtheory.Visitor --> astgraph.graphtheory
+    deactivate astgraph.graphtheory.Visitor
+
+    astgraph.graphtheory o-> astgraph.graphtheory.Visitor : visit
+    activate astgraph.graphtheory.Visitor
+      hnote right of astgraph.graphtheory.Visitor
+      _edges_dict
+      endnote
+      hnote right of astgraph.graphtheory.Visitor
+      _callback
+      endnote
+      hnote right of astgraph.graphtheory.Visitor
+      _visited
+      endnote
+      astgraph.graphtheory.Visitor o-> astgraph.graphtheory.Visitor : _visit_node
+      activate astgraph.graphtheory.Visitor
+        hnote right of astgraph.graphtheory.Visitor
+        _visited
+        endnote
+        hnote right of astgraph.graphtheory.Visitor
+        _callback
+        endnote
+        hnote right of astgraph.graphtheory.Visitor
+        _edges_dict
+        endnote
+        astgraph.graphtheory.Visitor o-> astgraph.graphtheory.Visitor : _visit_node
+      astgraph.graphtheory.Visitor --> astgraph.graphtheory.Visitor
+      deactivate astgraph.graphtheory.Visitor
+
+    astgraph.graphtheory.Visitor --> astgraph.graphtheory
+    deactivate astgraph.graphtheory.Visitor
+
+  astgraph.graphtheory --> astgraph.graphtheory
+  deactivate astgraph.graphtheory
+
+[-->x astgraph.graphtheory
+deactivate astgraph.graphtheory
+
+[-> astgraph.graphtheory.Filter : __init__
+activate astgraph.graphtheory.Filter
+  hnote right of astgraph.graphtheory.Filter
+  filter_list
+  endnote
+[-->x astgraph.graphtheory.Filter
+deactivate astgraph.graphtheory.Filter
+
+[-> astgraph.graphtheory.Filter : is_matching
+activate astgraph.graphtheory.Filter
+  astgraph.graphtheory.Filter o-> astgraph.graphtheory.Filter : _is_matching
+  activate astgraph.graphtheory.Filter
+    hnote right of astgraph.graphtheory.Filter
+    filter_list
+    endnote
+  astgraph.graphtheory.Filter --> astgraph.graphtheory.Filter
+  deactivate astgraph.graphtheory.Filter
+
+[-->x astgraph.graphtheory.Filter
+deactivate astgraph.graphtheory.Filter
+
+[-> astgraph.graphtheory : filter_updown
+activate astgraph.graphtheory
+  astgraph.graphtheory o-> astgraph.graphtheory : filter_down
+  activate astgraph.graphtheory
+    astgraph.graphtheory o-> astgraph.graphtheory : get_connected
+  astgraph.graphtheory --> astgraph.graphtheory
+  deactivate astgraph.graphtheory
+
+  astgraph.graphtheory o-> astgraph.graphtheory : filter_up
+  activate astgraph.graphtheory
+    astgraph.graphtheory o-> astgraph.graphtheory : reverse_graph
+    astgraph.graphtheory o-> astgraph.graphtheory : filter_down
+  astgraph.graphtheory --> astgraph.graphtheory
+  deactivate astgraph.graphtheory
+
+  astgraph.graphtheory o-> astgraph.graphtheory : join_graph
+[-->x astgraph.graphtheory
+deactivate astgraph.graphtheory
+
 astgraph.__main__ o-> astgraph.main : main
 activate astgraph.main
   astgraph.main o-> astgraph.main : find_files
-  astgraph.main o-> astgraph.main : analyze_code
+  astgraph.main o-> astgraph.main : process_files
   activate astgraph.main
-    astgraph.main o-> astgraph.treeparser.TreeParser : __init__
-    activate astgraph.treeparser.TreeParser
-      hnote right of astgraph.treeparser.TreeParser
+    astgraph.main o-> astgraph.main : analyze_files
+    activate astgraph.main
+      astgraph.main o-> astgraph.treeparser.TreeParser : __init__
+      activate astgraph.treeparser.TreeParser
+        hnote right of astgraph.treeparser.TreeParser
+        items
+        endnote
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : __init__
+        activate astgraph.treeparser.ItemContainer
+          hnote right of astgraph.treeparser.ItemContainer
+          mod_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          def_items
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          use_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          astroid_item_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          astroid_node_dict
+          endnote
+        astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.ItemContainer
+
+      astgraph.treeparser.TreeParser --> astgraph.main
+      deactivate astgraph.treeparser.TreeParser
+
+      astgraph.main o-> astgraph.treeparser.TreeParser : analyze_files
+      activate astgraph.treeparser.TreeParser
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser : get_package_root
+        hnote right of astgraph.treeparser.TreeParser
+        items
+        endnote
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : add_mod
+        activate astgraph.treeparser.ItemContainer
+          hnote right of astgraph.treeparser.ItemContainer
+          mod_dict
+          endnote
+        astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.ItemContainer
+
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+      astgraph.treeparser.TreeParser --> astgraph.main
+      deactivate astgraph.treeparser.TreeParser
+
+      astgraph.main o-> astgraph.treeparser.TreeParser 
+      hnote right
       items
-      endnote
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : __init__
-      activate astgraph.treeparser.ItemContainer
-        hnote right of astgraph.treeparser.ItemContainer
-        mod_dict
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        def_items
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        use_dict
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        astroid_item_dict
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        astroid_node_dict
-        endnote
-      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
-      deactivate astgraph.treeparser.ItemContainer
-
-    astgraph.treeparser.TreeParser --> astgraph.main
-    deactivate astgraph.treeparser.TreeParser
-
-    astgraph.main o-> astgraph.treeparser.TreeParser : analyze_files
-    activate astgraph.treeparser.TreeParser
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser : get_package_root
-      hnote right of astgraph.treeparser.TreeParser
-      items
-      endnote
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : add_mod
-      activate astgraph.treeparser.ItemContainer
-        hnote right of astgraph.treeparser.ItemContainer
-        mod_dict
-        endnote
-      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
-      deactivate astgraph.treeparser.ItemContainer
-
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
-    astgraph.treeparser.TreeParser --> astgraph.main
-    deactivate astgraph.treeparser.TreeParser
-
-    astgraph.main o-> astgraph.treeparser.TreeParser 
-    hnote right
-    items
-    end note
-    astgraph.main o-> astgraph.objtodict : obj_to_dict
-    activate astgraph.objtodict
-      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : __init__
-      activate astgraph.objtodict.ObjRepr
-        hnote right of astgraph.objtodict.ObjRepr
-        _visited
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        skip_meta_data
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        ignore_fields
-        endnote
-      astgraph.objtodict.ObjRepr --> astgraph.objtodict
-      deactivate astgraph.objtodict.ObjRepr
-
-      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : repr_obj
-      activate astgraph.objtodict.ObjRepr
-        hnote right of astgraph.objtodict.ObjRepr
-        skip_meta_data
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        ignore_fields
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        _visited
-        endnote
-        astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+      end note
+      astgraph.main o-> astgraph.objtodict : obj_to_dict
+      activate astgraph.objtodict
+        astgraph.objtodict o-> astgraph.objtodict.ObjRepr : __init__
         activate astgraph.objtodict.ObjRepr
           hnote right of astgraph.objtodict.ObjRepr
           _visited
           endnote
           hnote right of astgraph.objtodict.ObjRepr
+          skip_meta_data
+          endnote
+          hnote right of astgraph.objtodict.ObjRepr
           ignore_fields
           endnote
-          astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+        astgraph.objtodict.ObjRepr --> astgraph.objtodict
+        deactivate astgraph.objtodict.ObjRepr
+
+        astgraph.objtodict o-> astgraph.objtodict.ObjRepr : repr_obj
+        activate astgraph.objtodict.ObjRepr
           hnote right of astgraph.objtodict.ObjRepr
           skip_meta_data
           endnote
-        astgraph.objtodict.ObjRepr --> astgraph.objtodict.ObjRepr
+          hnote right of astgraph.objtodict.ObjRepr
+          ignore_fields
+          endnote
+          hnote right of astgraph.objtodict.ObjRepr
+          _visited
+          endnote
+          astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+          activate astgraph.objtodict.ObjRepr
+            hnote right of astgraph.objtodict.ObjRepr
+            _visited
+            endnote
+            hnote right of astgraph.objtodict.ObjRepr
+            ignore_fields
+            endnote
+            astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+            hnote right of astgraph.objtodict.ObjRepr
+            skip_meta_data
+            endnote
+          astgraph.objtodict.ObjRepr --> astgraph.objtodict.ObjRepr
+          deactivate astgraph.objtodict.ObjRepr
+
+        astgraph.objtodict.ObjRepr --> astgraph.objtodict
         deactivate astgraph.objtodict.ObjRepr
 
-      astgraph.objtodict.ObjRepr --> astgraph.objtodict
-      deactivate astgraph.objtodict.ObjRepr
+      astgraph.objtodict --> astgraph.main
+      deactivate astgraph.objtodict
 
-    astgraph.objtodict --> astgraph.main
-    deactivate astgraph.objtodict
+      astgraph.main o-> astgraph.treeparser.ItemContainer : get_def_dict
+      activate astgraph.treeparser.ItemContainer
+        astgraph.treeparser.ItemContainer o-> astgraph.graphtheory : convert_to_list
+        hnote right of astgraph.treeparser.ItemContainer
+        def_items
+        endnote
+      astgraph.treeparser.ItemContainer --> astgraph.main
+      deactivate astgraph.treeparser.ItemContainer
 
-    astgraph.main o-> astgraph.treeparser.ItemContainer 
-    hnote right
-    def_items
-    end note
-    astgraph.main o-> astgraph.treeparser.ItemContainer 
-    hnote right
-    use_dict
-    end note
+      astgraph.main o-> astgraph.main.DefItemFilter : __init__
+      astgraph.main o-> astgraph.graphtheory : filter_down
+      activate astgraph.graphtheory
+        astgraph.graphtheory o-> astgraph.graphtheory : get_connected
+      astgraph.graphtheory --> astgraph.main
+      deactivate astgraph.graphtheory
+
+      astgraph.main o-> astgraph.treeparser.ItemContainer 
+      hnote right
+      use_dict
+      end note
+      astgraph.main o-> astgraph.graphtheory : join_graph
+      astgraph.main o-> astgraph.graphtheory : filter_up
+      activate astgraph.graphtheory
+        astgraph.graphtheory o-> astgraph.graphtheory : reverse_graph
+        astgraph.graphtheory o-> astgraph.graphtheory : filter_down
+      astgraph.graphtheory --> astgraph.main
+      deactivate astgraph.graphtheory
+
+    astgraph.main --> astgraph.main
+    deactivate astgraph.main
+
   astgraph.main --> astgraph.main
   deactivate astgraph.main
 
@@ -1123,115 +1284,140 @@ deactivate astgraph.plantuml
 astgraph.main o-> astgraph.main : main
 activate astgraph.main
   astgraph.main o-> astgraph.main : find_files
-  astgraph.main o-> astgraph.main : analyze_code
+  astgraph.main o-> astgraph.main : process_files
   activate astgraph.main
-    astgraph.main o-> astgraph.treeparser.TreeParser : __init__
-    activate astgraph.treeparser.TreeParser
-      hnote right of astgraph.treeparser.TreeParser
+    astgraph.main o-> astgraph.main : analyze_files
+    activate astgraph.main
+      astgraph.main o-> astgraph.treeparser.TreeParser : __init__
+      activate astgraph.treeparser.TreeParser
+        hnote right of astgraph.treeparser.TreeParser
+        items
+        endnote
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : __init__
+        activate astgraph.treeparser.ItemContainer
+          hnote right of astgraph.treeparser.ItemContainer
+          mod_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          def_items
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          use_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          astroid_item_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          astroid_node_dict
+          endnote
+        astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.ItemContainer
+
+      astgraph.treeparser.TreeParser --> astgraph.main
+      deactivate astgraph.treeparser.TreeParser
+
+      astgraph.main o-> astgraph.treeparser.TreeParser : analyze_files
+      activate astgraph.treeparser.TreeParser
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser : get_package_root
+        hnote right of astgraph.treeparser.TreeParser
+        items
+        endnote
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : add_mod
+        activate astgraph.treeparser.ItemContainer
+          hnote right of astgraph.treeparser.ItemContainer
+          mod_dict
+          endnote
+        astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.ItemContainer
+
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+      astgraph.treeparser.TreeParser --> astgraph.main
+      deactivate astgraph.treeparser.TreeParser
+
+      astgraph.main o-> astgraph.treeparser.TreeParser 
+      hnote right
       items
-      endnote
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : __init__
-      activate astgraph.treeparser.ItemContainer
-        hnote right of astgraph.treeparser.ItemContainer
-        mod_dict
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        def_items
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        use_dict
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        astroid_item_dict
-        endnote
-        hnote right of astgraph.treeparser.ItemContainer
-        astroid_node_dict
-        endnote
-      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
-      deactivate astgraph.treeparser.ItemContainer
-
-    astgraph.treeparser.TreeParser --> astgraph.main
-    deactivate astgraph.treeparser.TreeParser
-
-    astgraph.main o-> astgraph.treeparser.TreeParser : analyze_files
-    activate astgraph.treeparser.TreeParser
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser : get_package_root
-      hnote right of astgraph.treeparser.TreeParser
-      items
-      endnote
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.ItemContainer : add_mod
-      activate astgraph.treeparser.ItemContainer
-        hnote right of astgraph.treeparser.ItemContainer
-        mod_dict
-        endnote
-      astgraph.treeparser.ItemContainer --> astgraph.treeparser.TreeParser
-      deactivate astgraph.treeparser.ItemContainer
-
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
-      astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
-    astgraph.treeparser.TreeParser --> astgraph.main
-    deactivate astgraph.treeparser.TreeParser
-
-    astgraph.main o-> astgraph.treeparser.TreeParser 
-    hnote right
-    items
-    end note
-    astgraph.main o-> astgraph.objtodict : obj_to_dict
-    activate astgraph.objtodict
-      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : __init__
-      activate astgraph.objtodict.ObjRepr
-        hnote right of astgraph.objtodict.ObjRepr
-        _visited
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        skip_meta_data
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        ignore_fields
-        endnote
-      astgraph.objtodict.ObjRepr --> astgraph.objtodict
-      deactivate astgraph.objtodict.ObjRepr
-
-      astgraph.objtodict o-> astgraph.objtodict.ObjRepr : repr_obj
-      activate astgraph.objtodict.ObjRepr
-        hnote right of astgraph.objtodict.ObjRepr
-        skip_meta_data
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        ignore_fields
-        endnote
-        hnote right of astgraph.objtodict.ObjRepr
-        _visited
-        endnote
-        astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+      end note
+      astgraph.main o-> astgraph.objtodict : obj_to_dict
+      activate astgraph.objtodict
+        astgraph.objtodict o-> astgraph.objtodict.ObjRepr : __init__
         activate astgraph.objtodict.ObjRepr
           hnote right of astgraph.objtodict.ObjRepr
           _visited
           endnote
           hnote right of astgraph.objtodict.ObjRepr
+          skip_meta_data
+          endnote
+          hnote right of astgraph.objtodict.ObjRepr
           ignore_fields
           endnote
-          astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+        astgraph.objtodict.ObjRepr --> astgraph.objtodict
+        deactivate astgraph.objtodict.ObjRepr
+
+        astgraph.objtodict o-> astgraph.objtodict.ObjRepr : repr_obj
+        activate astgraph.objtodict.ObjRepr
           hnote right of astgraph.objtodict.ObjRepr
           skip_meta_data
           endnote
-        astgraph.objtodict.ObjRepr --> astgraph.objtodict.ObjRepr
+          hnote right of astgraph.objtodict.ObjRepr
+          ignore_fields
+          endnote
+          hnote right of astgraph.objtodict.ObjRepr
+          _visited
+          endnote
+          astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+          activate astgraph.objtodict.ObjRepr
+            hnote right of astgraph.objtodict.ObjRepr
+            _visited
+            endnote
+            hnote right of astgraph.objtodict.ObjRepr
+            ignore_fields
+            endnote
+            astgraph.objtodict.ObjRepr o-> astgraph.objtodict.ObjRepr : _visit
+            hnote right of astgraph.objtodict.ObjRepr
+            skip_meta_data
+            endnote
+          astgraph.objtodict.ObjRepr --> astgraph.objtodict.ObjRepr
+          deactivate astgraph.objtodict.ObjRepr
+
+        astgraph.objtodict.ObjRepr --> astgraph.objtodict
         deactivate astgraph.objtodict.ObjRepr
 
-      astgraph.objtodict.ObjRepr --> astgraph.objtodict
-      deactivate astgraph.objtodict.ObjRepr
+      astgraph.objtodict --> astgraph.main
+      deactivate astgraph.objtodict
 
-    astgraph.objtodict --> astgraph.main
-    deactivate astgraph.objtodict
+      astgraph.main o-> astgraph.treeparser.ItemContainer : get_def_dict
+      activate astgraph.treeparser.ItemContainer
+        astgraph.treeparser.ItemContainer o-> astgraph.graphtheory : convert_to_list
+        hnote right of astgraph.treeparser.ItemContainer
+        def_items
+        endnote
+      astgraph.treeparser.ItemContainer --> astgraph.main
+      deactivate astgraph.treeparser.ItemContainer
 
-    astgraph.main o-> astgraph.treeparser.ItemContainer 
-    hnote right
-    def_items
-    end note
-    astgraph.main o-> astgraph.treeparser.ItemContainer 
-    hnote right
-    use_dict
-    end note
+      astgraph.main o-> astgraph.main.DefItemFilter : __init__
+      astgraph.main o-> astgraph.graphtheory : filter_down
+      activate astgraph.graphtheory
+        astgraph.graphtheory o-> astgraph.graphtheory : get_connected
+      astgraph.graphtheory --> astgraph.main
+      deactivate astgraph.graphtheory
+
+      astgraph.main o-> astgraph.treeparser.ItemContainer 
+      hnote right
+      use_dict
+      end note
+      astgraph.main o-> astgraph.graphtheory : join_graph
+      astgraph.main o-> astgraph.graphtheory : filter_up
+      activate astgraph.graphtheory
+        astgraph.graphtheory o-> astgraph.graphtheory : reverse_graph
+        astgraph.graphtheory o-> astgraph.graphtheory : filter_down
+      astgraph.graphtheory --> astgraph.main
+      deactivate astgraph.graphtheory
+
+    astgraph.main --> astgraph.main
+    deactivate astgraph.main
+
   astgraph.main --> astgraph.main
   deactivate astgraph.main
 
