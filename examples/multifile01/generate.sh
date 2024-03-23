@@ -26,3 +26,6 @@ python3 -m astgraph -f $FILES \
                     $@
 
 convert -strip -density 150 "$OUT_DIR/multifile.svg" "$OUT_DIR/multifile.png"
+
+
+echo "completed"

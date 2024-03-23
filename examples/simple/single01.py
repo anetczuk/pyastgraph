@@ -1,8 +1,3 @@
-#
-#
-#
-
-
 class Runner:
 
     STATIC_FIELD = "initial_value"

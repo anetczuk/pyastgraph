@@ -5,6 +5,7 @@ set -eu
 ## works both under bash and sh
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
+
 SRC_DIR="$SCRIPT_DIR/../../src"
 
 OUT_DIR="$SCRIPT_DIR/out"
@@ -24,6 +25,7 @@ python3 -m astgraph -f $FILES \
                     --outseqsvg "$OUT_DIR/single01.plantuml.svg" \
                     $@
 convert -strip -density 150 "$OUT_DIR/single01.svg" "$OUT_DIR/single01.png"
+convert -strip -density 150 "$OUT_DIR/single01.plantuml.svg" "$OUT_DIR/single01.plantuml.png"
 
 python3 -m astgraph -f $FILES \
                     --filterdown '.*Runner.execute.*' \
@@ -60,3 +62,13 @@ python3 -m astgraph -f $FILES \
                     --outseqsvg "$OUT_DIR/invalid01.plantuml.svg" \
                     $@
 convert -strip -density 150 "$OUT_DIR/invalid01.svg" "$OUT_DIR/invalid01.png"
+
+
+## generate miniatures
+## 'source' is somehow simillar to C 'include'
+echo "generating miniatures"
+cd $SCRIPT_DIR
+source $SCRIPT_DIR/../../doc/generate_small.sh
+
+
+echo "completed"

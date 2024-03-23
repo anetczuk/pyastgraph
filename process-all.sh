@@ -13,6 +13,8 @@ $SCRIPT_DIR/venv/runtests.py
 
 $SCRIPT_DIR/doc/generate-doc.sh
 
+$SCRIPT_DIR/tools/mdpreproc.py $SCRIPT_DIR/README.md
+
 $SCRIPT_DIR/examples/generate-all.sh
 
 $SCRIPT_DIR/tools/checkall.sh
