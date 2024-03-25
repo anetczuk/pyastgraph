@@ -90,7 +90,7 @@ def flatten_to_list(edges_dict):
 # 'graph_list' - list of top-level graph items
 # 'children_getter' - getter for children of graph items
 def convert_to_list(graph_list, children_getter):
-    connected_list = graph_list
+    connected_list = graph_list.copy()
     visited_items = set()
     index = 0
     while index < len(connected_list):

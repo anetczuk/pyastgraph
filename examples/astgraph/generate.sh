@@ -32,6 +32,7 @@ cd $SRC_DIR
 
 
 python3 -m astgraph -d "$DATA_DIR/astgraph" \
+                    --showdefs \
                     --outsvgfile "$OUT_DIR/astgraph.svg" \
                     --outdotfile "$OUT_DIR/astgraph.dot.txt" \
                     --outhtmlfile "$OUT_DIR/astgraph.html" \

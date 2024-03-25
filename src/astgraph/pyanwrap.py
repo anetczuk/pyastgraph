@@ -14,7 +14,7 @@ from attrdict import AttrDict
 from pyan.node import make_safe_label
 from pyan.visgraph import VisualGraph
 from pyan.writers import DotWriter, SVGWriter, HTMLWriter
-from astgraph.treeparser import DefItem, DefItemType
+from astgraph.treeparser import DefItem, DefItemType, ClassItem
 
 
 pyan_logger = logging.getLogger("pyan")
@@ -24,7 +24,7 @@ pyan_logger.setLevel(logging.WARN)
 _LOGGER = logging.getLogger(__name__)
 
 
-def draw_full_graph(def_items: List[Any], use_dict: Dict[Any, Any], output_dict=None):
+def draw_full_graph(def_items: List[DefItem], use_dict: Dict[Any, Any], output_dict=None):
     if not output_dict:
         output_dict = {}
 
@@ -41,6 +41,10 @@ def draw_full_graph(def_items: List[Any], use_dict: Dict[Any, Any], output_dict=
     }
 
     out_edges_num = count_max_edges(use_dict)
+    for def_item in def_items:
+        child_len = len(def_item.get_items())
+        out_edges_num = max(out_edges_num, child_len)
+
     pyan_def_graph_obj = convert_to_pyan_graph(def_items, use_dict)
 
     graph = VisualGraph.from_visitor(pyan_def_graph_obj, options=graph_options, logger=pyan_logger)
@@ -166,7 +170,7 @@ def draw_use_graph(use_dict: Dict[Any, Any], output_dict=None):
         writer.run()
 
 
-def convert_to_pyan_graph(def_items: List[Any], use_dict: Dict[Any, Any]):
+def convert_to_pyan_graph(def_items: List[DefItem], use_dict: Dict[Any, Any]):
     # initialize translation map
     node_translation_map: Dict[DefItem, PyanNodeMock] = {}
     # def_item: DefItem
@@ -184,16 +188,29 @@ def convert_to_pyan_graph(def_items: List[Any], use_dict: Dict[Any, Any]):
         def_parent: DefItem = def_item.parent
         if def_parent is None:
             continue
-        if def_parent.type is DefItemType.MODULE:
-            continue
-        # if def_parent.type is DefItemType.CLASS:
-        #     continue
         node: PyanNodeMock = node_translation_map.get(def_item)
         if node is None:
+            continue
+
+        if isinstance(def_item, ClassItem):
+            for def_base in def_item.bases:
+                node_base: PyanNodeMock = node_translation_map.get(def_base)
+                if node_base is None:
+                    continue
+
+                edges_list = pyan_def_edges_dict.get(node, None)
+                if edges_list is None:
+                    edges_list = []
+                    pyan_def_edges_dict[node] = edges_list
+                edges_list.append(node_base)
+
+        if def_parent.type is DefItemType.MODULE:
+            # do not show module nodes
             continue
         node_parent: PyanNodeMock = node_translation_map.get(def_parent)
         if node_parent is None:
             continue
+
         edges_list = pyan_def_edges_dict.get(node_parent, None)
         if edges_list is None:
             edges_list = []

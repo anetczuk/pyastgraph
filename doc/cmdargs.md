@@ -2,9 +2,9 @@
 ```
 usage: __main__.py [-h] [-f FILES [FILES ...]] [-d DIR]
                    [--filterdown N [N ...]] [--filterup N [N ...]]
-                   --outsvgfile OUTSVGFILE [--outdotfile OUTDOTFILE]
-                   [--outhtmlfile OUTHTMLFILE] [--outseqdiag OUTSEQDIAG]
-                   [--outseqsvg OUTSEQSVG] [-ddd]
+                   [--showdefs] --outsvgfile OUTSVGFILE
+                   [--outdotfile OUTDOTFILE] [--outhtmlfile OUTHTMLFILE]
+                   [--outseqdiag OUTSEQDIAG] [--outseqsvg OUTSEQSVG] [-ddd]
 
 Thread graph generator
 
@@ -20,6 +20,8 @@ optional arguments:
   --filterup N [N ...]  Space separated list of regex strings applied on found
                         items to be included in diagram (otherwise items will
                         be excluded)
+  --showdefs            Show defs relation on use graph (fixes dot 'init_rank'
+                        error)
   --outsvgfile OUTSVGFILE
                         Path to output SVG file
   --outdotfile OUTDOTFILE

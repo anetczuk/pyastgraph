@@ -189,14 +189,6 @@ activate astgraph.graphtheory
 [-->x astgraph.graphtheory
 deactivate astgraph.graphtheory
 
-[-> astgraph.graphtheory.Filter : __init__
-activate astgraph.graphtheory.Filter
-  hnote right of astgraph.graphtheory.Filter
-  filter_list
-  endnote
-[-->x astgraph.graphtheory.Filter
-deactivate astgraph.graphtheory.Filter
-
 [-> astgraph.graphtheory.Filter : is_matching
 activate astgraph.graphtheory.Filter
   astgraph.graphtheory.Filter o-> astgraph.graphtheory.Filter : _is_matching
@@ -279,7 +271,31 @@ activate astgraph.main
         deactivate astgraph.treeparser.ItemContainer
 
         astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+        activate astgraph.treeparser.DefParser
+          astgraph.treeparser.DefParser o-> astgraph.treeparser.BaseParser : __init__
+          activate astgraph.treeparser.BaseParser
+            astgraph.treeparser.BaseParser o-> astgraph.treeparser.ItemContainer : __init__
+            hnote right of astgraph.treeparser.BaseParser
+            items
+            endnote
+          astgraph.treeparser.BaseParser --> astgraph.treeparser.DefParser
+          deactivate astgraph.treeparser.BaseParser
+
+        astgraph.treeparser.DefParser --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.DefParser
+
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.BaseParser : analyze
+        activate astgraph.treeparser.BaseParser
+          astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+        astgraph.treeparser.BaseParser --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.BaseParser
+
         astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+        activate astgraph.treeparser.UseParser
+          astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser : __init__
+        astgraph.treeparser.UseParser --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.UseParser
+
       astgraph.treeparser.TreeParser --> astgraph.main
       deactivate astgraph.treeparser.TreeParser
 
@@ -345,6 +361,18 @@ activate astgraph.main
       deactivate astgraph.treeparser.ItemContainer
 
       astgraph.main o-> astgraph.main.DefItemFilter : __init__
+      activate astgraph.main.DefItemFilter
+        astgraph.main.DefItemFilter o-> astgraph.graphtheory.Filter : __init__
+        activate astgraph.graphtheory.Filter
+          hnote right of astgraph.graphtheory.Filter
+          filter_list
+          endnote
+        astgraph.graphtheory.Filter --> astgraph.main.DefItemFilter
+        deactivate astgraph.graphtheory.Filter
+
+      astgraph.main.DefItemFilter --> astgraph.main
+      deactivate astgraph.main.DefItemFilter
+
       astgraph.main o-> astgraph.graphtheory : filter_down
       activate astgraph.graphtheory
         astgraph.graphtheory o-> astgraph.graphtheory : get_connected
@@ -541,6 +569,29 @@ activate astgraph.treeparser.ItemContainer
   endnote
   astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ModuleItem : __init__
   activate astgraph.treeparser.ModuleItem
+    astgraph.treeparser.ModuleItem o-> astgraph.treeparser.DefItem : __init__
+    activate astgraph.treeparser.DefItem
+      hnote right of astgraph.treeparser.DefItem
+      node_id
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      type
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      parent
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      name
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      items
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      type_hint
+      endnote
+    astgraph.treeparser.DefItem --> astgraph.treeparser.ModuleItem
+    deactivate astgraph.treeparser.DefItem
+
     astgraph.treeparser.ModuleItem o-> astgraph.treeparser.DefItemType 
     hnote right
     MODULE
@@ -555,28 +606,6 @@ activate astgraph.treeparser.ItemContainer
   deactivate astgraph.treeparser.ModuleItem
 
   astgraph.treeparser.ItemContainer o-> astgraph.treeparser.DefItem : __init__
-  activate astgraph.treeparser.DefItem
-    hnote right of astgraph.treeparser.DefItem
-    node_id
-    endnote
-    hnote right of astgraph.treeparser.DefItem
-    type
-    endnote
-    hnote right of astgraph.treeparser.DefItem
-    parent
-    endnote
-    hnote right of astgraph.treeparser.DefItem
-    name
-    endnote
-    hnote right of astgraph.treeparser.DefItem
-    items
-    endnote
-    hnote right of astgraph.treeparser.DefItem
-    type_hint
-    endnote
-  astgraph.treeparser.DefItem --> astgraph.treeparser.ItemContainer
-  deactivate astgraph.treeparser.DefItem
-
   hnote right of astgraph.treeparser.ItemContainer
   astroid_item_dict
   endnote
@@ -590,6 +619,29 @@ deactivate astgraph.treeparser.ItemContainer
 activate astgraph.treeparser.ItemContainer
   astgraph.treeparser.ItemContainer o-> astgraph.treeparser.ModuleItem : __init__
   activate astgraph.treeparser.ModuleItem
+    astgraph.treeparser.ModuleItem o-> astgraph.treeparser.DefItem : __init__
+    activate astgraph.treeparser.DefItem
+      hnote right of astgraph.treeparser.DefItem
+      node_id
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      type
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      parent
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      name
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      items
+      endnote
+      hnote right of astgraph.treeparser.DefItem
+      type_hint
+      endnote
+    astgraph.treeparser.DefItem --> astgraph.treeparser.ModuleItem
+    deactivate astgraph.treeparser.DefItem
+
     astgraph.treeparser.ModuleItem o-> astgraph.treeparser.DefItemType 
     hnote right
     MODULE
@@ -689,47 +741,7 @@ activate astgraph.treeparser.ItemContainer
 [-->x astgraph.treeparser.ItemContainer
 deactivate astgraph.treeparser.ItemContainer
 
-[-> astgraph.treeparser.BaseParser : __init__
-activate astgraph.treeparser.BaseParser
-  astgraph.treeparser.BaseParser o-> astgraph.treeparser.ItemContainer : __init__
-  activate astgraph.treeparser.ItemContainer
-    hnote right of astgraph.treeparser.ItemContainer
-    mod_dict
-    endnote
-    hnote right of astgraph.treeparser.ItemContainer
-    def_items
-    endnote
-    hnote right of astgraph.treeparser.ItemContainer
-    use_dict
-    endnote
-    hnote right of astgraph.treeparser.ItemContainer
-    astroid_item_dict
-    endnote
-    hnote right of astgraph.treeparser.ItemContainer
-    astroid_node_dict
-    endnote
-  astgraph.treeparser.ItemContainer --> astgraph.treeparser.BaseParser
-  deactivate astgraph.treeparser.ItemContainer
-
-  hnote right of astgraph.treeparser.BaseParser
-  items
-  endnote
-[-->x astgraph.treeparser.BaseParser
-deactivate astgraph.treeparser.BaseParser
-
-[-> astgraph.treeparser.BaseParser : analyze
-activate astgraph.treeparser.BaseParser
-  astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
-[-->x astgraph.treeparser.BaseParser
-deactivate astgraph.treeparser.BaseParser
-
 [-> astgraph.treeparser.BaseParser : _visit_children
-activate astgraph.treeparser.BaseParser
-  astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
-[-->x astgraph.treeparser.BaseParser
-deactivate astgraph.treeparser.BaseParser
-
-[-> astgraph.treeparser.BaseParser : _visit_list
 activate astgraph.treeparser.BaseParser
   astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
 [-->x astgraph.treeparser.BaseParser
@@ -751,7 +763,50 @@ activate astgraph.treeparser.TreeParser
     deactivate astgraph.treeparser.ItemContainer
 
     astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+    activate astgraph.treeparser.DefParser
+      astgraph.treeparser.DefParser o-> astgraph.treeparser.BaseParser : __init__
+      activate astgraph.treeparser.BaseParser
+        astgraph.treeparser.BaseParser o-> astgraph.treeparser.ItemContainer : __init__
+        activate astgraph.treeparser.ItemContainer
+          hnote right of astgraph.treeparser.ItemContainer
+          mod_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          def_items
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          use_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          astroid_item_dict
+          endnote
+          hnote right of astgraph.treeparser.ItemContainer
+          astroid_node_dict
+          endnote
+        astgraph.treeparser.ItemContainer --> astgraph.treeparser.BaseParser
+        deactivate astgraph.treeparser.ItemContainer
+
+        hnote right of astgraph.treeparser.BaseParser
+        items
+        endnote
+      astgraph.treeparser.BaseParser --> astgraph.treeparser.DefParser
+      deactivate astgraph.treeparser.BaseParser
+
+    astgraph.treeparser.DefParser --> astgraph.treeparser.TreeParser
+    deactivate astgraph.treeparser.DefParser
+
+    astgraph.treeparser.TreeParser o-> astgraph.treeparser.BaseParser : analyze
+    activate astgraph.treeparser.BaseParser
+      astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+    astgraph.treeparser.BaseParser --> astgraph.treeparser.TreeParser
+    deactivate astgraph.treeparser.BaseParser
+
     astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+    activate astgraph.treeparser.UseParser
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser : __init__
+    astgraph.treeparser.UseParser --> astgraph.treeparser.TreeParser
+    deactivate astgraph.treeparser.UseParser
+
   astgraph.treeparser.TreeParser --> astgraph.treeparser.TreeParser
   deactivate astgraph.treeparser.TreeParser
 
@@ -1281,6 +1336,19 @@ activate astgraph.plantuml
 [-->x astgraph.plantuml
 deactivate astgraph.plantuml
 
+[-> astgraph.main.DefItemFilter : is_matching
+activate astgraph.main.DefItemFilter
+  astgraph.main.DefItemFilter o-> astgraph.graphtheory.Filter : _is_matching
+  activate astgraph.graphtheory.Filter
+    hnote right of astgraph.graphtheory.Filter
+    filter_list
+    endnote
+  astgraph.graphtheory.Filter --> astgraph.main.DefItemFilter
+  deactivate astgraph.graphtheory.Filter
+
+[-->x astgraph.main.DefItemFilter
+deactivate astgraph.main.DefItemFilter
+
 astgraph.main o-> astgraph.main : main
 activate astgraph.main
   astgraph.main o-> astgraph.main : find_files
@@ -1331,7 +1399,31 @@ activate astgraph.main
         deactivate astgraph.treeparser.ItemContainer
 
         astgraph.treeparser.TreeParser o-> astgraph.treeparser.DefParser : __init__
+        activate astgraph.treeparser.DefParser
+          astgraph.treeparser.DefParser o-> astgraph.treeparser.BaseParser : __init__
+          activate astgraph.treeparser.BaseParser
+            astgraph.treeparser.BaseParser o-> astgraph.treeparser.ItemContainer : __init__
+            hnote right of astgraph.treeparser.BaseParser
+            items
+            endnote
+          astgraph.treeparser.BaseParser --> astgraph.treeparser.DefParser
+          deactivate astgraph.treeparser.BaseParser
+
+        astgraph.treeparser.DefParser --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.DefParser
+
+        astgraph.treeparser.TreeParser o-> astgraph.treeparser.BaseParser : analyze
+        activate astgraph.treeparser.BaseParser
+          astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+        astgraph.treeparser.BaseParser --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.BaseParser
+
         astgraph.treeparser.TreeParser o-> astgraph.treeparser.UseParser : __init__
+        activate astgraph.treeparser.UseParser
+          astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser : __init__
+        astgraph.treeparser.UseParser --> astgraph.treeparser.TreeParser
+        deactivate astgraph.treeparser.UseParser
+
       astgraph.treeparser.TreeParser --> astgraph.main
       deactivate astgraph.treeparser.TreeParser
 
@@ -1397,6 +1489,18 @@ activate astgraph.main
       deactivate astgraph.treeparser.ItemContainer
 
       astgraph.main o-> astgraph.main.DefItemFilter : __init__
+      activate astgraph.main.DefItemFilter
+        astgraph.main.DefItemFilter o-> astgraph.graphtheory.Filter : __init__
+        activate astgraph.graphtheory.Filter
+          hnote right of astgraph.graphtheory.Filter
+          filter_list
+          endnote
+        astgraph.graphtheory.Filter --> astgraph.main.DefItemFilter
+        deactivate astgraph.graphtheory.Filter
+
+      astgraph.main.DefItemFilter --> astgraph.main
+      deactivate astgraph.main.DefItemFilter
+
       astgraph.main o-> astgraph.graphtheory : filter_down
       activate astgraph.graphtheory
         astgraph.graphtheory o-> astgraph.graphtheory : get_connected
@@ -1439,10 +1543,20 @@ activate astgraph.treeparser.ItemContainer
 [-->x astgraph.treeparser.ItemContainer
 deactivate astgraph.treeparser.ItemContainer
 
+[-> astgraph.treeparser.BaseParser : _visit_list
+activate astgraph.treeparser.BaseParser
+  astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+[-->x astgraph.treeparser.BaseParser
+deactivate astgraph.treeparser.BaseParser
+
 [-> astgraph.treeparser.DefParser : _visit
 activate astgraph.treeparser.DefParser
   astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : visit_module
   activate astgraph.treeparser.DefParser
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
     astgraph.treeparser.DefParser o-> astgraph.treeparser.ModuleItem 
     hnote right
     filename
@@ -1458,6 +1572,10 @@ activate astgraph.treeparser.DefParser
 
   astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : visit_classdef
   activate astgraph.treeparser.DefParser
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
     astgraph.treeparser.DefParser o-> astgraph.treeparser.DefItemType 
     hnote right
     CLASS
@@ -1468,6 +1586,10 @@ activate astgraph.treeparser.DefParser
 
   astgraph.treeparser.DefParser o-> astgraph.treeparser.DefParser : visit_functiondef
   activate astgraph.treeparser.DefParser
+    astgraph.treeparser.DefParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
     astgraph.treeparser.DefParser o-> astgraph.treeparser.DefItemType 
     hnote right
     DEF_METHOD
@@ -1502,16 +1624,28 @@ activate astgraph.treeparser.UseParser
       activate astgraph.treeparser.UseParser
         astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _find_type_def_in_scope
         activate astgraph.treeparser.UseParser
+          astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+          hnote right
+          items
+          end note
           astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit
         astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
         deactivate astgraph.treeparser.UseParser
 
+        astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+        hnote right
+        items
+        end note
       astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
       deactivate astgraph.treeparser.UseParser
 
     astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
     deactivate astgraph.treeparser.UseParser
 
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
     astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType 
     hnote right
     MODULE
@@ -1526,6 +1660,10 @@ activate astgraph.treeparser.UseParser
       hnote right
       CLASS
       end note
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+      hnote right
+      items
+      end note
       astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType 
       hnote right
       DEF_METHOD
@@ -1533,12 +1671,22 @@ activate astgraph.treeparser.UseParser
     astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
     deactivate astgraph.treeparser.UseParser
 
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser : _visit_list
+    activate astgraph.treeparser.BaseParser
+      astgraph.treeparser.BaseParser o-> astgraph.treeparser.BaseParser : _visit
+    astgraph.treeparser.BaseParser --> astgraph.treeparser.UseParser
+    deactivate astgraph.treeparser.BaseParser
+
   astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
   deactivate astgraph.treeparser.UseParser
 
   astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_keyword
   activate astgraph.treeparser.UseParser
     astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_attribute
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
     astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType 
     hnote right
     MODULE
@@ -1552,6 +1700,10 @@ activate astgraph.treeparser.UseParser
 
   astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_assignname
   activate astgraph.treeparser.UseParser
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
     astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType 
     hnote right
     MEMBER
@@ -1580,6 +1732,10 @@ activate astgraph.treeparser.UseParser
       hnote right
       CLASS
       end note
+      astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+      hnote right
+      items
+      end note
       astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType 
       hnote right
       MEMBER
@@ -1603,12 +1759,20 @@ activate astgraph.treeparser.UseParser
     astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _visit_children
     astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_attribute
     astgraph.treeparser.UseParser o-> astgraph.treeparser : infer_type
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
   astgraph.treeparser.UseParser --> astgraph.treeparser.UseParser
   deactivate astgraph.treeparser.UseParser
 
   astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : visit_attribute
   activate astgraph.treeparser.UseParser
     astgraph.treeparser.UseParser o-> astgraph.treeparser.UseParser : _resolve_attribute
+    astgraph.treeparser.UseParser o-> astgraph.treeparser.BaseParser 
+    hnote right
+    items
+    end note
     astgraph.treeparser.UseParser o-> astgraph.treeparser.DefItemType 
     hnote right
     MODULE

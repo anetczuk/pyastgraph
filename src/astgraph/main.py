@@ -19,7 +19,7 @@ import pprint
 
 from astgraph.objtodict import obj_to_dict
 from astgraph.treeparser import TreeParser, DefItem
-from astgraph.pyanwrap import draw_use_graph as draw_pyan_graph
+from astgraph.pyanwrap import draw_use_graph, draw_full_graph
 from astgraph.plantuml import draw_graph as draw_plantuml_graph
 from astgraph.graphtheory import filter_down, Filter, join_graph, filter_up
 
@@ -29,7 +29,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _LOGGER = logging.getLogger(__name__)
 
 
-def process_files(files_list, filters, output_dict, debug_dump=False):
+def process_files(files_list, filters, output_dict, show_defs=False, debug_dump=False):
     data_dump_path = None
     if debug_dump:
         out_svg_file_path = output_dict["outsvgfile"]
@@ -37,15 +37,15 @@ def process_files(files_list, filters, output_dict, debug_dump=False):
 
     analyze_data = analyze_files(files_list, filters, data_dump_path)
 
-    filtered_uses = analyze_data[1]
-    draw_pyan_graph(filtered_uses, output_dict)
-    draw_plantuml_graph(filtered_uses, output_dict)
-
-    # filtered_defs = analyze_data[0]
-    # filtered_uses = analyze_data[1]
-    # draw_pyan_graph(filtered_uses, output_dict)
-    # draw_pyan_graph(filtered_defs, filtered_uses, output_dict)
-    # draw_plantuml_graph(filtered_uses, output_dict)
+    if not show_defs:
+        filtered_uses = analyze_data[1]
+        draw_use_graph(filtered_uses, output_dict)
+        draw_plantuml_graph(filtered_uses, output_dict)
+    else:
+        filtered_defs = analyze_data[0]
+        filtered_uses = analyze_data[1]
+        draw_full_graph(filtered_defs, filtered_uses, output_dict)
+        draw_plantuml_graph(filtered_uses, output_dict)
 
 
 def analyze_files(files_list, filters, data_dump_path=None):
@@ -64,7 +64,8 @@ def analyze_files(files_list, filters, data_dump_path=None):
     filter_down_list = filters.get("filterdown", [])
     filter_up_list = filters.get("filterup", [])
 
-    filtered_defs = items.get_def_dict()
+    filtered_defs = items.get_def_list()
+    # filtered_defs = items.get_def_dict()
     filtered_uses = {}
 
     if filter_down_list or filter_up_list:
@@ -147,6 +148,9 @@ def main():
         help="Space separated list of regex strings applied on found items to be included in diagram"
         " (otherwise items will be excluded)",
     )
+    parser.add_argument(
+        "--showdefs", action="store_true", help="Show defs relation on use graph (fixes dot 'init_rank' error)"
+    )
     parser.add_argument("--outsvgfile", action="store", required=True, help="Path to output SVG file")
     parser.add_argument("--outdotfile", action="store", required=False, help="Path to output DOT file")
     parser.add_argument("--outhtmlfile", action="store", required=False, help="Path to output HTML file")
@@ -182,7 +186,7 @@ def main():
         "outseqdiag": args.outseqdiag,
         "outseqsvg": args.outseqsvg,
     }
-    process_files(files_list, filters, output_dict, args.dumpdebugdata)
+    process_files(files_list, filters, output_dict, args.showdefs, args.dumpdebugdata)
 
     _LOGGER.info("done")
     return 0

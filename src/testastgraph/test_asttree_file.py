@@ -17,7 +17,8 @@ from astgraph.treeparser import TreeParser, DefItemType
 
 def draw(parser, svg_out_path="/tmp/graph.svg"):
     output_dict = {"outsvgfile": svg_out_path}
-    draw_full_graph(parser.items.def_items, parser.items.use_dict, output_dict)
+    defs_list = parser.items.get_def_list()
+    draw_full_graph(defs_list, parser.items.use_dict, output_dict)
 
 
 def print_ast(parser):
@@ -40,7 +41,7 @@ class TreeParserMultifileTest(unittest.TestCase):
         # draw(parser)
 
         items_container = parser.items
-        def_list = items_container.get_def_list()
+        def_list = items_container.get_def_list_info()
         self.assertEqual(len(def_list), 6)
 
         self.assertEqual(def_list[0], ("multifileimportfrom.modulea", DefItemType.MODULE))
@@ -69,7 +70,7 @@ class TreeParserMultifileTest(unittest.TestCase):
         # draw(parser)
 
         items_container = parser.items
-        def_list = items_container.get_def_list()
+        def_list = items_container.get_def_list_info()
         self.assertEqual(len(def_list), 6)
 
         self.assertEqual(def_list[0], ("multifileimport.modulea", DefItemType.MODULE))
@@ -97,7 +98,7 @@ class TreeParserMultifileTest(unittest.TestCase):
         # draw(parser)
 
         items_container = parser.items
-        def_list = items_container.get_def_list()
+        def_list = items_container.get_def_list_info()
         self.assertEqual(len(def_list), 2)
 
         self.assertEqual(def_list[0], ("multifileimportfrom.modulea", DefItemType.MODULE))
