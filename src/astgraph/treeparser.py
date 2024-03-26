@@ -19,7 +19,7 @@ import astroid.nodes.scoped_nodes.scoped_nodes as astroid_nodes
 import astroid.bases as astroid_bases
 from astroid.nodes import node_classes, NodeNG
 from astroid.modutils import _has_init
-from astgraph.graphtheory import convert_to_list
+from astgraph.graphtheory import convert_to_list, get_direct_predecessors
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -115,13 +115,16 @@ class DefItem:
     def is_module(self) -> bool:
         return self.type == DefItemType.MODULE
 
+    def is_class(self) -> bool:
+        return self.type == DefItemType.CLASS
+
     def is_method(self) -> bool:
         return self.type == DefItemType.DEF_METHOD
 
     def is_field(self) -> bool:
         return self.type == DefItemType.MEMBER
 
-    def get_items(self):
+    def get_items(self) -> List["DefItem"]:
         return self._items
 
     def append(self, item):
@@ -159,6 +162,12 @@ class DefItem:
                 return item
         return None
 
+    def find_items(self, name) -> List["DefItem"]:
+        direct_child = self.get_child_direct(name)
+        if direct_child is not None:
+            return [direct_child]
+        return []
+
     def to_string(self):
         return f"({self.name}, {self.type})"
 
@@ -186,6 +195,26 @@ class ClassItem(DefItem):
             if base_child is not None:
                 return base_child
         return None
+
+    def find_items(self, name) -> List["DefItem"]:
+        direct_child = self.get_child_direct(name)
+        if direct_child is not None:
+            return [direct_child]
+
+        ret_list = []
+        for base in self.bases:
+            base_children = base.find_items(name)
+            if base_children is not None:
+                ret_list.extend(base_children)
+        return ret_list
+
+    def find_in_bases(self, name) -> List["DefItem"]:
+        ret_list = []
+        for base in self.bases:
+            base_children = base.find_items(name)
+            if base_children is not None:
+                ret_list.extend(base_children)
+        return ret_list
 
 
 class ModuleItem(DefItem):
@@ -369,6 +398,9 @@ class ItemContainer:
 
         # no item found up to module - check other imported modules
         return self.mod_dict.get(name)
+
+    def find_callers(self, func: DefItem) -> Set[DefItem]:
+        return get_direct_predecessors(self.use_dict, func)
 
 
 # ============================================
@@ -870,6 +902,7 @@ class TreeParser:
             self.items.add_mod(astroid_tree)
             astroid_tree_list.append(astroid_tree)
 
+        # ===== analyze definitions =====
         for astroid_tree in astroid_tree_list:
             try:
                 _LOGGER.info("=== analyzing astroid definitions: %s", astroid_tree.file)
@@ -879,6 +912,7 @@ class TreeParser:
                 _LOGGER.error("unable to analyze file %s", astroid_tree.file)
                 raise
 
+        # ===== analyze uses =====
         for astroid_tree in astroid_tree_list:
             try:
                 _LOGGER.info("=== analyzing astroid usage: %s", astroid_tree.file)
@@ -887,6 +921,39 @@ class TreeParser:
             except:  # noqa
                 _LOGGER.error("unable to analyze file %s", astroid_tree.file)
                 raise
+
+        self._mark_override_use()
+
+    def _mark_override_use(self):
+        # static deduction of exact method invocation in case of method override is hard
+        # this method is workaround for the problem: it marks all overrides
+
+        defs_list = self.items.get_def_list()
+        # def_item: DefItem
+        for def_item in defs_list:
+            if not def_item.is_class():
+                continue
+            # def_item: ClassItem
+
+            def_subitems: List[DefItem] = def_item.get_items()
+            for def_subitem in def_subitems:
+                if not def_subitem.is_method():
+                    continue
+                subname = def_subitem.get_name()
+                if subname == "__init__":
+                    # ignore constructor
+                    continue
+
+                found_items = def_item.find_in_bases(subname)
+                for base_item in found_items:
+                    if not base_item.is_method():
+                        continue
+
+                    base_item_callers = self.items.find_callers(base_item)
+                    for caller in base_item_callers:
+                        if caller == def_subitem:
+                            continue
+                        self.items.append_use(caller, def_subitem)
 
 
 # ============================================

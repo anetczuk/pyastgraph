@@ -1,0 +1,32 @@
+digraph G {
+    graph [rankdir=TB, ranksep="1.0", clusterrank="local"];
+    subgraph cluster_G {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        inheritance__inheritance [label="inheritance.inheritance", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
+        subgraph cluster_inheritance__inheritance__Base {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="inheritance.inheritance.Base"];
+            inheritance__inheritance__Base____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inheritance__inheritance__Base___execute_priv [label="_execute_priv", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inheritance__inheritance__Base__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inheritance__inheritance__Base__wait [label="wait", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+        }
+        subgraph cluster_inheritance__inheritance__Item {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="inheritance.inheritance.Item"];
+            inheritance__inheritance__Item____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inheritance__inheritance__Item___execute_priv [label="_execute_priv", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inheritance__inheritance__Item__wait [label="wait", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inheritance__inheritance__Item__work [label="work", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+        }
+    }
+        inheritance__inheritance__Base__execute -> inheritance__inheritance__Base___execute_priv [style="solid",  color="#000000"];
+        inheritance__inheritance__Base__execute -> inheritance__inheritance__Item___execute_priv [style="solid",  color="#000000"];
+        inheritance__inheritance__Item__wait -> inheritance__inheritance__Base__wait [style="solid",  color="#000000"];
+        inheritance__inheritance__Item____init__ -> inheritance__inheritance__Base____init__ [style="solid",  color="#000000"];
+        inheritance__inheritance -> inheritance__inheritance__Item____init__ [style="solid",  color="#000000"];
+        inheritance__inheritance -> inheritance__inheritance__Base__execute [style="solid",  color="#000000"];
+        inheritance__inheritance -> inheritance__inheritance__Item__work [style="solid",  color="#000000"];
+        inheritance__inheritance -> inheritance__inheritance__Item__wait [style="solid",  color="#000000"];
+    }

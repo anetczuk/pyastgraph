@@ -1,0 +1,26 @@
+digraph G {
+    graph [rankdir=TB, ranksep="1.0", clusterrank="local"];
+    subgraph cluster_G {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        inherit__override01 [label="inherit.override01", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
+        subgraph cluster_inherit__override01__Base {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="inherit.override01.Base"];
+            inherit__override01__Base____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__override01__Base__do_work [label="do_work", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__override01__Base__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+        }
+        subgraph cluster_inherit__override01__Item {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="inherit.override01.Item"];
+            inherit__override01__Item____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__override01__Item__do_work [label="do_work", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+        }
+    }
+        inherit__override01__Base__execute -> inherit__override01__Base__do_work [style="solid",  color="#000000"];
+        inherit__override01__Base__execute -> inherit__override01__Item__do_work [style="solid",  color="#000000"];
+        inherit__override01__Item____init__ -> inherit__override01__Base____init__ [style="solid",  color="#000000"];
+        inherit__override01 -> inherit__override01__Item____init__ [style="solid",  color="#000000"];
+        inherit__override01 -> inherit__override01__Base__execute [style="solid",  color="#000000"];
+    }

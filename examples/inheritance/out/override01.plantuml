@@ -1,0 +1,20 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+inherit.override01 o-> inherit.override01.Item : __init__
+activate inherit.override01.Item
+  inherit.override01.Item o-> inherit.override01.Base : __init__
+inherit.override01.Item --> inherit.override01
+deactivate inherit.override01.Item
+
+inherit.override01 o-> inherit.override01.Base : execute
+activate inherit.override01.Base
+  inherit.override01.Base o-> inherit.override01.Base : do_work
+  inherit.override01.Base o-> inherit.override01.Item : do_work
+inherit.override01.Base --> inherit.override01
+deactivate inherit.override01.Base
+
+
+@enduml

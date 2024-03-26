@@ -1,0 +1,33 @@
+digraph G {
+    graph [rankdir=TB, ranksep="1.0", clusterrank="local"];
+    subgraph cluster_G {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        inherit__inherit02 [label="inherit.inherit02", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0"];
+        subgraph cluster_inherit__inherit02__Base {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="inherit.inherit02.Base"];
+            inherit__inherit02__Base____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__inherit02__Base___execute_priv [label="_execute_priv", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__inherit02__Base__do_work [label="do_work", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__inherit02__Base__execute_base [label="execute_base", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__inherit02__Base__field [label="field", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+        }
+        subgraph cluster_inherit__inherit02__Item {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="inherit.inherit02.Item"];
+            inherit__inherit02__Item____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__inherit02__Item___execute_priv [label="_execute_priv", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            inherit__inherit02__Item__execute [label="execute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+        }
+    }
+        inherit__inherit02__Base____init__ -> inherit__inherit02__Base__field [style="solid",  color="#000000"];
+        inherit__inherit02__Base__execute_base -> inherit__inherit02__Base___execute_priv [style="solid",  color="#000000"];
+        inherit__inherit02__Base__execute_base -> inherit__inherit02__Item___execute_priv [style="solid",  color="#000000"];
+        inherit__inherit02__Item____init__ -> inherit__inherit02__Base____init__ [style="solid",  color="#000000"];
+        inherit__inherit02__Item__execute -> inherit__inherit02__Base__do_work [style="solid",  color="#000000"];
+        inherit__inherit02__Item__execute -> inherit__inherit02__Base__execute_base [style="solid",  color="#000000"];
+        inherit__inherit02__Item___execute_priv -> inherit__inherit02__Base__do_work [style="solid",  color="#000000"];
+        inherit__inherit02 -> inherit__inherit02__Item____init__ [style="solid",  color="#000000"];
+        inherit__inherit02 -> inherit__inherit02__Item__execute [style="solid",  color="#000000"];
+    }

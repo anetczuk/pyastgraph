@@ -1,0 +1,27 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+inheritance.inheritance o-> inheritance.inheritance.Item : __init__
+activate inheritance.inheritance.Item
+  inheritance.inheritance.Item o-> inheritance.inheritance.Base : __init__
+inheritance.inheritance.Item --> inheritance.inheritance
+deactivate inheritance.inheritance.Item
+
+inheritance.inheritance o-> inheritance.inheritance.Base : execute
+activate inheritance.inheritance.Base
+  inheritance.inheritance.Base o-> inheritance.inheritance.Base : _execute_priv
+  inheritance.inheritance.Base o-> inheritance.inheritance.Item : _execute_priv
+inheritance.inheritance.Base --> inheritance.inheritance
+deactivate inheritance.inheritance.Base
+
+inheritance.inheritance o-> inheritance.inheritance.Item : work
+inheritance.inheritance o-> inheritance.inheritance.Item : wait
+activate inheritance.inheritance.Item
+  inheritance.inheritance.Item o-> inheritance.inheritance.Base : wait
+inheritance.inheritance.Item --> inheritance.inheritance
+deactivate inheritance.inheritance.Item
+
+
+@enduml

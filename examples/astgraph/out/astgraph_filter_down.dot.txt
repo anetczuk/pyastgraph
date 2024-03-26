@@ -7,18 +7,35 @@ digraph G {
 
             graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser"];
             astgraphX__treeparser__get_package_root [label="get_package_root", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            astgraphX__treeparser__get_type [label="get_type", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            astgraphX__treeparser__infer_type [label="infer_type", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
+            astgraphX__treeparser__unpack_proxy [label="unpack_proxy", style="filled", fillcolor="#ff9999b2", fontcolor="#000000", group="0"];
             subgraph cluster_astgraphX__treeparser__BaseParser {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.BaseParser"];
                 astgraphX__treeparser__BaseParser____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 astgraphX__treeparser__BaseParser___visit [label="_visit", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__BaseParser___visit_list [label="_visit_list", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 astgraphX__treeparser__BaseParser__analyze [label="analyze", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 astgraphX__treeparser__BaseParser__items [label="items", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            }
+            subgraph cluster_astgraphX__treeparser__DefItemType {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.DefItemType"];
+                astgraphX__treeparser__DefItemType__CLASS [label="CLASS", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefItemType__DEF_METHOD [label="DEF_METHOD", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefItemType__MEMBER [label="MEMBER", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefItemType__MODULE [label="MODULE", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
             subgraph cluster_astgraphX__treeparser__DefParser {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.DefParser"];
                 astgraphX__treeparser__DefParser____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefParser___visit [label="_visit", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefParser___visit_children [label="_visit_children", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefParser__visit_classdef [label="visit_classdef", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefParser__visit_functiondef [label="visit_functiondef", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__DefParser__visit_module [label="visit_module", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
             subgraph cluster_astgraphX__treeparser__ItemContainer {
 
@@ -30,6 +47,11 @@ digraph G {
                 astgraphX__treeparser__ItemContainer__def_items [label="def_items", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 astgraphX__treeparser__ItemContainer__mod_dict [label="mod_dict", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
                 astgraphX__treeparser__ItemContainer__use_dict [label="use_dict", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+            }
+            subgraph cluster_astgraphX__treeparser__ModuleItem {
+
+                graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.ModuleItem"];
+                astgraphX__treeparser__ModuleItem__filename [label="filename", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
             subgraph cluster_astgraphX__treeparser__TreeParser {
 
@@ -44,9 +66,26 @@ digraph G {
 
                 graph [style="filled,rounded", fillcolor="#80808018", label="astgraph.treeparser.UseParser"];
                 astgraphX__treeparser__UseParser____init__ [label="__init__", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___find_type_def [label="_find_type_def", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___find_type_def_in_scope [label="_find_type_def_in_scope", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___get_attr_full_call [label="_get_attr_full_call", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___get_callable [label="_get_callable", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___get_callable_def [label="_get_callable_def", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___handle_name [label="_handle_name", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___resolve_attribute [label="_resolve_attribute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___resolve_item [label="_resolve_item", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___visit [label="_visit", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser___visit_children [label="_visit_children", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser__visit_annassign [label="visit_annassign", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser__visit_assignattr [label="visit_assignattr", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser__visit_assignname [label="visit_assignname", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser__visit_attribute [label="visit_attribute", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser__visit_call [label="visit_call", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
+                astgraphX__treeparser__UseParser__visit_keyword [label="visit_keyword", style="filled", fillcolor="#ff6565b2", fontcolor="#000000", group="0"];
             }
         }
     }
+        astgraphX__treeparser__infer_type -> astgraphX__treeparser__unpack_proxy [style="solid",  color="#000000"];
         astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__mod_dict [style="solid",  color="#000000"];
         astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__def_items [style="solid",  color="#000000"];
         astgraphX__treeparser__ItemContainer____init__ -> astgraphX__treeparser__ItemContainer__use_dict [style="solid",  color="#000000"];
@@ -56,6 +95,76 @@ digraph G {
         astgraphX__treeparser__BaseParser____init__ -> astgraphX__treeparser__ItemContainer____init__ [style="solid",  color="#000000"];
         astgraphX__treeparser__BaseParser____init__ -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
         astgraphX__treeparser__BaseParser__analyze -> astgraphX__treeparser__BaseParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__BaseParser__analyze -> astgraphX__treeparser__DefParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__BaseParser__analyze -> astgraphX__treeparser__UseParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__BaseParser___visit_list -> astgraphX__treeparser__BaseParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__BaseParser___visit_list -> astgraphX__treeparser__DefParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__BaseParser___visit_list -> astgraphX__treeparser__UseParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser___visit -> astgraphX__treeparser__DefParser__visit_module [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser___visit -> astgraphX__treeparser__DefParser__visit_classdef [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser___visit -> astgraphX__treeparser__DefParser__visit_functiondef [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser___visit -> astgraphX__treeparser__DefParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser___visit_children -> astgraphX__treeparser__DefParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_module -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_module -> astgraphX__treeparser__ModuleItem__filename [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_module -> astgraphX__treeparser__DefParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_classdef -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_classdef -> astgraphX__treeparser__DefItemType__CLASS [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_classdef -> astgraphX__treeparser__DefParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_functiondef -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_functiondef -> astgraphX__treeparser__DefItemType__DEF_METHOD [style="solid",  color="#000000"];
+        astgraphX__treeparser__DefParser__visit_functiondef -> astgraphX__treeparser__DefParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit -> astgraphX__treeparser__UseParser__visit_call [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit -> astgraphX__treeparser__UseParser__visit_keyword [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit -> astgraphX__treeparser__UseParser__visit_assignname [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit -> astgraphX__treeparser__UseParser__visit_assignattr [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit -> astgraphX__treeparser__UseParser__visit_annassign [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit -> astgraphX__treeparser__UseParser__visit_attribute [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit -> astgraphX__treeparser__UseParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___visit_children -> astgraphX__treeparser__UseParser___visit [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_call -> astgraphX__treeparser__UseParser___resolve_attribute [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_call -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_call -> astgraphX__treeparser__DefItemType__MODULE [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_call -> astgraphX__treeparser__DefItemType__CLASS [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_call -> astgraphX__treeparser__UseParser___get_callable [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_call -> astgraphX__treeparser__BaseParser___visit_list [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_keyword -> astgraphX__treeparser__UseParser___resolve_attribute [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_keyword -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_keyword -> astgraphX__treeparser__DefItemType__MODULE [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_keyword -> astgraphX__treeparser__DefItemType__CLASS [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_assignname -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_assignname -> astgraphX__treeparser__DefItemType__MEMBER [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_assignname -> astgraphX__treeparser__UseParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_assignattr -> astgraphX__treeparser__UseParser___handle_name [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_assignattr -> astgraphX__treeparser__UseParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_annassign -> astgraphX__treeparser__UseParser___visit_children [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_annassign -> astgraphX__treeparser__UseParser___resolve_attribute [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_annassign -> astgraphX__treeparser__infer_type [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_annassign -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_attribute -> astgraphX__treeparser__UseParser___resolve_attribute [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_attribute -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_attribute -> astgraphX__treeparser__DefItemType__MODULE [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser__visit_attribute -> astgraphX__treeparser__DefItemType__CLASS [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___handle_name -> astgraphX__treeparser__UseParser___find_type_def [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___handle_name -> astgraphX__treeparser__DefItemType__CLASS [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___handle_name -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___handle_name -> astgraphX__treeparser__DefItemType__MEMBER [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___handle_name -> astgraphX__treeparser__UseParser___get_callable_def [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___resolve_attribute -> astgraphX__treeparser__UseParser___get_attr_full_call [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___resolve_attribute -> astgraphX__treeparser__UseParser___resolve_item [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___get_attr_full_call -> astgraphX__treeparser__infer_type [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___get_attr_full_call -> astgraphX__treeparser__UseParser___get_attr_full_call [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___resolve_item -> astgraphX__treeparser__UseParser___find_type_def_in_scope [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___resolve_item -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___get_callable_def -> astgraphX__treeparser__UseParser___find_type_def [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___get_callable_def -> astgraphX__treeparser__UseParser___get_callable [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___get_callable -> astgraphX__treeparser__DefItemType__CLASS [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___get_callable -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___get_callable -> astgraphX__treeparser__DefItemType__DEF_METHOD [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___find_type_def -> astgraphX__treeparser__get_type [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___find_type_def -> astgraphX__treeparser__UseParser___find_type_def_in_scope [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___find_type_def_in_scope -> astgraphX__treeparser__BaseParser__items [style="solid",  color="#000000"];
+        astgraphX__treeparser__UseParser___find_type_def_in_scope -> astgraphX__treeparser__UseParser___visit [style="solid",  color="#000000"];
         astgraphX__treeparser__TreeParser____init__ -> astgraphX__treeparser__TreeParser__items [style="solid",  color="#000000"];
         astgraphX__treeparser__TreeParser____init__ -> astgraphX__treeparser__ItemContainer____init__ [style="solid",  color="#000000"];
         astgraphX__treeparser__TreeParser__analyze -> astgraphX__treeparser__TreeParser__items [style="solid",  color="#000000"];

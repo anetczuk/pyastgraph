@@ -1,0 +1,38 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+inherit.inherit02 o-> inherit.inherit02.Item : __init__
+activate inherit.inherit02.Item
+  inherit.inherit02.Item o-> inherit.inherit02.Base : __init__
+  activate inherit.inherit02.Base
+    hnote right of inherit.inherit02.Base
+    field
+    endnote
+  inherit.inherit02.Base --> inherit.inherit02.Item
+  deactivate inherit.inherit02.Base
+
+inherit.inherit02.Item --> inherit.inherit02
+deactivate inherit.inherit02.Item
+
+inherit.inherit02 o-> inherit.inherit02.Item : execute
+activate inherit.inherit02.Item
+  inherit.inherit02.Item o-> inherit.inherit02.Base : do_work
+  inherit.inherit02.Item o-> inherit.inherit02.Base : execute_base
+  activate inherit.inherit02.Base
+    inherit.inherit02.Base o-> inherit.inherit02.Base : _execute_priv
+    inherit.inherit02.Base o-> inherit.inherit02.Item : _execute_priv
+    activate inherit.inherit02.Item
+      inherit.inherit02.Item o-> inherit.inherit02.Base : do_work
+    inherit.inherit02.Item --> inherit.inherit02.Base
+    deactivate inherit.inherit02.Item
+
+  inherit.inherit02.Base --> inherit.inherit02.Item
+  deactivate inherit.inherit02.Base
+
+inherit.inherit02.Item --> inherit.inherit02
+deactivate inherit.inherit02.Item
+
+
+@enduml

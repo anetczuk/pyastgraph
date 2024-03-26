@@ -33,7 +33,7 @@ class TreeParserInheritanceTest(unittest.TestCase):
 
         data_root_path = get_data_root_path()
         files_list = []
-        files_list.append(os.path.join(data_root_path, "code", "inheritance", "inherit01.py"))
+        files_list.append(os.path.join(data_root_path, "code", "inherit", "inherit01.py"))
 
         parser = TreeParser()
         parser.analyze_files(files_list)
@@ -45,33 +45,30 @@ class TreeParserInheritanceTest(unittest.TestCase):
         def_list = items_container.get_def_list_info()
         self.assertEqual(len(def_list), 11)
 
-        self.assertEqual(def_list[0], ("inheritance.inherit01", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("inheritance.inherit01.Base", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("inheritance.inherit01.Base.__init__", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[3], ("inheritance.inherit01.Base.do_work", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[4], ("inheritance.inherit01.Base.execute_base", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[5], ("inheritance.inherit01.Base._execute_priv", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[6], ("inheritance.inherit01.Item", DefItemType.CLASS))
-        self.assertEqual(def_list[7], ("inheritance.inherit01.Item.execute", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[8], ("inheritance.inherit01.Item._execute_priv", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[9], ("inheritance.inherit01.Base.field", DefItemType.MEMBER))
-        self.assertEqual(def_list[10], ("inheritance.inherit01.Item.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[0], ("inherit.inherit01", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("inherit.inherit01.Base", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("inherit.inherit01.Base.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("inherit.inherit01.Base.do_work", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[4], ("inherit.inherit01.Base.execute_base", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("inherit.inherit01.Base._execute_priv", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[6], ("inherit.inherit01.Item", DefItemType.CLASS))
+        self.assertEqual(def_list[7], ("inherit.inherit01.Item.execute", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[8], ("inherit.inherit01.Item._execute_priv", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[9], ("inherit.inherit01.Base.field", DefItemType.MEMBER))
+        self.assertEqual(def_list[10], ("inherit.inherit01.Item.__init__", DefItemType.DEF_METHOD))
 
         use_list = items_container.get_use_list()
-        self.assertEqual(len(use_list), 8)
+        self.assertEqual(len(use_list), 9)
 
-        self.assertEqual(use_list[0], ("inheritance.inherit01.Base.__init__", "inheritance.inherit01.Base.field"))
-        self.assertEqual(
-            use_list[1], ("inheritance.inherit01.Base.execute_base", "inheritance.inherit01.Base._execute_priv")
-        )
-        self.assertEqual(use_list[2], ("inheritance.inherit01.Item.execute", "inheritance.inherit01.Base.do_work"))
-        self.assertEqual(use_list[3], ("inheritance.inherit01.Item.execute", "inheritance.inherit01.Base.execute_base"))
-        self.assertEqual(
-            use_list[4], ("inheritance.inherit01.Item._execute_priv", "inheritance.inherit01.Base.do_work")
-        )
-        self.assertEqual(use_list[5], ("inheritance.inherit01.Item.__init__", "inheritance.inherit01.Base.__init__"))
-        self.assertEqual(use_list[6], ("inheritance.inherit01", "inheritance.inherit01.Item.__init__"))
-        self.assertEqual(use_list[7], ("inheritance.inherit01", "inheritance.inherit01.Item.execute"))
+        self.assertEqual(use_list[0], ("inherit.inherit01.Base.__init__", "inherit.inherit01.Base.field"))
+        self.assertEqual(use_list[1], ("inherit.inherit01.Base.execute_base", "inherit.inherit01.Base._execute_priv"))
+        self.assertEqual(use_list[2], ("inherit.inherit01.Base.execute_base", "inherit.inherit01.Item._execute_priv"))
+        self.assertEqual(use_list[3], ("inherit.inherit01.Item.execute", "inherit.inherit01.Base.do_work"))
+        self.assertEqual(use_list[4], ("inherit.inherit01.Item.execute", "inherit.inherit01.Base.execute_base"))
+        self.assertEqual(use_list[5], ("inherit.inherit01.Item._execute_priv", "inherit.inherit01.Base.do_work"))
+        self.assertEqual(use_list[6], ("inherit.inherit01.Item.__init__", "inherit.inherit01.Base.__init__"))
+        self.assertEqual(use_list[7], ("inherit.inherit01", "inherit.inherit01.Item.__init__"))
+        self.assertEqual(use_list[8], ("inherit.inherit01", "inherit.inherit01.Item.execute"))
 
     def test_analyze_inherit_super(self):
         # handle call of base class constructor
@@ -90,7 +87,7 @@ item = Item()
         parser.analyze_code(module_name="testmod", code=code)
 
         # print_ast(parser)
-        draw(parser)
+        # draw(parser)
 
         items_container = parser.items
         def_list = items_container.get_def_list_info()
@@ -113,86 +110,115 @@ item = Item()
 
         data_root_path = get_data_root_path()
         files_list = []
-        files_list.append(os.path.join(data_root_path, "code", "inheritance", "inherit02.py"))
+        files_list.append(os.path.join(data_root_path, "code", "inherit", "inherit02.py"))
 
         parser = TreeParser()
         parser.analyze_files(files_list)
 
         # print_ast(parser)
-        draw(parser)
+        # draw(parser)
 
         items_container = parser.items
         def_list = items_container.get_def_list_info()
         self.assertEqual(len(def_list), 11)
 
-        self.assertEqual(def_list[0], ("inheritance.inherit02", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("inheritance.inherit02.Base", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("inheritance.inherit02.Base.__init__", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[3], ("inheritance.inherit02.Base.do_work", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[4], ("inheritance.inherit02.Base.execute_base", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[5], ("inheritance.inherit02.Base._execute_priv", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[6], ("inheritance.inherit02.Item", DefItemType.CLASS))
-        self.assertEqual(def_list[7], ("inheritance.inherit02.Item.__init__", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[8], ("inheritance.inherit02.Item.execute", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[9], ("inheritance.inherit02.Item._execute_priv", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[10], ("inheritance.inherit02.Base.field", DefItemType.MEMBER))
+        self.assertEqual(def_list[0], ("inherit.inherit02", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("inherit.inherit02.Base", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("inherit.inherit02.Base.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("inherit.inherit02.Base.do_work", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[4], ("inherit.inherit02.Base.execute_base", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("inherit.inherit02.Base._execute_priv", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[6], ("inherit.inherit02.Item", DefItemType.CLASS))
+        self.assertEqual(def_list[7], ("inherit.inherit02.Item.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[8], ("inherit.inherit02.Item.execute", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[9], ("inherit.inherit02.Item._execute_priv", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[10], ("inherit.inherit02.Base.field", DefItemType.MEMBER))
 
         use_list = items_container.get_use_list()
-        self.assertEqual(len(use_list), 8)
+        self.assertEqual(len(use_list), 9)
 
-        self.assertEqual(use_list[0], ("inheritance.inherit02.Base.__init__", "inheritance.inherit02.Base.field"))
-        self.assertEqual(
-            use_list[1], ("inheritance.inherit02.Base.execute_base", "inheritance.inherit02.Base._execute_priv")
-        )
-        self.assertEqual(use_list[2], ("inheritance.inherit02.Item.__init__", "inheritance.inherit02.Base.__init__"))
-        self.assertEqual(use_list[3], ("inheritance.inherit02.Item.execute", "inheritance.inherit02.Base.do_work"))
-        self.assertEqual(use_list[4], ("inheritance.inherit02.Item.execute", "inheritance.inherit02.Base.execute_base"))
-        self.assertEqual(
-            use_list[5], ("inheritance.inherit02.Item._execute_priv", "inheritance.inherit02.Base.do_work")
-        )
-        self.assertEqual(use_list[6], ("inheritance.inherit02", "inheritance.inherit02.Item.__init__"))
-        self.assertEqual(use_list[7], ("inheritance.inherit02", "inheritance.inherit02.Item.execute"))
+        self.assertEqual(use_list[0], ("inherit.inherit02.Base.__init__", "inherit.inherit02.Base.field"))
+        self.assertEqual(use_list[1], ("inherit.inherit02.Base.execute_base", "inherit.inherit02.Base._execute_priv"))
+        self.assertEqual(use_list[2], ("inherit.inherit02.Base.execute_base", "inherit.inherit02.Item._execute_priv"))
+        self.assertEqual(use_list[3], ("inherit.inherit02.Item.__init__", "inherit.inherit02.Base.__init__"))
+        self.assertEqual(use_list[4], ("inherit.inherit02.Item.execute", "inherit.inherit02.Base.do_work"))
+        self.assertEqual(use_list[5], ("inherit.inherit02.Item.execute", "inherit.inherit02.Base.execute_base"))
+        self.assertEqual(use_list[6], ("inherit.inherit02.Item._execute_priv", "inherit.inherit02.Base.do_work"))
+        self.assertEqual(use_list[7], ("inherit.inherit02", "inherit.inherit02.Item.__init__"))
+        self.assertEqual(use_list[8], ("inherit.inherit02", "inherit.inherit02.Item.execute"))
 
     def test_analyze_inherit_03(self):
         # inheritance case: explicit constructor in derived class without call to base class ctor
 
         data_root_path = get_data_root_path()
         files_list = []
-        files_list.append(os.path.join(data_root_path, "code", "inheritance", "inherit03.py"))
+        files_list.append(os.path.join(data_root_path, "code", "inherit", "inherit03.py"))
 
         parser = TreeParser()
         parser.analyze_files(files_list)
 
         # print_ast(parser)
-        draw(parser)
+        # draw(parser)
 
         items_container = parser.items
         def_list = items_container.get_def_list_info()
         self.assertEqual(len(def_list), 11)
 
-        self.assertEqual(def_list[0], ("inheritance.inherit03", DefItemType.MODULE))
-        self.assertEqual(def_list[1], ("inheritance.inherit03.Base", DefItemType.CLASS))
-        self.assertEqual(def_list[2], ("inheritance.inherit03.Base.__init__", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[3], ("inheritance.inherit03.Base.do_work", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[4], ("inheritance.inherit03.Base.execute_base", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[5], ("inheritance.inherit03.Base._execute_priv", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[6], ("inheritance.inherit03.Item", DefItemType.CLASS))
-        self.assertEqual(def_list[7], ("inheritance.inherit03.Item.__init__", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[8], ("inheritance.inherit03.Item.execute", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[9], ("inheritance.inherit03.Item._execute_priv", DefItemType.DEF_METHOD))
-        self.assertEqual(def_list[10], ("inheritance.inherit03.Base.field", DefItemType.MEMBER))
+        self.assertEqual(def_list[0], ("inherit.inherit03", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("inherit.inherit03.Base", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("inherit.inherit03.Base.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("inherit.inherit03.Base.do_work", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[4], ("inherit.inherit03.Base.execute_base", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[5], ("inherit.inherit03.Base._execute_priv", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[6], ("inherit.inherit03.Item", DefItemType.CLASS))
+        self.assertEqual(def_list[7], ("inherit.inherit03.Item.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[8], ("inherit.inherit03.Item.execute", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[9], ("inherit.inherit03.Item._execute_priv", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[10], ("inherit.inherit03.Base.field", DefItemType.MEMBER))
 
         use_list = items_container.get_use_list()
-        self.assertEqual(len(use_list), 7)
+        self.assertEqual(len(use_list), 8)
 
-        self.assertEqual(use_list[0], ("inheritance.inherit03.Base.__init__", "inheritance.inherit03.Base.field"))
-        self.assertEqual(
-            use_list[1], ("inheritance.inherit03.Base.execute_base", "inheritance.inherit03.Base._execute_priv")
-        )
-        self.assertEqual(use_list[2], ("inheritance.inherit03.Item.execute", "inheritance.inherit03.Base.do_work"))
-        self.assertEqual(use_list[3], ("inheritance.inherit03.Item.execute", "inheritance.inherit03.Base.execute_base"))
-        self.assertEqual(
-            use_list[4], ("inheritance.inherit03.Item._execute_priv", "inheritance.inherit03.Base.do_work")
-        )
-        self.assertEqual(use_list[5], ("inheritance.inherit03", "inheritance.inherit03.Item.__init__"))
-        self.assertEqual(use_list[6], ("inheritance.inherit03", "inheritance.inherit03.Item.execute"))
+        self.assertEqual(use_list[0], ("inherit.inherit03.Base.__init__", "inherit.inherit03.Base.field"))
+        self.assertEqual(use_list[1], ("inherit.inherit03.Base.execute_base", "inherit.inherit03.Base._execute_priv"))
+        self.assertEqual(use_list[2], ("inherit.inherit03.Base.execute_base", "inherit.inherit03.Item._execute_priv"))
+        self.assertEqual(use_list[3], ("inherit.inherit03.Item.execute", "inherit.inherit03.Base.do_work"))
+        self.assertEqual(use_list[4], ("inherit.inherit03.Item.execute", "inherit.inherit03.Base.execute_base"))
+        self.assertEqual(use_list[5], ("inherit.inherit03.Item._execute_priv", "inherit.inherit03.Base.do_work"))
+        self.assertEqual(use_list[6], ("inherit.inherit03", "inherit.inherit03.Item.__init__"))
+        self.assertEqual(use_list[7], ("inherit.inherit03", "inherit.inherit03.Item.execute"))
+
+    def test_analyze_override_01(self):
+        # inheritance case: explicit constructor in derived class without call to base class ctor
+
+        data_root_path = get_data_root_path()
+        files_list = []
+        files_list.append(os.path.join(data_root_path, "code", "inherit", "override01.py"))
+
+        parser = TreeParser()
+        parser.analyze_files(files_list)
+
+        # print_ast(parser)
+        # draw(parser)
+
+        items_container = parser.items
+        def_list = items_container.get_def_list_info()
+        self.assertEqual(len(def_list), 8)
+
+        self.assertEqual(def_list[0], ("inherit.override01", DefItemType.MODULE))
+        self.assertEqual(def_list[1], ("inherit.override01.Base", DefItemType.CLASS))
+        self.assertEqual(def_list[2], ("inherit.override01.Base.execute", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[3], ("inherit.override01.Base.do_work", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[4], ("inherit.override01.Item", DefItemType.CLASS))
+        self.assertEqual(def_list[5], ("inherit.override01.Item.do_work", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[6], ("inherit.override01.Item.__init__", DefItemType.DEF_METHOD))
+        self.assertEqual(def_list[7], ("inherit.override01.Base.__init__", DefItemType.DEF_METHOD))
+
+        use_list = items_container.get_use_list()
+        self.assertEqual(len(use_list), 5)
+
+        self.assertEqual(use_list[0], ("inherit.override01.Base.execute", "inherit.override01.Base.do_work"))
+        self.assertEqual(use_list[1], ("inherit.override01.Base.execute", "inherit.override01.Item.do_work"))
+        self.assertEqual(use_list[2], ("inherit.override01.Item.__init__", "inherit.override01.Base.__init__"))
+        self.assertEqual(use_list[3], ("inherit.override01", "inherit.override01.Item.__init__"))
+        self.assertEqual(use_list[4], ("inherit.override01", "inherit.override01.Base.execute"))

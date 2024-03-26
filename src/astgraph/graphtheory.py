@@ -49,6 +49,15 @@ def get_connected(edges_dict, node):
     return connected_list
 
 
+def get_direct_predecessors(edges_dict, node):
+    ret_list = set()
+    for predecessor, subnodes in edges_dict.items():
+        if node not in subnodes:
+            continue
+        ret_list.add(predecessor)
+    return ret_list
+
+
 # ==================================================================
 
 

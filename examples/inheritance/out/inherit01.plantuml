@@ -1,0 +1,38 @@
+@startuml
+
+skinparam backgroundColor #FEFEFE
+
+
+inherit.inherit01 o-> inherit.inherit01.Item : __init__
+activate inherit.inherit01.Item
+  inherit.inherit01.Item o-> inherit.inherit01.Base : __init__
+  activate inherit.inherit01.Base
+    hnote right of inherit.inherit01.Base
+    field
+    endnote
+  inherit.inherit01.Base --> inherit.inherit01.Item
+  deactivate inherit.inherit01.Base
+
+inherit.inherit01.Item --> inherit.inherit01
+deactivate inherit.inherit01.Item
+
+inherit.inherit01 o-> inherit.inherit01.Item : execute
+activate inherit.inherit01.Item
+  inherit.inherit01.Item o-> inherit.inherit01.Base : do_work
+  inherit.inherit01.Item o-> inherit.inherit01.Base : execute_base
+  activate inherit.inherit01.Base
+    inherit.inherit01.Base o-> inherit.inherit01.Base : _execute_priv
+    inherit.inherit01.Base o-> inherit.inherit01.Item : _execute_priv
+    activate inherit.inherit01.Item
+      inherit.inherit01.Item o-> inherit.inherit01.Base : do_work
+    inherit.inherit01.Item --> inherit.inherit01.Base
+    deactivate inherit.inherit01.Item
+
+  inherit.inherit01.Base --> inherit.inherit01.Item
+  deactivate inherit.inherit01.Base
+
+inherit.inherit01.Item --> inherit.inherit01
+deactivate inherit.inherit01.Item
+
+
+@enduml
